@@ -6,6 +6,7 @@ import allCustomersIcon from "../assets/icons/allCustomers.svg";
 import addProductIcon from "../assets/icons/addProduct.svg";
 import allProductIcon from "../assets/icons/allProduct.svg";
 import settingsIcon from "../assets/icons/settings.svg";
+import SidebarLink from "../components/SidebarLink";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -24,74 +25,31 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         </div>
         <nav className="p-4">
           <ul>
-            <li>
-              <NavLink
-                to="/dashboard"
-                end
-                className={({ isActive }) =>
-                  isActive
-                    ? "block p-2 bg-gray-700 flex items-center"
-                    : "block p-2 hover:bg-gray-600 flex items-center"
-                }
-              >
-                <img src={dashboardIcon} alt="Dashboard Icon" className="w-6 h-6 mr-2" />
-                Dashboard
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard/add-customer"
-                end
-                className={({ isActive }) =>
-                  isActive
-                    ? "block p-2 bg-gray-700 flex items-center"
-                    : "block p-2 hover:bg-gray-600 flex items-center"
-                }
-              >
-                <img src={addCustomerIcon} alt="Add Customer Icon" className="w-6 h-6 mr-2" />
-                Add new customer
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard/customers"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block p-2 bg-gray-700 flex items-center"
-                    : "block p-2 hover:bg-gray-600 flex items-center"
-                }
-              >
-                <img src={allCustomersIcon} alt="All Customers Icon" className="w-6 h-6 mr-2" />
-                All Customers
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard/add-product"
-                end
-                className={({ isActive }) =>
-                  isActive
-                    ? "block p-2 bg-gray-700 flex items-center"
-                    : "block p-2 hover:bg-gray-600 flex items-center"
-                }
-              >
-                <img src={addProductIcon} alt="Add Product Icon" className="w-6 h-6 mr-2" />
-                Add new product
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard/products"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block p-2 bg-gray-700 flex items-center"
-                    : "block p-2 hover:bg-gray-600 flex items-center"
-                }
-              >
-                <img src={allProductIcon} alt="All Products Icon" className="w-6 h-6 mr-2" />
-                All Products
-              </NavLink>
-            </li>
+            <SidebarLink
+              to="/dashboard"
+              iconSrc={dashboardIcon}
+              label="Dashboard"
+            />
+            <SidebarLink
+              to="/dashboard/add-customer"
+              iconSrc={addCustomerIcon}
+              label="Add new customer"
+            />
+            <SidebarLink
+              to="/dashboard/customers"
+              iconSrc={allCustomersIcon}
+              label="All Customers"
+            />
+            <SidebarLink
+              to="/dashboard/add-product"
+              iconSrc={addProductIcon}
+              label="Add new product"
+            />
+            <SidebarLink
+              to="/dashboard/products"
+              iconSrc={allProductIcon}
+              label="All Products"
+            />
           </ul>
         </nav>
       </div>
@@ -100,11 +58,15 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           to="/dashboard/settings"
           className={({ isActive }) =>
             isActive
-              ? "block py-2 bg-gray-700 rounded text-center flex items-center justify-center"
-              : "block py-2 bg-gray-600 hover:bg-gray-500 rounded text-center flex items-center justify-center"
+              ? "py-2 bg-gray-700 rounded text-center flex items-center justify-center"
+              : "py-2 bg-gray-600 hover:bg-gray-500 rounded text-center flex items-center justify-center"
           }
         >
-          <img src={settingsIcon} alt="Settings Icon" className="w-6 h-6 mr-2" />
+          <img
+            src={settingsIcon}
+            alt="Settings Icon"
+            className="w-6 h-6 mr-2"
+          />
           Settings
         </NavLink>
       </div>
