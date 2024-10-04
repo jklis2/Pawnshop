@@ -14,15 +14,14 @@ export default function Dashboard() {
   };
 
   return (
-    <div>
+    <div className="flex">
       <Sidebar isOpen={isSidebarOpen} />
       <div
-        className={`ml-64 ${
+        className={`flex-grow transition-all duration-300 ease-in-out ${
           isSidebarOpen ? "ml-64" : "ml-0"
-        } transition-all duration-300 ease-in-out`}
+        }`}
       >
         <Navbar toggleSidebar={toggleSidebar} />
-
         <div className="p-4">
           <Routes>
             <Route path="/" element={<Welcome />} />
