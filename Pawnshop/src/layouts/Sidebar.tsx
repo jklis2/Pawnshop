@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom"; // Upewnij się, że ten import znajduje się na górze
 import PawnshopLogo from "../assets/PawnshopLogo.png";
 
 type SidebarProps = {
@@ -85,9 +85,14 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         </nav>
       </div>
       <div className="p-4">
-        <button className="w-full py-2 bg-gray-700 hover:bg-gray-600 rounded text-white">
+        <NavLink
+          to="/dashboard/settings"
+          className={({ isActive }) =>
+            isActive ? "block py-2 bg-gray-700 rounded text-center" : "block py-2 bg-gray-600 hover:bg-gray-500 rounded text-center"
+          }
+        >
           Settings
-        </button>
+        </NavLink>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import Customers from "./Customers";
 import Products from "./Products";
 import AddCustomer from "./AddCustomer";
 import AddProduct from "./AddProduct";
+import Settings from "./Settings";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -31,6 +32,7 @@ export default function Dashboard() {
             <Route path="/products" element={<Products />} />
             <Route path="/add-customer" element={<AddCustomer />} />
             <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </div>
