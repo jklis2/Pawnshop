@@ -5,6 +5,8 @@ import Navbar from "../layouts/Navbar";
 import Welcome from "./Welcome";
 import Customers from "./Customers";
 import Products from "./Products";
+import AddCustomer from "./AddCustomer";
+import AddProduct from "./AddProduct";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -27,6 +29,8 @@ export default function Dashboard() {
             <Route path="/" element={<Welcome />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/add-customer" element={<AddCustomer />} />
+            <Route path="/add-product" element={<AddProduct />} />
           </Routes>
         </div>
       </div>

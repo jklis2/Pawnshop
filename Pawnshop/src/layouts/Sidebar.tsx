@@ -28,6 +28,19 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           </li>
           <li>
             <NavLink
+              to="/dashboard/add-customer"
+              end
+              className={({ isActive }) =>
+                isActive
+                  ? "block p-2 bg-gray-700"
+                  : "block p-2 hover:bg-gray-600"
+              }
+            >
+              Add new customer
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/dashboard/customers"
               className={({ isActive }) =>
                 isActive
@@ -36,6 +49,19 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               }
             >
               All Customers
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/add-product"
+              end
+              className={({ isActive }) =>
+                isActive
+                  ? "block p-2 bg-gray-700"
+                  : "block p-2 hover:bg-gray-600"
+              }
+            >
+              Add new product
             </NavLink>
           </li>
           <li>
