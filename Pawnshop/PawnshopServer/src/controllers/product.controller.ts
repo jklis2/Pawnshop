@@ -72,3 +72,33 @@ export const addProduct = async (
       .json({ message: "An error occurred while adding the product.", error });
   }
 };
+
+export const getProductById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+  
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: "Invalid product ID format." });
+        return;
+      }
+  
+      const product = await Product.findById(id);
+      if (!product) {
+        res.status(404).json({ message: `Product with ID ${id} not found.` });
+        return;
+      }
+  
+      res.status(200).json(product);
+    } catch (error) {
+      res.status(500).json({ message: "An error occurred while fetching the product.", error });
+    }
+  };
+
+export const getAllProducts = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const products = await Product.find();
+      res.status(200).json(products);
+    } catch (error) {
+      res.status(500).json({ message: "An error occurred while fetching all products.", error });
+    }
+  };
