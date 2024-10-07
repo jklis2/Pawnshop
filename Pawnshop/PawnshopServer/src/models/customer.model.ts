@@ -14,6 +14,7 @@ export interface ICustomer extends Document {
   phoneNumber?: string;
   email?: string;
   notes?: string;
+  items: mongoose.Types.ObjectId[]; 
 }
 
 const CustomerSchema: Schema = new Schema({
@@ -30,6 +31,7 @@ const CustomerSchema: Schema = new Schema({
   phoneNumber: { type: String },
   email: { type: String },
   notes: { type: String },
+  items: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item', default: [] }], 
 });
 
 export default mongoose.model<ICustomer>('Customer', CustomerSchema);
