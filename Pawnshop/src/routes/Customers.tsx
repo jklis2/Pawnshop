@@ -28,6 +28,8 @@ export default function Customers() {
           idNumber="123456"
           pesel="85010112345"
           phoneNumber="123-456-789"
+          dateOfBirth="1985-01-01"
+          email="john.doe@example.com"
           isExpanded={expandedCardId === 1}
           onExpand={handleCardExpansion}
         />
@@ -43,6 +45,8 @@ export default function Customers() {
           idNumber="654321"
           pesel="91020254321"
           phoneNumber="987-654-321"
+          dateOfBirth="1991-02-02"
+          email="jane.smith@example.com"
           isExpanded={expandedCardId === 2}
           onExpand={handleCardExpansion}
         />
@@ -58,6 +62,8 @@ export default function Customers() {
           idNumber="789123"
           pesel="93030378912"
           phoneNumber="321-654-987"
+          dateOfBirth="1993-03-03"
+          email="michael.johnson@example.com"
           isExpanded={expandedCardId === 3}
           onExpand={handleCardExpansion}
         />

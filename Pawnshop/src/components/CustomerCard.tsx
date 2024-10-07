@@ -14,6 +14,8 @@ type CustomerCardProps = {
   idNumber: string;
   pesel: string;
   phoneNumber: string;
+  dateOfBirth: string; // Nowe pole: Data urodzenia
+  email: string; // Nowe pole: Email
   isExpanded: boolean;
   onExpand: (id: number) => void;
   onEdit?: () => void;
@@ -31,6 +33,8 @@ export default function CustomerCard({
   idNumber,
   pesel,
   phoneNumber,
+  dateOfBirth,
+  email,
   isExpanded,
   onExpand,
   onEdit,
@@ -74,18 +78,24 @@ export default function CustomerCard({
         }`}
       >
         <p>
-          <strong>Street:</strong> {street} {houseNumber}
-        </p>
-        <p>
-          <strong>Postal Code:</strong> {postalCode}, <strong>City:</strong>{" "}
-          {city}
+          <strong>Date of Birth:</strong> {dateOfBirth}
         </p>
         <p>
           <strong>ID Series:</strong> {idSeries}, <strong>ID Number:</strong>{" "}
           {idNumber}
         </p>
         <p>
+          <strong>Email:</strong> {email}
+        </p>
+        <p>
           <strong>Phone Number:</strong> {phoneNumber}
+        </p>
+        <p>
+          <strong>Street:</strong> {street} {houseNumber}
+        </p>
+        <p>
+          <strong>Postal Code:</strong> {postalCode}, <strong>City:</strong>{" "}
+          {city}
         </p>
       </div>
     </div>
