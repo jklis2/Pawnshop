@@ -1,10 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import CustomerCard from "../components/CustomerCard";
 
-export default function Customers() {
-  const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
+interface Customer {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+  idSeries: string;
+  idNumber: string;
+  pesel: string;
+  phoneNumber?: string;
+  dateOfBirth: string;
+  email: string;
+  notes?: string;
+}
 
-  const handleCardExpansion = (id: number) => {
+export default function Customers() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/customers");
+      setCustomers(response.data);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const handleCardExpansion = (id: string) => {
     setExpandedCardId(expandedCardId === id ? null : id);
   };
 
@@ -14,60 +46,32 @@ export default function Customers() {
       <p className="text-center text-lg mb-8">
         Here you can manage all your customers.
       </p>
-      {/* Clients List */}
       <div className="flex flex-col items-center">
-        <CustomerCard
-          id={1}
-          firstName="John"
-          lastName="Doe"
-          street="Maple Street"
-          houseNumber="123"
-          postalCode="00-001"
-          city="Warsaw"
-          idSeries="ABC"
-          idNumber="123456"
-          pesel="85010112345"
-          phoneNumber="123-456-789"
-          dateOfBirth="1985-01-01"
-          email="john.doe@example.com"
-          notes="Thief"
-          isExpanded={expandedCardId === 1}
-          onExpand={handleCardExpansion}
-        />
-        <CustomerCard
-          id={2}
-          firstName="Jane"
-          lastName="Smith"
-          street="Oak Avenue"
-          houseNumber="456"
-          postalCode="00-002"
-          city="Krakow"
-          idSeries="XYZ"
-          idNumber="654321"
-          pesel="91020254321"
-          phoneNumber="987-654-321"
-          dateOfBirth="1991-02-02"
-          email="jane.smith@example.com"
-          isExpanded={expandedCardId === 2}
-          onExpand={handleCardExpansion}
-        />
-        <CustomerCard
-          id={3}
-          firstName="Michael"
-          lastName="Johnson"
-          street="Pine Road"
-          houseNumber="789"
-          postalCode="00-003"
-          city="Gdansk"
-          idSeries="LMN"
-          idNumber="789123"
-          pesel="93030378912"
-          phoneNumber="321-654-987"
-          dateOfBirth="1993-03-03"
-          email="michael.johnson@example.com"
-          isExpanded={expandedCardId === 3}
-          onExpand={handleCardExpansion}
-        />
+        {customers.length > 0 ? (
+          customers.map((customer) => (
+            <CustomerCard
+              key={customer._id}
+              id={customer._id}
+              firstName={customer.firstName}
+              lastName={customer.lastName}
+              street={customer.street}
+              houseNumber={customer.houseNumber}
+              postalCode={customer.postalCode}
+              city={customer.city}
+              idSeries={customer.idSeries}
+              idNumber={customer.idNumber}
+              pesel={customer.pesel}
+              phoneNumber={customer.phoneNumber || ""}
+              dateOfBirth={customer.dateOfBirth}
+              email={customer.email}
+              notes={customer.notes || ""}
+              isExpanded={expandedCardId === customer._id}
+              onExpand={() => handleCardExpansion(customer._id)}
+            />
+          ))
+        ) : (
+          <p>No customers found.</p>
+        )}
       </div>
     </div>
   );

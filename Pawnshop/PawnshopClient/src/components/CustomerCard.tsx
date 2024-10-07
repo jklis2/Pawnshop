@@ -3,7 +3,7 @@ import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 
 type CustomerCardProps = {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   street: string;
@@ -13,12 +13,12 @@ type CustomerCardProps = {
   idSeries: string;
   idNumber: string;
   pesel: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   dateOfBirth: string;
   email: string;
   notes?: string;
   isExpanded: boolean;
-  onExpand: (id: number) => void;
+  onExpand: (id: string) => void;
   onEdit?: () => void;
 };
 
@@ -85,7 +85,7 @@ export default function CustomerCard({
         }`}
       >
         <p>
-          <strong>Date of Birth:</strong> {dateOfBirth}
+          <strong>Date of Birth:</strong> {new Date(dateOfBirth).toLocaleDateString()}
         </p>
         <p>
           <strong>ID Series:</strong> {idSeries}, <strong>ID Number:</strong>{" "}
