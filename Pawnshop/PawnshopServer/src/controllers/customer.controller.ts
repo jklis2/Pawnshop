@@ -50,10 +50,28 @@ export const getCustomerById = async (req: Request, res: Response): Promise<void
 };
 
 export const getAllCustomers = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const customers = await Customer.find();
-      res.status(200).json(customers);
-    } catch (error) {
-      res.status(500).json({ message: 'An error occurred while fetching the customers.', error });
+  try {
+    const customers = await Customer.find();
+    res.status(200).json(customers);
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while fetching the customers.', error });
+  }
+};
+
+export const updateCustomer = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const updatedCustomer = await Customer.findByIdAndUpdate(id, updatedData, { new: true });
+
+    if (!updatedCustomer) {
+      res.status(404).json({ message: `Customer with ID ${id} not found.` });
+      return;
     }
-  };
+
+    res.status(200).json(updatedCustomer);
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while updating the customer.', error });
+  }
+};
