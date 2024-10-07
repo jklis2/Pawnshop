@@ -28,6 +28,9 @@ export default function AddCustomerForm() {
         <CreateForm label="Phone Number" placeholder="Enter phone number" type="text" />
         <CreateForm label="Email" placeholder="Enter email address" type="email" />
       </div>
+      <div className="grid grid-cols-1 mb-4">
+        <CreateForm label="Notes" placeholder="Enter Customer notes" type="text" />
+      </div>
     </div>
   );
 }

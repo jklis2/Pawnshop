@@ -30,6 +30,7 @@ export default function Customers() {
           phoneNumber="123-456-789"
           dateOfBirth="1985-01-01"
           email="john.doe@example.com"
+          notes="Thief"
           isExpanded={expandedCardId === 1}
           onExpand={handleCardExpansion}
         />

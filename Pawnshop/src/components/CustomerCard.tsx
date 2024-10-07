@@ -14,8 +14,9 @@ type CustomerCardProps = {
   idNumber: string;
   pesel: string;
   phoneNumber: string;
-  dateOfBirth: string; // Nowe pole: Data urodzenia
-  email: string; // Nowe pole: Email
+  dateOfBirth: string;
+  email: string;
+  notes?: string;
   isExpanded: boolean;
   onExpand: (id: number) => void;
   onEdit?: () => void;
@@ -35,6 +36,7 @@ export default function CustomerCard({
   phoneNumber,
   dateOfBirth,
   email,
+  notes,
   isExpanded,
   onExpand,
   onEdit,
@@ -52,6 +54,11 @@ export default function CustomerCard({
           <span className="text-gray-500 ml-4">
             <strong>PESEL:</strong> {pesel}
           </span>
+          {notes && (
+            <span className="text-gray-500 ml-4">
+              <strong>Notes:</strong> {notes}
+            </span>
+          )}
         </div>
         <div className="flex items-center">
           <button
