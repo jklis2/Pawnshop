@@ -1,18 +1,39 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const PORT = 5000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Testowa trasa
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('MongoDB connection string is missing in .env file!');
+  process.exit(1);
+}
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI);
+    console.log('Successfully connected to MongoDB!');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    process.exit(1);
+  }
+};
+
+connectDB();
+
 app.get('/', (req: Request, res: Response) => {
-  res.send('Backend działa!');
+  res.send('Backend is running and connected to MongoDB!');
 });
 
 app.listen(PORT, () => {
-  console.log(`Serwer działa na porcie ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
