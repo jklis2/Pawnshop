@@ -75,3 +75,20 @@ export const updateCustomer = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: 'An error occurred while updating the customer.', error });
   }
 };
+
+export const deleteCustomer = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const deletedCustomer = await Customer.findByIdAndDelete(id);
+
+    if (!deletedCustomer) {
+      res.status(404).json({ message: `Customer with ID ${id} not found.` });
+      return;
+    }
+
+    res.status(200).json({ message: `Customer with ID ${id} has been deleted.` });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while deleting the customer.', error });
+  }
+};
