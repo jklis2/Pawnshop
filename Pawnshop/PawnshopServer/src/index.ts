@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import customerRoutes from "./routes/customer.routes";
 import productRoutes from "./routes/product.routes";
+import employeeRoutes from './routes/employee.routes';
 
 dotenv.config();
 
@@ -39,6 +40,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api", customerRoutes);
 
 app.use("/api", productRoutes);
+
+app.use('/api', employeeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
