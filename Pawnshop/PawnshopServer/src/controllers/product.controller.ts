@@ -2,81 +2,80 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Product from "../models/product.model";
 import Customer from "../models/customer.model";
+import multer from "multer";
 
-export const addProduct = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const {
-      productName,
-      productDescription,
-      category,
-      brand,
-      productModel,
-      serialNumber,
-      yearOfProduction,
-      technicalCondition,
-      purchasePrice,
-      salePrice,
-      productImages,
-      additionalNotes,
-      transactionType,
-      dateOfReceipt,
-      redemptionDeadline,
-      loanValue,
-      interestRate,
-      notes,
-      clientId,
-    } = req.body;
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage });
 
-    const customer = await Customer.findById(clientId);
-    if (!customer) {
-      res
-        .status(404)
-        .json({ message: `Customer with ID ${clientId} not found.` });
-      return;
+export const addProduct = [
+  upload.array("productImages"), 
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const {
+        productName,
+        productDescription,
+        category,
+        brand,
+        productModel,
+        serialNumber,
+        yearOfProduction,
+        technicalCondition,
+        purchasePrice,
+        salePrice,
+        additionalNotes,
+        transactionType,
+        dateOfReceipt,
+        redemptionDeadline,
+        loanValue,
+        interestRate,
+        notes,
+        clientId,
+      } = req.body;
+
+      const customer = await Customer.findById(clientId);
+      if (!customer) {
+        res.status(404).json({ message: `Customer with ID ${clientId} not found.` });
+        return;
+      }
+
+      const productImages = req.files ? (req.files as Express.Multer.File[]).map((file) => file.buffer.toString("base64")) : [];
+
+      const newProduct = new Product({
+        productName,
+        productDescription,
+        category,
+        brand,
+        productModel,
+        serialNumber,
+        yearOfProduction,
+        technicalCondition,
+        purchasePrice,
+        salePrice,
+        productImages, 
+        additionalNotes,
+        transactionType,
+        dateOfReceipt,
+        redemptionDeadline,
+        loanValue,
+        interestRate,
+        notes,
+        clientId,
+      });
+
+      const savedProduct = await newProduct.save();
+
+      customer.items.push(savedProduct._id as mongoose.Types.ObjectId);
+      await customer.save();
+
+      res.status(201).json(savedProduct);
+    } catch (error) {
+      console.error("Error while adding product:", error);
+      res.status(500).json({ message: "An error occurred while adding the product.", error });
     }
+  },
+];
 
-    const newProduct = new Product({
-      productName,
-      productDescription,
-      category,
-      brand,
-      productModel,
-      serialNumber,
-      yearOfProduction,
-      technicalCondition,
-      purchasePrice,
-      salePrice,
-      productImages,
-      additionalNotes,
-      transactionType,
-      dateOfReceipt,
-      redemptionDeadline,
-      loanValue,
-      interestRate,
-      notes,
-      clientId,
-    });
-
-    const savedProduct = await newProduct.save();
-
-    customer.items.push(savedProduct._id as mongoose.Types.ObjectId);
-    await customer.save();
-
-    res.status(201).json(savedProduct);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred while adding the product.", error });
-  }
-};
-
-export const getProductById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getProductById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
@@ -93,36 +92,26 @@ export const getProductById = async (
 
     res.status(200).json(product);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while fetching the product.",
-        error,
-      });
+    res.status(500).json({
+      message: "An error occurred while fetching the product.",
+      error,
+    });
   }
 };
 
-export const getAllProducts = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getAllProducts = async (req: Request, res: Response): Promise<void> => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while fetching all products.",
-        error,
-      });
+    res.status(500).json({
+      message: "An error occurred while fetching all products.",
+      error,
+    });
   }
 };
 
-export const updateProduct = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const updateProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
@@ -143,19 +132,14 @@ export const updateProduct = async (
 
     res.status(200).json(updatedProduct);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while updating the product.",
-        error,
-      });
+    res.status(500).json({
+      message: "An error occurred while updating the product.",
+      error,
+    });
   }
 };
 
-export const deleteProduct = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
@@ -176,15 +160,11 @@ export const deleteProduct = async (
       $pull: { items: id },
     });
 
-    res
-      .status(200)
-      .json({ message: `Product with ID ${id} has been deleted.` });
+    res.status(200).json({ message: `Product with ID ${id} has been deleted.` });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while deleting the product.",
-        error,
-      });
+    res.status(500).json({
+      message: "An error occurred while deleting the product.",
+      error,
+    });
   }
 };

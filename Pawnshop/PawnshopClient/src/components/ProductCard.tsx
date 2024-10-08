@@ -19,6 +19,7 @@ interface ProductCardProps {
   loanValue?: number;
   interestRate?: number;
   transactionNotes?: string;
+  clientName?: string;
 }
 
 export default function ProductCard({
@@ -40,6 +41,7 @@ export default function ProductCard({
   loanValue,
   interestRate,
   transactionNotes,
+  clientName,
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -52,7 +54,7 @@ export default function ProductCard({
       }`}
       onClick={toggleExpand}
     >
-      <div className="flex items-center justify-between px-6 py-4 border border-red-200">
+      <div className="flex items-center justify-between px-6 py-4 border border-gray-200 rounded-md bg-white">
         <div className="flex items-center">
           <img
             className="h-24 w-24 object-cover rounded-md mr-4"
@@ -69,7 +71,7 @@ export default function ProductCard({
         <p className="text-xl font-bold text-black">${purchasePrice}</p>
       </div>
       {isExpanded && (
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
           {productDescription && (
             <p className="text-gray-700 mb-4">
               <strong>Description:</strong> {productDescription}
@@ -133,6 +135,12 @@ export default function ProductCard({
                 <strong>Notes:</strong> {transactionNotes}
               </p>
             )}
+          </div>
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-gray-800">Client</h3>
+            <p className="text-gray-700">
+              <strong>Client Name:</strong> {clientName || "Unknown Client"}
+            </p>
           </div>
         </div>
       )}

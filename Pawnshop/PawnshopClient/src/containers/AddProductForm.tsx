@@ -9,79 +9,159 @@ interface Customer {
 }
 
 export default function AddProductForm() {
-  const [customers, setCustomers] = useState<Customer[]>([]); 
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
+
+  const [productName, setProductName] = useState('');
+  const [productDescription, setProductDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [brand, setBrand] = useState('');
+  const [productModel, setProductModel] = useState('');
+  const [serialNumber, setSerialNumber] = useState('');
+  const [yearOfProduction, setYearOfProduction] = useState<number | undefined>();
+  const [technicalCondition, setTechnicalCondition] = useState('');
+  const [purchasePrice, setPurchasePrice] = useState<number | undefined>();
+  const [salePrice, setSalePrice] = useState<number | undefined>();
+  const [productImages, setProductImages] = useState<FileList | null>(null);
+  const [additionalNotes, setAdditionalNotes] = useState('');
+  const [transactionType, setTransactionType] = useState<'pawn' | 'sale' | ''>('');
+  const [dateOfReceipt, setDateOfReceipt] = useState('');
+  const [redemptionDeadline, setRedemptionDeadline] = useState('');
+  const [loanValue, setLoanValue] = useState<number | undefined>();
+  const [interestRate, setInterestRate] = useState<number | undefined>();
+  const [notes, setNotes] = useState('');
+
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     axios
-    .get('http://localhost:5000/api/customers')
+      .get('http://localhost:5000/api/customers')
       .then((response) => {
-        console.log('Response from server:', response.data); 
         if (Array.isArray(response.data)) {
           setCustomers(response.data);
         } else {
           setError('Expected an array of customers, but received something else.');
         }
       })
-      .catch((error) => {
-        console.error('Error fetching customers:', error);
+      .catch(() => {
         setError('Failed to load customers. Please try again later.');
       });
   }, []);
-  
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setSuccessMessage(null);
+
+    if (!productName || !transactionType || !selectedCustomerId) {
+      setError('Product Name, Transaction Type, and Customer selection are required.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('productName', productName);
+      formData.append('productDescription', productDescription);
+      formData.append('category', category);
+      formData.append('brand', brand);
+      formData.append('productModel', productModel);
+      formData.append('serialNumber', serialNumber);
+      if (yearOfProduction) formData.append('yearOfProduction', yearOfProduction.toString());
+      formData.append('technicalCondition', technicalCondition);
+      if (purchasePrice) formData.append('purchasePrice', purchasePrice.toString());
+      if (salePrice) formData.append('salePrice', salePrice.toString());
+      formData.append('additionalNotes', additionalNotes);
+      formData.append('transactionType', transactionType);
+      formData.append('dateOfReceipt', dateOfReceipt);
+      formData.append('redemptionDeadline', redemptionDeadline);
+      if (loanValue) formData.append('loanValue', loanValue.toString());
+      if (interestRate) formData.append('interestRate', interestRate.toString());
+      formData.append('notes', notes);
+      formData.append('clientId', selectedCustomerId);
+
+      if (productImages) {
+        for (let i = 0; i < productImages.length; i++) {
+          formData.append('productImages', productImages[i]);
+        }
+      }
+
+      await axios.post('http://localhost:5000/api/products', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setSuccessMessage('Product successfully added!');
+      setProductName('');
+      setProductDescription('');
+      setCategory('');
+      setBrand('');
+      setProductModel('');
+      setSerialNumber('');
+      setYearOfProduction(undefined);
+      setTechnicalCondition('');
+      setPurchasePrice(undefined);
+      setSalePrice(undefined);
+      setAdditionalNotes('');
+      setTransactionType('');
+      setDateOfReceipt('');
+      setRedemptionDeadline('');
+      setLoanValue(undefined);
+      setInterestRate(undefined);
+      setNotes('');
+      setSelectedCustomerId('');
+      setProductImages(null);
+    } catch {
+      setError('Failed to add product. Please try again.');
+    }
+  };
 
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-6 text-center">Product Details</h1>
-      <div>
-        <CreateForm label="Product Name" placeholder="Enter product name" type="text" />
-        <CreateForm label="Product Description" placeholder="Enter product description" type="text" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Category" placeholder="Enter category" type="text" />
-          <CreateForm label="Brand" placeholder="Enter brand" type="text" />
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div>
+          <CreateForm label="Product Name" placeholder="Enter product name" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} />
+          <CreateForm label="Product Description" placeholder="Enter product description" type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Category" placeholder="Enter category" type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+            <CreateForm label="Brand" placeholder="Enter brand" type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Model" placeholder="Enter model" type="text" value={productModel} onChange={(e) => setProductModel(e.target.value)} />
+            <CreateForm label="Serial Number (if applicable)" placeholder="Enter serial number" type="text" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Year of Production (if applicable)" placeholder="Enter year of production" type="number" value={yearOfProduction?.toString()} onChange={(e) => setYearOfProduction(Number(e.target.value))} />
+            <CreateForm label="Technical Condition" placeholder="Enter technical condition" type="text" value={technicalCondition} onChange={(e) => setTechnicalCondition(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Purchase Price" placeholder="Enter purchase price" type="number" value={purchasePrice?.toString()} onChange={(e) => setPurchasePrice(Number(e.target.value))} />
+            <CreateForm label="Sale Price (if for sale)" placeholder="Enter sale price" type="number" value={salePrice?.toString()} onChange={(e) => setSalePrice(Number(e.target.value))} />
+          </div>
+          <CreateForm label="Product Images" placeholder="Upload product images" type="file" onChange={(e) => setProductImages(e.target.files)} className="block w-full" />
+          <CreateForm label="Additional Notes (if applicable)" placeholder="Enter additional notes" type="text" value={additionalNotes} onChange={(e) => setAdditionalNotes(e.target.value)} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Model" placeholder="Enter model" type="text" />
-          <CreateForm label="Serial Number (if applicable)" placeholder="Enter serial number" type="text" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Year of Production (if applicable)" placeholder="Enter year of production" type="number" />
-          <CreateForm label="Technical Condition" placeholder="Enter technical condition" type="text" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Purchase Price" placeholder="Enter purchase price" type="number" />
-          <CreateForm label="Sale Price (if for sale)" placeholder="Enter sale price" type="number" />
-        </div>
-        <CreateForm label="Product Images" placeholder="Upload product images" type="file" />
-        <CreateForm label="Additional Notes (if applicable)" placeholder="Enter additional notes" type="text" />
-      </div>
-      <h2 className="text-2xl font-semibold mb-6 text-center">Transaction Details</h2>
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Transaction Type" placeholder="Enter transaction type (pawn / sale)" type="text" />
-          <CreateForm label="Date of Receipt" placeholder="Enter date of receipt" type="date" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Redemption Deadline (if pawned)" placeholder="Enter redemption deadline" type="date" />
-          <CreateForm label="Loan Value (if pawned)" placeholder="Enter loan value" type="number" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <CreateForm label="Interest Rate (if pawned)" placeholder="Enter interest rate" type="number" />
-          <CreateForm label="Notes" placeholder="Enter product notes" type="text" />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Select Customer
-          </label>
-          {error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            <select
-              value={selectedCustomerId}
-              onChange={(e) => setSelectedCustomerId(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            >
+        <h2 className="text-2xl font-semibold mb-6 text-center">Transaction Details</h2>
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Transaction Type" placeholder="Enter transaction type (pawn / sale)" type="text" value={transactionType} onChange={(e) => setTransactionType(e.target.value as 'pawn' | 'sale')} />
+            <CreateForm label="Date of Receipt" placeholder="Enter date of receipt" type="date" value={dateOfReceipt} onChange={(e) => setDateOfReceipt(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Redemption Deadline (if pawned)" placeholder="Enter redemption deadline" type="date" value={redemptionDeadline} onChange={(e) => setRedemptionDeadline(e.target.value)} />
+            <CreateForm label="Loan Value (if pawned)" placeholder="Enter loan value" type="number" value={loanValue?.toString()} onChange={(e) => setLoanValue(Number(e.target.value))} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <CreateForm label="Interest Rate (if pawned)" placeholder="Enter interest rate" type="number" value={interestRate?.toString()} onChange={(e) => setInterestRate(Number(e.target.value))} />
+            <CreateForm label="Notes" placeholder="Enter product notes" type="text" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
+            <select value={selectedCustomerId} onChange={(e) => setSelectedCustomerId(e.target.value)} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
               <option value="">Choose a customer</option>
               {customers.map((customer) => (
                 <option key={customer._id} value={customer._id}>
@@ -89,9 +169,12 @@ export default function AddProductForm() {
                 </option>
               ))}
             </select>
-          )}
+          </div>
         </div>
-      </div>
+        <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Submit
+        </button>
+      </form>
     </div>
   );
 }
