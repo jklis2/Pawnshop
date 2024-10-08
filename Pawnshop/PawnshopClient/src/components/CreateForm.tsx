@@ -1,3 +1,5 @@
+import React from "react";
+
 type CreateFormProps = {
   label: string;
   placeholder: string;
@@ -5,6 +7,7 @@ type CreateFormProps = {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  name?: string;
 };
 
 export default function CreateForm({
@@ -14,6 +17,7 @@ export default function CreateForm({
   value,
   onChange,
   className,
+  name,
 }: CreateFormProps) {
   return (
     <div className={`w-full mb-4 ${className || ""}`}>
@@ -21,6 +25,7 @@ export default function CreateForm({
         {label}
       </label>
       <input
+        name={name}
         type={type}
         placeholder={placeholder}
         value={value}
