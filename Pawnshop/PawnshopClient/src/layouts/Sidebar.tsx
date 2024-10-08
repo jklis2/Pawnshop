@@ -5,6 +5,8 @@ import addCustomerIcon from "../assets/icons/addCustomer.svg";
 import allCustomersIcon from "../assets/icons/allCustomers.svg";
 import addProductIcon from "../assets/icons/addProduct.svg";
 import allProductIcon from "../assets/icons/allProduct.svg";
+import addEmployeeIcon from "../assets/icons/addEmployee.svg"
+import allEmployeesIcon from "../assets/icons/allEmployees.svg"
 import settingsIcon from "../assets/icons/settings.svg";
 import SidebarLink from "../components/SidebarLink";
 
@@ -49,6 +51,16 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               to="/dashboard/products"
               iconSrc={allProductIcon}
               label="All Products"
+            />
+            <SidebarLink
+              to="/dashboard/add-employee"
+              iconSrc={addEmployeeIcon}
+              label="Add new Employee"
+            />
+            <SidebarLink
+              to="/dashboard/employees"
+              iconSrc={allEmployeesIcon}
+              label="All Employees"
             />
           </ul>
         </nav>

@@ -5,8 +5,10 @@ import Navbar from "../layouts/Navbar";
 import Welcome from "./Welcome";
 import Customers from "./Customers";
 import Products from "./Products";
+import Employees from "./Employees";
 import AddCustomer from "./AddCustomer";
 import AddProduct from "./AddProduct";
+import AddEmployee from "./AddEmployee";
 import Settings from "./Settings";
 
 export default function Dashboard() {
@@ -30,8 +32,10 @@ export default function Dashboard() {
             <Route path="/" element={<Welcome />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/employees" element={<Employees />} />
             <Route path="/add-customer" element={<AddCustomer />} />
             <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
