@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import CreateForm from '../components/CreateForm';
 
 export default function AddEmployeeForm() {
@@ -20,6 +21,8 @@ export default function AddEmployeeForm() {
     role: '',
   });
 
+  const [message, setMessage] = useState('');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEmployeeData((prevData) => ({
@@ -28,8 +31,21 @@ export default function AddEmployeeForm() {
     }));
   };
 
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/employees', employeeData);
+
+      if (response.status === 201) {
+        setMessage('Employee added successfully!');
+      }
+    } catch (error) {
+      console.error('Error adding employee:', error);
+      setMessage('Failed to add employee. Please try again.');
+    }
+  };
+
   return (
-    <form className="w-full">
+    <form className="w-full max-w-4xl mx-auto p-4 bg-white rounded-md shadow-md">
       <h2 className="text-2xl font-bold mb-4">Add Employee</h2>
 
       <div className="grid grid-cols-2 gap-4">
@@ -55,10 +71,13 @@ export default function AddEmployeeForm() {
 
       <button
         type="button"
+        onClick={handleSubmit}
         className="w-full mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
       >
         Add Employee
       </button>
+
+      {message && <p className="mt-4 text-center text-green-600">{message}</p>}
     </form>
   );
 }
