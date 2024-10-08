@@ -17,6 +17,7 @@ interface Customer {
   dateOfBirth: string;
   email: string;
   notes?: string;
+  items: string[];
 }
 
 export default function Customers() {
@@ -65,6 +66,7 @@ export default function Customers() {
               dateOfBirth={customer.dateOfBirth}
               email={customer.email}
               notes={customer.notes || ""}
+              items={customer.items}
               isExpanded={expandedCardId === customer._id}
               onExpand={() => handleCardExpansion(customer._id)}
             />

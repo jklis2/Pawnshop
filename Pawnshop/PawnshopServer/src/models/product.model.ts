@@ -13,7 +13,7 @@ export interface IProduct extends Document {
   salePrice?: number;
   productImages?: string[];
   additionalNotes?: string;
-  transactionType: "pawn" | "sale";
+  transactionType: "pawn" | "sale" | "redeemed";
   dateOfReceipt: Date;
   redemptionDeadline?: Date;
   loanValue?: number;
@@ -35,7 +35,7 @@ const ProductSchema: Schema = new Schema({
   salePrice: { type: Number },
   productImages: { type: [String] },
   additionalNotes: { type: String },
-  transactionType: { type: String, enum: ["pawn", "sale"], required: true },
+  transactionType: { type: String, enum: ["pawn", "sale", "redeemed"], required: true },
   dateOfReceipt: { type: Date, required: true },
   redemptionDeadline: { type: Date },
   loanValue: { type: Number },
