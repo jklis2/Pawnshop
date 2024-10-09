@@ -39,7 +39,7 @@ export default function Dashboard() {
             <Route path="/add-customer" element={<AddCustomer />} />
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/add-employee" element={<AddEmployee />} />
-            <Route path="/edit-customer" element={<EditCustomer />} />
+            <Route path="/edit-customer/:id" element={<EditCustomer />} />
             <Route path="/edit-product" element={<EditProduct />} />
             <Route path="/edit-employee" element={<EditEmployee />} />
             <Route path="/settings" element={<Settings />} />

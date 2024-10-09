@@ -2,7 +2,7 @@ import React from "react";
 
 type CreateFormProps = {
   label: string;
-  placeholder: string;
+  placeholder?: string;
   type: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;

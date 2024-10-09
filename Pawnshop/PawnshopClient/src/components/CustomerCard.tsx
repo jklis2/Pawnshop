@@ -3,6 +3,7 @@ import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 type CustomerCardProps = {
   id: string;
@@ -52,6 +53,12 @@ export default function CustomerCard({
   onEdit,
 }: CustomerCardProps) {
   const [customerItems, setCustomerItems] = useState<Item[]>([]);
+
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    navigate(`/dashboard/edit-customer/${id}`);
+  };
 
   useEffect(() => {
     if (isExpanded) {
@@ -114,7 +121,12 @@ export default function CustomerCard({
               if (onEdit) onEdit();
             }}
           >
-            <img src={editIcon} alt="Edit" className="w-5 h-5" />
+            <img
+              src={editIcon}
+              alt="Edit"
+              className="w-5 h-5 cursor-pointer"
+              onClick={handleEdit}
+            />
           </button>
           <button className="text-blue-500">
             <img
