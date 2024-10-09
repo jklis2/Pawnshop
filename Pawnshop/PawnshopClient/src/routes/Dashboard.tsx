@@ -9,6 +9,9 @@ import Employees from "./Employees";
 import AddCustomer from "./AddCustomer";
 import AddProduct from "./AddProduct";
 import AddEmployee from "./AddEmployee";
+import EditCustomer from "./EditCustomer";
+import EditProduct from "./EditProduct";
+import EditEmployee from "./EditEmployee";
 import Settings from "./Settings";
 
 export default function Dashboard() {
@@ -36,6 +39,9 @@ export default function Dashboard() {
             <Route path="/add-customer" element={<AddCustomer />} />
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/add-employee" element={<AddEmployee />} />
+            <Route path="/edit-customer" element={<EditCustomer />} />
+            <Route path="/edit-product" element={<EditProduct />} />
+            <Route path="/edit-employee" element={<EditEmployee />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
