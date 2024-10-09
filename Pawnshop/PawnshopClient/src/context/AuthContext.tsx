@@ -1,11 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
-import axios from "axios"; // Dodaj axios jako zależność
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import axios from "axios";
 
 type Employee = {
   firstName: string;
@@ -38,21 +32,21 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const login = async (login: string, password: string) => {
-    const response = await axios.post("http://localhost:5000/api/login", {
-      login,
-      password,
-    });
-
+    const response = await axios.post("http://localhost:5000/api/login", { login, password });
     const employeeData = response.data;
     setEmployee(employeeData);
 
+    // Set session data in `localStorage` for 9 hours
     localStorage.setItem("employee", JSON.stringify(employeeData));
-    localStorage.setItem(
-      "loginExpiration",
-      (Date.now() + 12 * 60 * 60 * 1000).toString()
-    );
+    localStorage.setItem("loginExpiration", (Date.now() + 9 * 60 * 60 * 1000).toString());
+
+    // Set automatic logout after 9 hours
+    setTimeout(() => {
+      logout();
+    }, 9 * 60 * 60 * 1000); // 9h
   };
 
   const logout = () => {
@@ -65,17 +59,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const storedEmployee = localStorage.getItem("employee");
     const expiration = localStorage.getItem("loginExpiration");
 
-    if (storedEmployee && expiration && Date.now() < parseInt(expiration)) {
-      setEmployee(JSON.parse(storedEmployee));
-    } else {
-      logout();
+    if (storedEmployee && expiration) {
+      const expirationTime = parseInt(expiration);
+
+      if (Date.now() < expirationTime) {
+        setEmployee(JSON.parse(storedEmployee));
+      } else {
+        logout();
+      }
     }
+    setLoading(false); 
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+
   return (
-    <AuthContext.Provider
-      value={{ employee, login, logout, isAuthenticated: !!employee }}
-    >
+    <AuthContext.Provider value={{ employee, login, logout, isAuthenticated: !!employee }}>
       {children}
     </AuthContext.Provider>
   );
