@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 
 type Employee = {
+  _id: string;
   firstName: string;
   lastName: string;
   pesel: string;
@@ -22,14 +24,11 @@ type Employee = {
 
 interface EmployeeCardProps {
   employee: Employee;
-  onEditClick?: () => void;
 }
 
-export default function EmployeeCard({
-  employee,
-  onEditClick,
-}: EmployeeCardProps) {
+export default function EmployeeCard({ employee }: EmployeeCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const toggleCard = () => setIsExpanded((prev) => !prev);
 
@@ -50,7 +49,7 @@ export default function EmployeeCard({
             className="w-5 h-5 cursor-pointer mr-4"
             onClick={(e) => {
               e.stopPropagation();
-              if (onEditClick) onEditClick();
+              navigate(`/dashboard/edit-employee/${employee._id}`);
             }}
           />
           {isExpanded ? (

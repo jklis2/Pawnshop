@@ -41,7 +41,7 @@ export default function Dashboard() {
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/edit-customer/:id" element={<EditCustomer />} />
             <Route path="/edit-product/:id" element={<EditProduct />} />
-            <Route path="/edit-employee" element={<EditEmployee />} />
+            <Route path="/edit-employee/:id" element={<EditEmployee />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
