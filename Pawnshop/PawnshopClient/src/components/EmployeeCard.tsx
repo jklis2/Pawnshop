@@ -1,6 +1,7 @@
 import { useState } from "react";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
+import editIcon from "../assets/icons/edit.svg";
 
 type Employee = {
   firstName: string;
@@ -21,9 +22,13 @@ type Employee = {
 
 interface EmployeeCardProps {
   employee: Employee;
+  onEditClick?: () => void;
 }
 
-export default function EmployeeCard({ employee }: EmployeeCardProps) {
+export default function EmployeeCard({
+  employee,
+  onEditClick,
+}: EmployeeCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleCard = () => setIsExpanded((prev) => !prev);
@@ -39,6 +44,15 @@ export default function EmployeeCard({ employee }: EmployeeCardProps) {
           <p className="text-sm text-gray-600">PESEL: {employee.pesel}</p>
         </div>
         <div className="flex items-center">
+          <img
+            src={editIcon}
+            alt="Edit"
+            className="w-5 h-5 cursor-pointer mr-4"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onEditClick) onEditClick();
+            }}
+          />
           {isExpanded ? (
             <img src={arrowTop} alt="Collapse" className="w-6 h-6" />
           ) : (

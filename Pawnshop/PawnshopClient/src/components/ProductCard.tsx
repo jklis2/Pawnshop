@@ -1,4 +1,7 @@
 import { useState } from "react";
+import arrowTop from "../assets/icons/arrowTop.svg";
+import arrowBottom from "../assets/icons/arrowBottom.svg";
+import editIcon from "../assets/icons/edit.svg";
 
 interface ProductCardProps {
   productName: string;
@@ -45,7 +48,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => setIsExpanded(!isExpanded);
+  const toggleExpand = () => setIsExpanded((prev) => !prev);
 
   return (
     <div
@@ -72,7 +75,22 @@ export default function ProductCard({
             </p>
           </div>
         </div>
-        <p className="text-xl font-bold text-black">${purchasePrice}</p>
+        <div className="flex items-center">
+          <p className="text-xl font-bold text-black mr-4">${purchasePrice}</p>
+          <img
+            src={editIcon}
+            alt="Edit"
+            className="w-5 h-5 cursor-pointer mr-4"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          />
+          {isExpanded ? (
+            <img src={arrowTop} alt="Collapse" className="w-6 h-6" />
+          ) : (
+            <img src={arrowBottom} alt="Expand" className="w-6 h-6" />
+          )}
+        </div>
       </div>
       {isExpanded && (
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
