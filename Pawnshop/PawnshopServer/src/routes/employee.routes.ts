@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addEmployee, getEmployeeById, getAllEmployees, updateEmployee, deleteEmployee } from '../controllers/employee.controller';
+import { addEmployee, getEmployeeById, getAllEmployees, updateEmployee, deleteEmployee, loginEmployee } from '../controllers/employee.controller';
 
 const router: Router = Router();
 
@@ -17,5 +17,8 @@ router.put('/employees/:id', updateEmployee);
 
 // DELETE: http://localhost:5000/api/employees/:id
 router.delete('/employees/:id', deleteEmployee);
+
+// LOGIN: http://localhost:5000/api/login
+router.post("/login", loginEmployee);
 
 export default router;

@@ -190,3 +190,29 @@ export const deleteEmployee = async (
       });
   }
 };
+
+export const loginEmployee = async (req: Request, res: Response): Promise<void> => {
+  const { login, password } = req.body;
+
+  try {
+    const employee = await Employee.findOne({ login });
+    if (!employee) {
+      res.status(401).json({ message: "Invalid login or password" });
+      return;
+    }
+
+    if (employee.password !== password) {
+      res.status(401).json({ message: "Invalid login or password" });
+      return;
+    }
+
+    res.json({
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      login: employee.login,
+      role: employee.role,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
