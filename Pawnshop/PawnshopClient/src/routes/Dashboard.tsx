@@ -14,6 +14,7 @@ import EditProduct from "./EditProduct";
 import EditEmployee from "./EditEmployee";
 import Archives from "./Archives";
 import Settings from "./Settings";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -36,13 +37,34 @@ export default function Dashboard() {
             <Route path="/" element={<Welcome />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/employees" element={<Employees />} />
             <Route path="/add-customer" element={<AddCustomer />} />
             <Route path="/add-product" element={<AddProduct />} />
-            <Route path="/add-employee" element={<AddEmployee />} />
+            <Route
+              path="/employees"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Employees />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-employee"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AddEmployee />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/edit-customer/:id" element={<EditCustomer />} />
             <Route path="/edit-product/:id" element={<EditProduct />} />
-            <Route path="/edit-employee/:id" element={<EditEmployee />} />
+            <Route
+              path="/edit-employee/:id"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <EditEmployee />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/archives" element={<Archives />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
