@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 
 interface ProductCardProps {
+  _id: string;
   productName: string;
   productDescription: string;
   category: string;
@@ -26,6 +28,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({
+  _id,
   productName,
   productDescription,
   category,
@@ -47,6 +50,7 @@ export default function ProductCard({
   clientName,
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
@@ -83,6 +87,7 @@ export default function ProductCard({
             className="w-5 h-5 cursor-pointer mr-4"
             onClick={(e) => {
               e.stopPropagation();
+              navigate(`/dashboard/edit-product/${_id}`);
             }}
           />
           {isExpanded ? (
@@ -94,11 +99,9 @@ export default function ProductCard({
       </div>
       {isExpanded && (
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          {productDescription && (
-            <p className="text-gray-700 mb-4">
-              <strong>Description:</strong> {productDescription}
-            </p>
-          )}
+          <p className="text-gray-700 mb-4">
+            <strong>Description:</strong> {productDescription}
+          </p>
           <p className="text-gray-700">
             <strong>Model:</strong> {model}
           </p>
@@ -125,18 +128,6 @@ export default function ProductCard({
               <p className="text-gray-700">
                 <strong>Additional Notes:</strong> {additionalNotes}
               </p>
-            </div>
-          )}
-          {productImages && productImages.length > 1 && (
-            <div className="mt-4 flex space-x-4">
-              {productImages.slice(1).map((image, index) => (
-                <img
-                  key={index}
-                  className="h-16 w-16 object-cover rounded-md"
-                  src={`data:image/jpeg;base64,${image}`}
-                  alt={`${productName} Image ${index + 1}`}
-                />
-              ))}
             </div>
           )}
           <div className="mt-4">

@@ -23,7 +23,7 @@ interface Product {
   interestRate?: number;
   notes?: string;
   clientId: string;
-  clientName?: string; 
+  clientName?: string;
 }
 
 interface Customer {
@@ -40,24 +40,34 @@ export default function Products() {
   useEffect(() => {
     const fetchProductsAndCustomers = async () => {
       try {
-        const productsResponse = await axios.get("http://localhost:5000/api/products");
+        const productsResponse = await axios.get(
+          "http://localhost:5000/api/products"
+        );
         const productsData: Product[] = productsResponse.data;
 
-        const customersResponse = await axios.get("http://localhost:5000/api/customers");
+        const customersResponse = await axios.get(
+          "http://localhost:5000/api/customers"
+        );
         const customersData: Customer[] = customersResponse.data;
 
         const updatedProducts = productsData.map((product) => {
-          const customer = customersData.find((c) => c._id === product.clientId);
+          const customer = customersData.find(
+            (c) => c._id === product.clientId
+          );
           return {
             ...product,
-            clientName: customer ? `${customer.firstName} ${customer.lastName}` : "Unknown Client",
+            clientName: customer
+              ? `${customer.firstName} ${customer.lastName}`
+              : "Unknown Client",
           };
         });
 
         setProducts(updatedProducts);
         setLoading(false);
       } catch {
-        setError("Failed to load products or customers. Please try again later.");
+        setError(
+          "Failed to load products or customers. Please try again later."
+        );
         setLoading(false);
       }
     };
@@ -68,16 +78,19 @@ export default function Products() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Products Page</h1>
-      <p className="text-lg text-center mb-10">Here you can view and manage your products.</p>
+      <p className="text-lg text-center mb-10">
+        Here you can view and manage your products.
+      </p>
 
       {loading && <p className="text-center">Loading products...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
 
       {!loading && !error && (
-        <div className="space-y-8"> 
+        <div className="space-y-8">
           {products.map((product) => (
             <ProductCard
               key={product._id}
+              _id={product._id}
               productName={product.productName}
               productDescription={product.productDescription}
               category={product.category}
