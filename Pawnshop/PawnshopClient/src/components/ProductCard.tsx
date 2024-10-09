@@ -58,7 +58,11 @@ export default function ProductCard({
         <div className="flex items-center">
           <img
             className="h-24 w-24 object-cover rounded-md mr-4"
-            src={productImages?.[0] || "/placeholder.jpg"}
+            src={
+              productImages && productImages.length > 0
+                ? `data:image/jpeg;base64,${productImages[0]}`
+                : "/placeholder.jpg"
+            }
             alt={productName}
           />
           <div>
@@ -103,6 +107,18 @@ export default function ProductCard({
               <p className="text-gray-700">
                 <strong>Additional Notes:</strong> {additionalNotes}
               </p>
+            </div>
+          )}
+          {productImages && productImages.length > 1 && (
+            <div className="mt-4 flex space-x-4">
+              {productImages.slice(1).map((image, index) => (
+                <img
+                  key={index}
+                  className="h-16 w-16 object-cover rounded-md"
+                  src={`data:image/jpeg;base64,${image}`}
+                  alt={`${productName} Image ${index + 1}`}
+                />
+              ))}
             </div>
           )}
           <div className="mt-4">
