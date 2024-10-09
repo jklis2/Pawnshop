@@ -105,7 +105,8 @@ export default function CustomerCard({
             {firstName} {lastName}
           </h2>
           <span className="text-gray-500 ml-4">
-            <strong>PESEL:</strong> {pesel}
+            <strong>Date of Birth:</strong>{" "}
+            {new Date(dateOfBirth).toLocaleDateString()}
           </span>
           {notes && (
             <span className="text-gray-500 ml-4">
@@ -143,25 +144,19 @@ export default function CustomerCard({
         }`}
       >
         <p>
-          <strong>Date of Birth:</strong>{" "}
-          {new Date(dateOfBirth).toLocaleDateString()}
+          <strong>PESEL:</strong> {pesel}
         </p>
         <p>
-          <strong>ID Series:</strong> {idSeries}, <strong>ID Number:</strong>{" "}
-          {idNumber}
+          <strong>ID:</strong> {idSeries} {idNumber}
+        </p>
+        <p>
+          <strong>Address:</strong> {street} {houseNumber}, {postalCode} {city}
         </p>
         <p>
           <strong>Email:</strong> {email}
         </p>
         <p>
           <strong>Phone Number:</strong> {phoneNumber}
-        </p>
-        <p>
-          <strong>Street:</strong> {street} {houseNumber}
-        </p>
-        <p>
-          <strong>Postal Code:</strong> {postalCode}, <strong>City:</strong>{" "}
-          {city}
         </p>
         <div className="mt-4">
           <strong>Items:</strong>{" "}
