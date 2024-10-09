@@ -12,6 +12,7 @@ import AddEmployee from "./AddEmployee";
 import EditCustomer from "./EditCustomer";
 import EditProduct from "./EditProduct";
 import EditEmployee from "./EditEmployee";
+import Archives from "./Archives";
 import Settings from "./Settings";
 
 export default function Dashboard() {
@@ -42,6 +43,7 @@ export default function Dashboard() {
             <Route path="/edit-customer/:id" element={<EditCustomer />} />
             <Route path="/edit-product/:id" element={<EditProduct />} />
             <Route path="/edit-employee/:id" element={<EditEmployee />} />
+            <Route path="/archives" element={<Archives />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>

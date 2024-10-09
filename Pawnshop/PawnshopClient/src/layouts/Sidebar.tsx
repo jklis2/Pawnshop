@@ -7,6 +7,7 @@ import addProductIcon from "../assets/icons/addProduct.svg";
 import allProductIcon from "../assets/icons/allProduct.svg";
 import addEmployeeIcon from "../assets/icons/addEmployee.svg"
 import allEmployeesIcon from "../assets/icons/allEmployees.svg"
+import allArchivesIcon from "../assets/icons/archives.svg"
 import settingsIcon from "../assets/icons/settings.svg";
 import SidebarLink from "../components/SidebarLink";
 
@@ -61,7 +62,11 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               to="/dashboard/employees"
               iconSrc={allEmployeesIcon}
               label="All Employees"
-            />
+            /><SidebarLink
+            to="/dashboard/archives"
+            iconSrc={allArchivesIcon}
+            label="All Archives"
+          />
           </ul>
         </nav>
       </div>
