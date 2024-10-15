@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import CreateForm from "../components/CreateForm";
 
 interface Customer {
@@ -34,42 +35,47 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
     onSubmit(customerData);
   };
 
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate('/dashboard/customers');
+  };
+
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Edit Customer</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <h1 className="text-2xl font-bold text-center mb-4">Edit Customer</h1>
+      <div className="grid grid-cols-2 gap-4">
         <CreateForm label="First Name" type="text" name="firstName" value={customerData.firstName} onChange={handleInputChange} />
         <CreateForm label="Last Name" type="text" name="lastName" value={customerData.lastName} onChange={handleInputChange} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <CreateForm label="PESEL" type="text" name="pesel" value={customerData.pesel} onChange={handleInputChange} />
         <CreateForm label="Date of Birth" type="date" name="dateOfBirth" value={customerData.dateOfBirth} onChange={handleInputChange} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <CreateForm label="Street" type="text" name="street" value={customerData.street} onChange={handleInputChange} />
         <CreateForm label="House Number" type="text" name="houseNumber" value={customerData.houseNumber} onChange={handleInputChange} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <CreateForm label="Postal Code" type="text" name="postalCode" value={customerData.postalCode} onChange={handleInputChange} />
         <CreateForm label="City" type="text" name="city" value={customerData.city} onChange={handleInputChange} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <CreateForm label="ID Series" type="text" name="idSeries" value={customerData.idSeries} onChange={handleInputChange} />
         <CreateForm label="ID Number" type="text" name="idNumber" value={customerData.idNumber} onChange={handleInputChange} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <CreateForm label="Phone Number" type="text" name="phoneNumber" value={customerData.phoneNumber} onChange={handleInputChange} />
         <CreateForm label="Email" type="email" name="email" value={customerData.email} onChange={handleInputChange} />
       </div>
       <div className="grid grid-cols-1 mb-4">
         <CreateForm label="Notes" type="text" name="notes" value={customerData.notes} onChange={handleInputChange} />
       </div>
-      <button
-        onClick={handleSubmit}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300 ease-in-out"
-      >
-        Save Changes
-      </button>
+      <div className="grid grid-cols-2 gap-4">
+        <button
+          onClick={handleGoBack}
+          className="bg-red-500 text-white px-4 py-2 mb-4 mr-4 rounded hover:bg-red-700 transition duration-300 ease-in-out float-right"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="bg-teal-600 text-white px-4 py-2 mb-4 rounded hover:bg-teal-800 transition duration-300 ease-in-out float-right"
+        >
+          Save Changes
+        </button>
+      </div>
+      
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
 
@@ -55,7 +56,6 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [redemptionDeadline, setRedemptionDeadline] = useState(initialData.redemptionDeadline || '');
   const [loanValue, setLoanValue] = useState(initialData.loanValue || undefined);
   const [interestRate, setInterestRate] = useState(initialData.interestRate || undefined);
-  const [notes, setNotes] = useState(initialData.notes || '');
 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -93,7 +93,6 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       formData.append('redemptionDeadline', redemptionDeadline);
       if (loanValue) formData.append('loanValue', loanValue.toString());
       if (interestRate) formData.append('interestRate', interestRate.toString());
-      formData.append('notes', notes);
       formData.append('clientId', selectedCustomerId);
 
       if (productImages) {
@@ -115,45 +114,42 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       setError('Failed to update product. Please try again.');
     }
   };
+
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate('/dashboard/products');
+  };
   
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Edit Product</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">Edit Product</h1>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <CreateForm label="Product Name" placeholder="Enter product name" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} />
         <CreateForm label="Product Description" placeholder="Enter product description" type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value)} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4">
           <CreateForm label="Category" placeholder="Enter category" type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
           <CreateForm label="Brand" placeholder="Enter brand" type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <CreateForm label="Model" placeholder="Enter model" type="text" value={productModel} onChange={(e) => setProductModel(e.target.value)} />
           <CreateForm label="Serial Number (if applicable)" placeholder="Enter serial number" type="text" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <CreateForm label="Year of Production (if applicable)" placeholder="Enter year of production" type="number" value={yearOfProduction?.toString()} onChange={(e) => setYearOfProduction(Number(e.target.value))} />
           <CreateForm label="Technical Condition" placeholder="Enter technical condition" type="text" value={technicalCondition} onChange={(e) => setTechnicalCondition(e.target.value)} />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <CreateForm label="Purchase Price" placeholder="Enter purchase price" type="number" value={purchasePrice.toString()} onChange={(e) => setPurchasePrice(Number(e.target.value))} />
           <CreateForm label="Sale Price (if for sale)" placeholder="Enter sale price" type="number" value={salePrice?.toString()} onChange={(e) => setSalePrice(Number(e.target.value))} />
         </div>
         <CreateForm label="Product Images" placeholder="Upload product images" type="file" onChange={(e) => setProductImages(e.target.files)} className="block w-full" />
         <CreateForm label="Additional Notes (if applicable)" placeholder="Enter additional notes" type="text" value={additionalNotes} onChange={(e) => setAdditionalNotes(e.target.value)} />
-        <h2 className="text-2xl font-semibold mb-6 text-center">Transaction Details</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <h2 className="text-2xl font-bold text-center mb-4">Transaction Details</h2>
+        <div className="grid grid-cols-2 gap-4">
           <CreateForm label="Transaction Type" placeholder="Enter transaction type (pawn / sale)" type="text" value={transactionType} onChange={(e) => setTransactionType(e.target.value as 'pawn' | 'sale')} />
           <CreateForm label="Date of Receipt" placeholder="Enter date of receipt" type="date" value={dateOfReceipt} onChange={(e) => setDateOfReceipt(e.target.value)} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-3 gap-4 col-span-2 mt-2">
           <CreateForm label="Redemption Deadline (if pawned)" placeholder="Enter redemption deadline" type="date" value={redemptionDeadline} onChange={(e) => setRedemptionDeadline(e.target.value)} />
           <CreateForm label="Loan Value (if pawned)" placeholder="Enter loan value" type="number" value={loanValue?.toString()} onChange={(e) => setLoanValue(Number(e.target.value))} />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <CreateForm label="Interest Rate (if pawned)" placeholder="Enter interest rate" type="number" value={interestRate?.toString()} onChange={(e) => setInterestRate(Number(e.target.value))} />
-          <CreateForm label="Notes" placeholder="Enter product notes" type="text" value={notes} onChange={(e) => setNotes(e.target.value)} />
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
@@ -166,9 +162,20 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
             ))}
           </select>
         </div>
-        <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          Save Changes
-        </button>
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={handleGoBack}
+            className="bg-red-500 text-white px-4 py-2 mb-4 mr-4 rounded hover:bg-red-700 transition duration-300 ease-in-out float-right"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            className="bg-teal-600 text-white px-4 py-2 mb-4 rounded hover:bg-teal-800 transition duration-300 ease-in-out float-right"
+          >
+            Save Changes
+          </button>
+        </div>
       </form>
     </div>
   );

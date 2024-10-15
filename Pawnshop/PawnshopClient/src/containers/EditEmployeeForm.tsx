@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
 
@@ -54,11 +55,15 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate('/dashboard/employees');
+  };
 
   return (
-    <form className="w-full max-w-4xl mx-auto p-4 bg-white rounded-md shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Edit Employee</h2>
-
+    <form className="p-4">
+      <h2 className="text-2xl font-bold text-center mb-4">Edit Employee</h2>
       <div className="grid grid-cols-2 gap-4">
         <CreateForm label="First Name" type="text" placeholder="Enter first name" value={employeeData.firstName} onChange={handleChange} name="firstName" />
         <CreateForm label="Last Name" type="text" placeholder="Enter last name" value={employeeData.lastName} onChange={handleChange} name="lastName" />
@@ -73,21 +78,26 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
         <CreateForm label="Phone Number" type="tel" placeholder="Enter phone number" value={employeeData.phoneNumber} onChange={handleChange} name="phoneNumber" />
         <CreateForm label="Email" type="email" placeholder="Enter email" value={employeeData.email} onChange={handleChange} name="email" />
       </div>
-
       <div className="grid grid-cols-3 gap-4 mt-4">
         <CreateForm label="Login" type="text" placeholder="Enter login" value={employeeData.login} onChange={handleChange} name="login" />
         <CreateForm label="Password" type="password" placeholder="Enter new password" value={employeeData.password} onChange={handleChange} name="password" />
         <CreateForm label="Role" type="text" placeholder="Enter role (admin or employee)" value={employeeData.role} onChange={handleChange} name="role" />
       </div>
-
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="w-full mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
-      >
-        Save Changes
-      </button>
-
+      <div className="grid grid-cols-2 gap-4">
+        <button
+          onClick={handleGoBack}
+          className="bg-red-500 text-white px-4 py-2 mb-4 mr-4 rounded hover:bg-red-700 transition duration-300 ease-in-out float-right"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="bg-teal-600 text-white px-4 py-2 mb-4 rounded hover:bg-teal-800 transition duration-300 ease-in-out float-right"
+        >
+          Save Changes
+        </button>
+      </div>
       {message && <p className="mt-4 text-center text-green-600">{message}</p>}
     </form>
   );
