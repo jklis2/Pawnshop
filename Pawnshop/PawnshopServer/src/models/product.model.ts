@@ -4,8 +4,8 @@ export interface IProduct extends Document {
   productName: string;
   productDescription: string;
   category: string;
-  brand: string;
-  productModel: string;
+  brand?: string;
+  productModel?: string;
   serialNumber?: string;
   yearOfProduction?: number;
   technicalCondition: string;
@@ -13,7 +13,7 @@ export interface IProduct extends Document {
   salePrice?: number;
   productImages?: string[];
   additionalNotes?: string;
-  transactionType: "pawn" | "sale" | "redeemed";
+  transactionType: "pawn" | "sale";
   dateOfReceipt: Date;
   redemptionDeadline?: Date;
   loanValue?: number;
@@ -26,8 +26,8 @@ const ProductSchema: Schema = new Schema({
   productName: { type: String, required: true },
   productDescription: { type: String, required: true },
   category: { type: String, required: true },
-  brand: { type: String, required: true },
-  productModel: { type: String, required: true },
+  brand: { type: String },
+  productModel: { type: String },
   serialNumber: { type: String },
   yearOfProduction: { type: Number },
   technicalCondition: { type: String, required: true },
@@ -35,7 +35,7 @@ const ProductSchema: Schema = new Schema({
   salePrice: { type: Number },
   productImages: { type: [String] },
   additionalNotes: { type: String },
-  transactionType: { type: String, enum: ["pawn", "sale", "redeemed"], required: true },
+  transactionType: { type: String, enum: ["pawn", "sale"], required: true },
   dateOfReceipt: { type: Date, required: true },
   redemptionDeadline: { type: Date },
   loanValue: { type: Number },
