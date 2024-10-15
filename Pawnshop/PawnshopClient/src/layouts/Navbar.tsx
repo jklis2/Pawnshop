@@ -15,11 +15,11 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
   };
 
   return (
-    <div className="w-full h-16 bg-red-500 text-white flex items-center justify-between px-4 relative">
+    <div className="w-full h-16 bg-emerald-600 text-white flex items-center justify-between px-4 relative">
       <button onClick={toggleSidebar} className="focus:outline-none">
         <img src={burgerIcon} alt="Menu" className="h-8 w-8" />
       </button>
-      <div className="text-lg flex items-center space-x-4">
+      <div className="text-lg flex items-center space-x-4 text-white">
         <span>
           {employee ? `${employee.firstName} ${employee.lastName}` : "John Doe"}
         </span>

@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PawnshopLogo from "../assets/PawnshopLogo.png";
 import dashboardIcon from "../assets/icons/dashboard.svg";
@@ -21,7 +20,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
   return (
     <div
-      className={`w-64 bg-gray-800 text-white h-screen fixed top-0 left-0 flex flex-col justify-between transform ${
+      className={`w-64 bg-emerald-800 text-white h-screen fixed top-0 left-0 flex flex-col justify-between transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out`}
     >
@@ -47,17 +46,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         </nav>
       </div>
       <div className="p-4">
-        <NavLink
-          to="/dashboard/settings"
-          className={({ isActive }) =>
-            isActive
-              ? "py-2 bg-gray-700 rounded text-center flex items-center justify-center"
-              : "py-2 bg-gray-600 hover:bg-gray-500 rounded text-center flex items-center justify-center"
-          }
-        >
-          <img src={settingsIcon} alt="Settings Icon" className="w-6 h-6 mr-2" />
-          Settings
-        </NavLink>
+        <SidebarLink to="/dashboard/settings" iconSrc={settingsIcon} label="Settings" />
       </div>
     </div>
   );
