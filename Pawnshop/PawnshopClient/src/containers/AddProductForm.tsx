@@ -159,7 +159,7 @@ export default function AddProductForm() {
             </select>
           </div>
         </div>
-        <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" className="bg-teal-600 text-white px-4 py-2 w-1/2 mb-4 rounded hover:bg-teal-800 transition duration-300 ease-in-out float-right">
           Submit
         </button>
       </form>

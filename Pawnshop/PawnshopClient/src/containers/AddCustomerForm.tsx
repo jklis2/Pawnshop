@@ -84,7 +84,7 @@ export default function AddCustomerForm() {
       </div>
       <button
         onClick={handleSubmit}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300 ease-in-out"
+        className="bg-teal-600 text-white px-4 py-2 w-1/2 mb-4 rounded hover:bg-teal-800 transition duration-300 ease-in-out float-right"
       >
         Add Customer
       </button>
