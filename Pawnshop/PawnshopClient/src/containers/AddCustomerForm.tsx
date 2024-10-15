@@ -64,29 +64,18 @@ export default function AddCustomerForm() {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Add New Customer</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <CreateForm label="First Name" placeholder="Enter first name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-        <CreateForm label="Last Name" placeholder="Enter last name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <CreateForm label="PESEL" placeholder="Enter PESEL" type="text" value={pesel} onChange={(e) => setPesel(e.target.value)} />
-        <CreateForm label="Date of Birth" placeholder="Enter date of birth" type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <CreateForm label="Street" placeholder="Enter street" type="text" value={street} onChange={(e) => setStreet(e.target.value)} />
-        <CreateForm label="House Number" placeholder="Enter house number" type="text" value={houseNumber} onChange={(e) => setHouseNumber(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <CreateForm label="Postal Code" placeholder="Enter postal code" type="text" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
-        <CreateForm label="City" placeholder="Enter city" type="text" value={city} onChange={(e) => setCity(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <CreateForm label="ID Series" placeholder="Enter ID series" type="text" value={idSeries} onChange={(e) => setIdSeries(e.target.value)} />
-        <CreateForm label="ID Number" placeholder="Enter ID number" type="text" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <form className="p-4">
+      <div className="grid grid-cols-2 gap-4">
+        <CreateForm label="First Name" placeholder="Enter first name" type="text" value={firstName} required={true} onChange={(e) => setFirstName(e.target.value)} />
+        <CreateForm label="Last Name" placeholder="Enter last name" type="text" value={lastName} required={true} onChange={(e) => setLastName(e.target.value)} />
+        <CreateForm label="PESEL" placeholder="Enter PESEL" type="text" value={pesel} required={true} onChange={(e) => setPesel(e.target.value)} />
+        <CreateForm label="Date of Birth" placeholder="Enter date of birth" type="date" value={dateOfBirth} required={true} onChange={(e) => setDateOfBirth(e.target.value)} />
+        <CreateForm label="Street" placeholder="Enter street" type="text" value={street} required={true} onChange={(e) => setStreet(e.target.value)} />
+        <CreateForm label="House Number" placeholder="Enter house number" type="text" value={houseNumber} required={true} onChange={(e) => setHouseNumber(e.target.value)} />
+        <CreateForm label="Postal Code" placeholder="Enter postal code" type="text" value={postalCode} required={true} onChange={(e) => setPostalCode(e.target.value)} />
+        <CreateForm label="City" placeholder="Enter city" type="text" value={city} required={true} onChange={(e) => setCity(e.target.value)} />
+        <CreateForm label="ID Series" placeholder="Enter ID series" type="text" value={idSeries} required={true} onChange={(e) => setIdSeries(e.target.value)} />
+        <CreateForm label="ID Number" placeholder="Enter ID number" type="text" value={idNumber} required={true} onChange={(e) => setIdNumber(e.target.value)} />
         <CreateForm label="Phone Number" placeholder="Enter phone number" type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
         <CreateForm label="Email" placeholder="Enter email address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
@@ -99,6 +88,6 @@ export default function AddCustomerForm() {
       >
         Add Customer
       </button>
-    </div>
+    </form>
   );
 }

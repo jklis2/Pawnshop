@@ -8,6 +8,7 @@ type CreateFormProps = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   name?: string;
+  required?: boolean;
 };
 
 export default function CreateForm({
@@ -18,11 +19,12 @@ export default function CreateForm({
   onChange,
   className,
   name,
+  required,
 }: CreateFormProps) {
   return (
     <div className={`w-full mb-4 ${className || ""}`}>
       <label className="block text-gray-700 text-sm font-bold mb-2">
-        {label}
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
         name={name}

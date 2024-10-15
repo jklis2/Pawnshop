@@ -18,7 +18,6 @@ export interface IProduct extends Document {
   redemptionDeadline?: Date;
   loanValue?: number;
   interestRate?: number;
-  notes?: string;
   clientId: mongoose.Types.ObjectId;
 }
 
@@ -40,7 +39,6 @@ const ProductSchema: Schema = new Schema({
   redemptionDeadline: { type: Date },
   loanValue: { type: Number },
   interestRate: { type: Number },
-  notes: { type: String },
   clientId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Customer",

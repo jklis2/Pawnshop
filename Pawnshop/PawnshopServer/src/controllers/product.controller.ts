@@ -28,7 +28,6 @@ export const addProduct = [
         redemptionDeadline,
         loanValue,
         interestRate,
-        notes,
         clientId,
       } = req.body;
 
@@ -64,7 +63,6 @@ export const addProduct = [
         redemptionDeadline,
         loanValue,
         interestRate,
-        notes,
         clientId,
       });
 
@@ -156,7 +154,6 @@ export const updateProduct = [
         redemptionDeadline,
         loanValue,
         interestRate,
-        notes,
         clientId,
       } = req.body;
 
@@ -184,7 +181,6 @@ export const updateProduct = [
         redemptionDeadline,
         loanValue,
         interestRate,
-        notes,
         clientId,
       };
 
