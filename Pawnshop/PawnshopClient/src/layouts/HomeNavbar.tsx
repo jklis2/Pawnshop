@@ -1,25 +1,16 @@
+import { Link } from "react-router-dom";
+import PawnshopLogo from "../assets/PawnshopLogo.png";
+
 export default function HomeNavbar() {
   return (
-    <div className="w-full h-16 bg-blue-500 text-white flex items-center justify-between px-4">
-      <div className="text-lg">Home Navbar</div>
+    <div className="w-full h-16 bg-emerald-600 text-white flex items-center justify-between px-12">
+      <div>
+        <img src={PawnshopLogo} alt="Pawnshop Logo" className="h-10" />
+      </div>
       <nav>
-        <ul className="flex space-x-4">
-          <li>
-            <a href="#" className="hover:underline">
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="#" className="hover:underline">
-              About
-            </a>
-          </li>
-          <li>
-            <a href="#" className="hover:underline">
-              Contact
-            </a>
-          </li>
-        </ul>
+        <Link to="/login" className="hover:underline text-lg">
+          Login
+        </Link>
       </nav>
     </div>
   );
