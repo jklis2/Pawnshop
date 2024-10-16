@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
+import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination";
 
 interface Product {
   _id: string;
@@ -34,8 +36,11 @@ interface Customer {
 
 export default function Archives() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 20;
 
   useEffect(() => {
     const fetchProductsAndCustomers = async () => {
@@ -69,6 +74,7 @@ export default function Archives() {
         );
 
         setProducts(filteredProducts);
+        setFilteredProducts(filteredProducts);
         setLoading(false);
       } catch {
         setError(
@@ -81,45 +87,68 @@ export default function Archives() {
     fetchProductsAndCustomers();
   }, []);
 
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Archives Page</h1>
-      <p className="text-lg text-center mb-10">
-        Here you can view archived products.
-      </p>
+    <div>
+      <h1 className="text-2xl font-bold text-center mb-4">Archives Page</h1>
+      <div className="p-4">
+        <SearchBar
+          placeholder="Search by product name, brand, or category"
+          data={products}
+          onSearch={(results) => setFilteredProducts(results)}
+          searchKeys={["productName", "brand", "category"]}
+        />
+        {loading && <p className="text-center">Loading products...</p>}
+        {error && <p className="text-center text-red-500">{error}</p>}
 
-      {loading && <p className="text-center">Loading products...</p>}
-      {error && <p className="text-center text-red-500">{error}</p>}
-
-      {!loading && !error && (
-        <div className="space-y-8">
-          {products.map((product) => (
-            <ProductCard
-              key={product._id}
-              _id={product._id}
-              productName={product.productName}
-              productDescription={product.productDescription}
-              category={product.category}
-              brand={product.brand}
-              model={product.productModel}
-              serialNumber={product.serialNumber}
-              yearOfProduction={product.yearOfProduction}
-              technicalCondition={product.technicalCondition}
-              purchasePrice={product.purchasePrice}
-              salePrice={product.salePrice}
-              productImages={product.productImages}
-              additionalNotes={product.additionalNotes}
-              transactionType={product.transactionType}
-              dateOfReceipt={product.dateOfReceipt}
-              redemptionDeadline={product.redemptionDeadline}
-              loanValue={product.loanValue}
-              interestRate={product.interestRate}
-              transactionNotes={product.notes}
-              clientName={product.clientName}
+        {!loading && !error && (
+          <>
+            <div className="space-y-8">
+              {currentProducts.length > 0 ? (
+                currentProducts.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    _id={product._id}
+                    productName={product.productName}
+                    productDescription={product.productDescription}
+                    category={product.category}
+                    brand={product.brand}
+                    model={product.productModel}
+                    serialNumber={product.serialNumber}
+                    yearOfProduction={product.yearOfProduction}
+                    technicalCondition={product.technicalCondition}
+                    purchasePrice={product.purchasePrice}
+                    salePrice={product.salePrice}
+                    productImages={product.productImages}
+                    additionalNotes={product.additionalNotes}
+                    transactionType={product.transactionType}
+                    dateOfReceipt={product.dateOfReceipt}
+                    redemptionDeadline={product.redemptionDeadline}
+                    loanValue={product.loanValue}
+                    interestRate={product.interestRate}
+                    transactionNotes={product.notes}
+                    clientName={product.clientName}
+                  />
+                ))
+              ) : (
+                <p>No products found.</p>
+              )}
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalCustomers={filteredProducts.length}
+              customersPerPage={productsPerPage}
+              onPageChange={(page) => setCurrentPage(page)}
             />
-          ))}
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
