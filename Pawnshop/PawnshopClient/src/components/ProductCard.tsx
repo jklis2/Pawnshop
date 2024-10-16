@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
@@ -50,9 +51,25 @@ export default function ProductCard({
   clientName,
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentTransactionType, setCurrentTransactionType] = useState(transactionType);
   const navigate = useNavigate();
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
+
+  const handleStatusChange = async () => {
+    try {
+      const newStatus = currentTransactionType === "pawn" ? "redeemed" : "sold";
+  
+      await axios.put(`http://localhost:5000/api/products/${_id}`, {
+        transactionType: newStatus,
+      });
+  
+      setCurrentTransactionType(newStatus);
+    } catch (error) {
+      console.error("Error updating product status:", error);
+    }
+  };
+  
 
   return (
     <div
@@ -81,6 +98,19 @@ export default function ProductCard({
         </div>
         <div className="flex items-center">
           <p className="text-xl font-bold text-black mr-4">${purchasePrice}</p>
+
+          {(currentTransactionType === "pawn" || currentTransactionType === "sale") && (
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStatusChange();
+              }}
+            >
+              {currentTransactionType === "pawn" ? "Redeem" : "Mark as Sold"}
+            </button>
+          )}
+
           <img
             src={editIcon}
             alt="Edit"
@@ -135,7 +165,7 @@ export default function ProductCard({
               Transaction Details
             </h3>
             <p className="text-gray-700">
-              <strong>Type:</strong> {transactionType}
+              <strong>Type:</strong> {currentTransactionType}
             </p>
             <p className="text-gray-700">
               <strong>Date of Receipt:</strong> {dateOfReceipt}
