@@ -2,9 +2,11 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cron from "node-cron";
 import customerRoutes from "./routes/customer.routes";
 import productRoutes from "./routes/product.routes";
 import employeeRoutes from './routes/employee.routes';
+import Product from './models/product.model';
 
 dotenv.config();
 
@@ -38,10 +40,25 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api", customerRoutes);
-
 app.use("/api", productRoutes);
-
 app.use('/api', employeeRoutes);
+
+cron.schedule("0 0 * * *", async () => {
+  try {
+    console.log("Starting automatic item status update...");
+
+    const products = await Product.find({ transactionType: "pawn" });
+
+    products.forEach(async (product) => {
+      product.updateStatusAfterDeadline(); 
+      await product.save();
+    });
+
+    console.log("Automatic item status update completed.");
+  } catch (error) {
+    console.error("Error during automatic item status update:", error);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

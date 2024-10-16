@@ -157,6 +157,22 @@ export const updateProduct = [
         clientId,
       } = req.body;
 
+      const product = await Product.findById(id);
+      if (!product) {
+        res.status(404).json({ message: `Product with ID ${id} not found.` });
+        return;
+      }
+
+      if (
+        (product.transactionType === "pawn" && transactionType !== "redeemed") ||
+        (product.transactionType === "sale" && transactionType !== "sold")
+      ) {
+        res
+          .status(400)
+          .json({ message: `Invalid transaction type change.` });
+        return;
+      }
+
       const productImages = req.files
         ? (req.files as Express.Multer.File[]).map((file) =>
             file.buffer.toString("base64")
@@ -209,6 +225,7 @@ export const updateProduct = [
     }
   },
 ];
+
 
 export const deleteProduct = async (
   req: Request,

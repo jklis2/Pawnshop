@@ -13,15 +13,16 @@ export interface IProduct extends Document {
   salePrice?: number;
   productImages?: string[];
   additionalNotes?: string;
-  transactionType: "pawn" | "sale";
+  transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: Date;
   redemptionDeadline?: Date;
   loanValue?: number;
   interestRate?: number;
   clientId: mongoose.Types.ObjectId;
+  updateStatusAfterDeadline: () => void;
 }
 
-const ProductSchema: Schema = new Schema({
+const ProductSchema: Schema<IProduct> = new Schema({
   productName: { type: String, required: true },
   productDescription: { type: String, required: true },
   category: { type: String, required: true },
@@ -34,7 +35,11 @@ const ProductSchema: Schema = new Schema({
   salePrice: { type: Number },
   productImages: { type: [String] },
   additionalNotes: { type: String },
-  transactionType: { type: String, enum: ["pawn", "sale"], required: true },
+  transactionType: {
+    type: String,
+    enum: ["pawn", "sale", "redeemed", "sold"],
+    required: true,
+  },
   dateOfReceipt: { type: Date, required: true },
   redemptionDeadline: { type: Date },
   loanValue: { type: Number },
@@ -45,5 +50,12 @@ const ProductSchema: Schema = new Schema({
     required: true,
   },
 });
+
+ProductSchema.methods.updateStatusAfterDeadline = function () {
+  const now = new Date();
+  if (this.transactionType === "pawn" && this.redemptionDeadline && this.redemptionDeadline < now) {
+    this.transactionType = "sale";
+  }
+};
 
 export default mongoose.model<IProduct>("Product", ProductSchema);
