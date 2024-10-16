@@ -1,15 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
-
-interface Customer {
-  _id: string;
-  firstName: string;
-  lastName: string;
-}
+import CustomerSelect from '../components/CustomerSelect';
 
 export default function AddProductForm() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
 
   const [productName, setProductName] = useState('');
@@ -32,21 +26,6 @@ export default function AddProductForm() {
 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/customers')
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setCustomers(response.data);
-        } else {
-          setError('Expected an array of customers, but received something else.');
-        }
-      })
-      .catch(() => {
-        setError('Failed to load customers. Please try again later.');
-      });
-  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -91,24 +70,6 @@ export default function AddProductForm() {
       });
 
       setSuccessMessage('Product successfully added!');
-      setProductName('');
-      setProductDescription('');
-      setCategory('');
-      setBrand('');
-      setProductModel('');
-      setSerialNumber('');
-      setYearOfProduction(undefined);
-      setTechnicalCondition('');
-      setPurchasePrice(undefined);
-      setSalePrice(undefined);
-      setAdditionalNotes('');
-      setTransactionType('');
-      setDateOfReceipt('');
-      setRedemptionDeadline('');
-      setLoanValue(undefined);
-      setInterestRate(undefined);
-      setSelectedCustomerId('');
-      setProductImages(null);
     } catch {
       setError('Failed to add product. Please try again.');
     }
@@ -116,19 +77,10 @@ export default function AddProductForm() {
 
   return (
     <div className="p-4">
-      <div className="mb-4">
-        <label className="text-xl font-semibold mb-6 block text-center">
-          Select Customer
-        </label>
-          <select value={selectedCustomerId} onChange={(e) => setSelectedCustomerId(e.target.value)} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-            <option value="">Choose a customer</option>
-            {customers.map((customer) => (
-              <option key={customer._id} value={customer._id}>
-                {customer.firstName} {customer.lastName}
-              </option>
-            ))}
-          </select>
-      </div>
+      <CustomerSelect 
+        selectedCustomerId={selectedCustomerId} 
+        onCustomerSelect={setSelectedCustomerId} 
+      />
       <h2 className="text-xl font-semibold mb-6 text-center">Product Details</h2>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
