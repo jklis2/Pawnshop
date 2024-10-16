@@ -96,7 +96,7 @@ export default function Archives() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center mb-4">Archives Page</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">Archives</h1>
       <div className="p-4">
         <SearchBar
           placeholder="Search by product name, brand, or category"
