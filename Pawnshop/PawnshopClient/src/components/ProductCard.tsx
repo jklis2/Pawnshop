@@ -26,6 +26,7 @@ interface ProductCardProps {
   interestRate?: number;
   transactionNotes?: string;
   clientName?: string;
+  canEdit?: boolean;
 }
 
 export default function ProductCard({
@@ -49,9 +50,11 @@ export default function ProductCard({
   interestRate,
   transactionNotes,
   clientName,
+  canEdit = true,
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentTransactionType, setCurrentTransactionType] = useState(transactionType);
+  const [currentTransactionType, setCurrentTransactionType] =
+    useState(transactionType);
   const navigate = useNavigate();
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
@@ -59,17 +62,16 @@ export default function ProductCard({
   const handleStatusChange = async () => {
     try {
       const newStatus = currentTransactionType === "pawn" ? "redeemed" : "sold";
-  
+
       await axios.put(`http://localhost:5000/api/products/${_id}`, {
         transactionType: newStatus,
       });
-  
+
       setCurrentTransactionType(newStatus);
     } catch (error) {
       console.error("Error updating product status:", error);
     }
   };
-  
 
   return (
     <div
@@ -99,7 +101,8 @@ export default function ProductCard({
         <div className="flex items-center">
           <p className="text-xl font-bold text-black mr-4">${purchasePrice}</p>
 
-          {(currentTransactionType === "pawn" || currentTransactionType === "sale") && (
+          {(currentTransactionType === "pawn" ||
+            currentTransactionType === "sale") && (
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4"
               onClick={(e) => {
@@ -110,16 +113,17 @@ export default function ProductCard({
               {currentTransactionType === "pawn" ? "Redeem" : "Mark as Sold"}
             </button>
           )}
-
-          <img
-            src={editIcon}
-            alt="Edit"
-            className="w-5 h-5 cursor-pointer mr-4"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/dashboard/edit-product/${_id}`);
-            }}
-          />
+          {canEdit && ( 
+            <img
+              src={editIcon}
+              alt="Edit"
+              className="w-5 h-5 cursor-pointer mr-4"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/dashboard/edit-product/${_id}`);
+              }}
+            />
+          )}
           {isExpanded ? (
             <img src={arrowTop} alt="Collapse" className="w-6 h-6" />
           ) : (

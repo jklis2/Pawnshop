@@ -134,6 +134,7 @@ export default function Archives() {
                     interestRate={product.interestRate}
                     transactionNotes={product.notes}
                     clientName={product.clientName}
+                    canEdit={false}
                   />
                 ))
               ) : (
