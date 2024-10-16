@@ -79,9 +79,8 @@ export default function CustomerSelect({
   return (
     <div className="mb-4">
       <label className="text-xl font-semibold mb-6 block text-center">
-        Search for Customer
+        Search for Customer<span className="text-red-500"> *</span>
       </label>
-
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
       <div className="relative">

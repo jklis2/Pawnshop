@@ -45,16 +45,16 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
     <div className="p-4">
       <h1 className="text-2xl font-bold text-center mb-4">Edit Customer</h1>
       <div className="grid grid-cols-2 gap-4">
-        <CreateForm label="First Name" type="text" name="firstName" value={customerData.firstName} onChange={handleInputChange} />
-        <CreateForm label="Last Name" type="text" name="lastName" value={customerData.lastName} onChange={handleInputChange} />
-        <CreateForm label="PESEL" type="text" name="pesel" value={customerData.pesel} onChange={handleInputChange} />
-        <CreateForm label="Date of Birth" type="date" name="dateOfBirth" value={customerData.dateOfBirth} onChange={handleInputChange} />
-        <CreateForm label="Street" type="text" name="street" value={customerData.street} onChange={handleInputChange} />
-        <CreateForm label="House Number" type="text" name="houseNumber" value={customerData.houseNumber} onChange={handleInputChange} />
-        <CreateForm label="Postal Code" type="text" name="postalCode" value={customerData.postalCode} onChange={handleInputChange} />
-        <CreateForm label="City" type="text" name="city" value={customerData.city} onChange={handleInputChange} />
-        <CreateForm label="ID Series" type="text" name="idSeries" value={customerData.idSeries} onChange={handleInputChange} />
-        <CreateForm label="ID Number" type="text" name="idNumber" value={customerData.idNumber} onChange={handleInputChange} />
+        <CreateForm label="First Name" type="text" name="firstName" value={customerData.firstName} required={true} onChange={handleInputChange} />
+        <CreateForm label="Last Name" type="text" name="lastName" value={customerData.lastName} required={true} onChange={handleInputChange} />
+        <CreateForm label="PESEL" type="text" name="pesel" value={customerData.pesel} required={true} onChange={handleInputChange} />
+        <CreateForm label="Date of Birth" type="date" name="dateOfBirth" value={customerData.dateOfBirth} required={true} onChange={handleInputChange} />
+        <CreateForm label="Street" type="text" name="street" value={customerData.street} required={true} onChange={handleInputChange} />
+        <CreateForm label="House Number" type="text" name="houseNumber" value={customerData.houseNumber} required={true} onChange={handleInputChange} />
+        <CreateForm label="Postal Code" type="text" name="postalCode" value={customerData.postalCode} required={true} onChange={handleInputChange} />
+        <CreateForm label="City" type="text" name="city" value={customerData.city} required={true} onChange={handleInputChange} />
+        <CreateForm label="ID Series" type="text" name="idSeries" value={customerData.idSeries} required={true} onChange={handleInputChange} />
+        <CreateForm label="ID Number" type="text" name="idNumber" value={customerData.idNumber} required={true} onChange={handleInputChange} />
         <CreateForm label="Phone Number" type="text" name="phoneNumber" value={customerData.phoneNumber} onChange={handleInputChange} />
         <CreateForm label="Email" type="email" name="email" value={customerData.email} onChange={handleInputChange} />
       </div>
