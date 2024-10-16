@@ -89,6 +89,8 @@ export default function CustomerCard({
         return "sale";
       case "redeemed":
         return "redeemed";
+      case "sold":
+        return "sold";
       default:
         return "unknown";
     }
