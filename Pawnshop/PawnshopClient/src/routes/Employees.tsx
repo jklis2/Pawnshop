@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import EmployeeCard from "../components/EmployeeCard";
+import SearchBar from "../components/SearchBar";
 
 type Employee = {
   _id: string;
@@ -22,6 +23,7 @@ type Employee = {
 
 export default function Employees() {
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function Employees() {
       .get("http://localhost:5000/api/employees")
       .then((response) => {
         setEmployees(response.data);
+        setFilteredEmployees(response.data);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -38,21 +41,30 @@ export default function Employees() {
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Employees List</h1>
-      {isLoading ? (
-        <p>Loading employees...</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {employees.length > 0 ? (
-            employees.map((employee) => (
-              <EmployeeCard key={employee._id} employee={employee} />
-            ))
-          ) : (
-            <p>No employees found.</p>
-          )}
-        </div>
-      )}
+    <div>
+      <h1 className="text-2xl font-bold text-center mb-4">All Employees</h1>
+      <div className="p-4">
+        <SearchBar
+          placeholder="Search by first name, last name, or PESEL"
+          data={employees}
+          onSearch={(results) => setFilteredEmployees(results)}
+          searchKeys={["firstName", "lastName", "pesel"]}
+        />
+
+        {isLoading ? (
+          <p>Loading employees...</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {filteredEmployees.length > 0 ? (
+              filteredEmployees.map((employee) => (
+                <EmployeeCard key={employee._id} employee={employee} />
+              ))
+            ) : (
+              <p>No employees found.</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
