@@ -41,12 +41,15 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 <SidebarLink to="/dashboard/employees" iconSrc={allEmployeesIcon} label="All Employees" />
               </>
             )}
-            <SidebarLink to="/dashboard/archives" iconSrc={archivesIcon} label="Archives" />
+            
           </ul>
         </nav>
       </div>
       <div className="p-4">
+        <ul>
+        <SidebarLink to="/dashboard/archives" iconSrc={archivesIcon} label="Archives" />
         <SidebarLink to="/dashboard/settings" iconSrc={settingsIcon} label="Settings" />
+        </ul>
       </div>
     </div>
   );
