@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
+import { useAlert } from '../context/AlertContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddEmployeeForm() {
   const [employeeData, setEmployeeData] = useState({
@@ -21,7 +23,8 @@ export default function AddEmployeeForm() {
     role: '',
   });
 
-  const [message, setMessage] = useState('');
+  const { showAlert } = useAlert();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,11 +39,12 @@ export default function AddEmployeeForm() {
       const response = await axios.post('http://localhost:5000/api/employees', employeeData);
 
       if (response.status === 201) {
-        setMessage('Employee added successfully!');
+        showAlert('Employee added successfully!', 'success');
+        navigate('/dashboard/employees');
       }
     } catch (error) {
       console.error('Error adding employee:', error);
-      setMessage('Failed to add employee. Please try again.');
+      showAlert('Failed to add employee. Please try again.', 'error'); 
     }
   };
 
@@ -72,7 +76,6 @@ export default function AddEmployeeForm() {
       >
         Add Employee
       </button>
-      {message && <p className="mt-4 text-center text-green-600">{message}</p>}
     </form>
   );
 }
