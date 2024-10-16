@@ -16,7 +16,7 @@ interface Product {
   salePrice?: number;
   productImages?: string[];
   additionalNotes?: string;
-  transactionType: "pawn" | "sale" | "redeemed";
+  transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: string;
   redemptionDeadline?: string;
   loanValue?: number;
@@ -62,7 +62,13 @@ export default function Products() {
           };
         });
 
-        setProducts(updatedProducts);
+        const filteredProducts = updatedProducts.filter(
+          (product) =>
+            product.transactionType === "pawn" ||
+            product.transactionType === "sale"
+        );
+
+        setProducts(filteredProducts);
         setLoading(false);
       } catch {
         setError(

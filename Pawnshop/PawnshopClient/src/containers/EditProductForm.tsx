@@ -22,7 +22,7 @@ interface Product {
   purchasePrice: number;
   salePrice?: number;
   additionalNotes?: string;
-  transactionType: 'pawn' | 'sale';
+  transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: string;
   redemptionDeadline?: string;
   loanValue?: number;
