@@ -11,7 +11,7 @@ interface ProductCardProps {
   productDescription: string;
   category: string;
   brand: string;
-  model: string;
+  model?: string;
   serialNumber?: string;
   yearOfProduction?: number;
   technicalCondition: string;
@@ -73,6 +73,23 @@ export default function ProductCard({
     }
   };
 
+  const formattedDateOfReceipt = new Date(dateOfReceipt).toLocaleDateString(
+    "pl-PL",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }
+  );
+
+  const formattedRedemptionDeadline = redemptionDeadline
+    ? new Date(redemptionDeadline).toLocaleDateString("pl-PL", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : null;
+
   return (
     <div
       className={`w-full mb-8 cursor-pointer transition-transform duration-300 ${
@@ -99,21 +116,21 @@ export default function ProductCard({
           </div>
         </div>
         <div className="flex items-center">
-          <p className="text-xl font-bold text-black mr-4">${purchasePrice}</p>
+          <p className="text-xl font-bold text-black mr-4">${salePrice}</p>
 
           {(currentTransactionType === "pawn" ||
             currentTransactionType === "sale") && (
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4"
+              className=" font-bold mr-4 bg-teal-600 text-white px-4 py-2 w-44 rounded hover:bg-teal-700 transition duration-300 ease-in-ou"
               onClick={(e) => {
                 e.stopPropagation();
                 handleStatusChange();
               }}
             >
-              {currentTransactionType === "pawn" ? "Redeem" : "Mark as Sold"}
+              {currentTransactionType === "pawn" ? "Mark as Redeem" : "Mark as Sold"}
             </button>
           )}
-          {canEdit && ( 
+          {canEdit && (
             <img
               src={editIcon}
               alt="Edit"
@@ -136,9 +153,12 @@ export default function ProductCard({
           <p className="text-gray-700 mb-4">
             <strong>Description:</strong> {productDescription}
           </p>
-          <p className="text-gray-700">
-            <strong>Model:</strong> {model}
-          </p>
+          {model && (
+            <p className="text-gray-700">
+              <strong>Model:</strong> {model}
+            </p>
+          )}
+
           {serialNumber && (
             <p className="text-gray-700">
               <strong>Serial Number:</strong> {serialNumber}
@@ -154,7 +174,7 @@ export default function ProductCard({
           </p>
           {salePrice && (
             <p className="text-gray-700">
-              <strong>Sale Price:</strong> ${salePrice}
+              <strong>Purchase Price:</strong> ${purchasePrice}
             </p>
           )}
           {additionalNotes && (
@@ -172,11 +192,12 @@ export default function ProductCard({
               <strong>Type:</strong> {currentTransactionType}
             </p>
             <p className="text-gray-700">
-              <strong>Date of Receipt:</strong> {dateOfReceipt}
+              <strong>Date of Receipt:</strong> {formattedDateOfReceipt}
             </p>
-            {redemptionDeadline && (
+            {formattedRedemptionDeadline && (
               <p className="text-gray-700">
-                <strong>Redemption Deadline:</strong> {redemptionDeadline}
+                <strong>Redemption Deadline:</strong>{" "}
+                {formattedRedemptionDeadline}
               </p>
             )}
             {loanValue && (
@@ -196,7 +217,6 @@ export default function ProductCard({
             )}
           </div>
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800">Client</h3>
             <p className="text-gray-700">
               <strong>Client Name:</strong> {clientName || "Unknown Client"}
             </p>
