@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import CustomerCard from "../components/CustomerCard";
 import Pagination from "../components/Pagination";
+import SearchBar from "../components/SearchBar";
 
 interface Customer {
   _id: string;
@@ -23,6 +24,7 @@ interface Customer {
 
 export default function Customers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 15;
@@ -31,6 +33,7 @@ export default function Customers() {
     try {
       const response = await axios.get("http://localhost:5000/api/customers");
       setCustomers(response.data);
+      setFilteredCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -46,7 +49,7 @@ export default function Customers() {
 
   const indexOfLastCustomer = currentPage * customersPerPage;
   const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
-  const currentCustomers = customers.slice(
+  const currentCustomers = filteredCustomers.slice(
     indexOfFirstCustomer,
     indexOfLastCustomer
   );
@@ -55,6 +58,13 @@ export default function Customers() {
     <div>
       <h1 className="text-2xl font-bold text-center mb-4">All Customers</h1>
       <div className="p-4">
+        <SearchBar
+          placeholder="Search by first name, last name, or PESEL"
+          data={customers}
+          onSearch={(results) => setFilteredCustomers(results)}
+          searchKeys={["firstName", "lastName", "pesel"]}
+        />
+
         <div className="flex flex-col items-center">
           {currentCustomers.length > 0 ? (
             currentCustomers.map((customer) => (
@@ -85,7 +95,7 @@ export default function Customers() {
         </div>
         <Pagination
           currentPage={currentPage}
-          totalCustomers={customers.length}
+          totalCustomers={filteredCustomers.length}
           customersPerPage={customersPerPage}
           onPageChange={(page) => setCurrentPage(page)}
         />
