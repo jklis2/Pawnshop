@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
+import deleteIcon from "../assets/icons/delete.svg";
 
 type Employee = {
   _id: string;
@@ -24,13 +26,32 @@ type Employee = {
 
 interface EmployeeCardProps {
   employee: Employee;
+  onDelete: () => void;
 }
 
-export default function EmployeeCard({ employee }: EmployeeCardProps) {
+export default function EmployeeCard({ employee, onDelete }: EmployeeCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
 
   const toggleCard = () => setIsExpanded((prev) => !prev);
+
+  const handleDelete = async (e: React.MouseEvent<HTMLImageElement>) => {
+    e.stopPropagation();
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`
+    );
+
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:5000/api/employees/${employee._id}`);
+        alert("Employee deleted successfully.");
+        onDelete();
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+        alert("There was an error deleting the employee.");
+      }
+    }
+  };
 
   return (
     <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-4">
@@ -43,6 +64,12 @@ export default function EmployeeCard({ employee }: EmployeeCardProps) {
           <p className="text-sm text-gray-600">PESEL: {employee.pesel}</p>
         </div>
         <div className="flex items-center">
+          <img
+            src={deleteIcon}
+            alt="Delete"
+            className="w-5 h-5 cursor-pointer mr-4"
+            onClick={handleDelete}
+          />
           <img
             src={editIcon}
             alt="Edit"
