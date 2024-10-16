@@ -116,6 +116,19 @@ export default function AddProductForm() {
 
   return (
     <div className="p-4">
+      <div className="mb-4">
+        <label className="text-xl font-semibold mb-6 block text-center">
+          Select Customer
+        </label>
+          <select value={selectedCustomerId} onChange={(e) => setSelectedCustomerId(e.target.value)} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <option value="">Choose a customer</option>
+            {customers.map((customer) => (
+              <option key={customer._id} value={customer._id}>
+                {customer.firstName} {customer.lastName}
+              </option>
+            ))}
+          </select>
+      </div>
       <h2 className="text-xl font-semibold mb-6 text-center">Product Details</h2>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
@@ -147,20 +160,9 @@ export default function AddProductForm() {
             <CreateForm label="Loan Value (if pawned)" placeholder="Enter loan value" type="number" value={loanValue?.toString()} onChange={(e) => setLoanValue(Number(e.target.value))} />
             <CreateForm label="Interest Rate (if pawned)" placeholder="Enter interest rate" type="number" value={interestRate?.toString()} onChange={(e) => setInterestRate(Number(e.target.value))} />
           </div>
-          <div className="my-4">
-            <label className="text-xl font-semibold mb-6 text-center">Select Customer</label>
-            <select value={selectedCustomerId} onChange={(e) => setSelectedCustomerId(e.target.value)} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-              <option value="">Choose a customer</option>
-              {customers.map((customer) => (
-                <option key={customer._id} value={customer._id}>
-                  {customer.firstName} {customer.lastName}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
         <button type="submit" className="bg-teal-600 text-white px-4 py-2 w-1/2 mb-4 rounded hover:bg-teal-800 transition duration-300 ease-in-out float-right">
-          Submit
+          Add product
         </button>
       </form>
     </div>
