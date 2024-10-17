@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import CreateForm from "../components/CreateForm";
+import { useAlert } from '../context/AlertContext';
 
 interface Customer {
   firstName: string;
@@ -18,28 +20,90 @@ interface Customer {
   notes: string;
 }
 
-interface EditCustomerFormProps {
-  initialValues: Customer;
-  onSubmit: (updatedValues: Customer) => void;
-}
+export default function EditCustomerForm() {
+  const { id: customerId } = useParams<{ id: string }>();
+  const [customerData, setCustomerData] = useState<Customer | null>(null);
+  const { showAlert } = useAlert();
+  const navigate = useNavigate();
 
-export default function EditCustomerForm({ initialValues, onSubmit }: EditCustomerFormProps) {
-  const [customerData, setCustomerData] = useState<Customer>(initialValues); 
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/customers/${customerId}`);
+        setCustomerData(response.data);
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+        showAlert('Failed to fetch customer data. Please try again later.', 'error');
+      }
+    };
+
+    if (customerId) {
+      fetchCustomerData();
+    }
+  }, [customerId, showAlert]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCustomerData((prevData) => ({ ...prevData, [name]: value }));
+    setCustomerData((prevData) => ({
+      ...prevData!,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = () => {
-    onSubmit(customerData);
+  const validateForm = () => {
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'pesel',
+      'dateOfBirth',
+      'street',
+      'houseNumber',
+      'postalCode',
+      'city',
+      'idSeries',
+      'idNumber',
+    ];
+
+    for (const field of requiredFields) {
+      if (!customerData?.[field as keyof typeof customerData]) {
+        showAlert(`Field ${field} must be filled out.`, 'error');
+        return false;
+      }
+    }
+
+    if (customerData?.pesel.length !== 11 || !/^\d+$/.test(customerData.pesel)) {
+      showAlert('PESEL must be exactly 11 digits long and only contain numbers.', 'error');
+      return false;
+    }
+
+    return true;
   };
 
-  const navigate = useNavigate();
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await axios.put(`http://localhost:5000/api/customers/${customerId}`, customerData);
+
+      if (response.status === 200) {
+        showAlert('Customer updated successfully!', 'success');
+        navigate('/dashboard/customers');
+      }
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      showAlert('Failed to update customer. Please try again.', 'error');
+    }
+  };
 
   const handleGoBack = () => {
     navigate('/dashboard/customers');
   };
+
+  if (!customerData) {
+    return <div>Loading customer data...</div>;
+  }
 
   return (
     <div className="p-4">
@@ -75,7 +139,6 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
           Save Changes
         </button>
       </div>
-      
     </div>
   );
 }
