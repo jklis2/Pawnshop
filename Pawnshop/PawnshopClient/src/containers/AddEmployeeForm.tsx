@@ -34,7 +34,61 @@ export default function AddEmployeeForm() {
     }));
   };
 
+  const validateForm = () => {
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'pesel',
+      'dateOfBirth',
+      'street',
+      'houseNumber',
+      'postalCode',
+      'city',
+      'idSeries',
+      'idNumber',
+      'phoneNumber',
+      'email',
+      'login',
+      'password',
+      'role',
+    ];
+
+    for (const field of requiredFields) {
+      if (!employeeData[field as keyof typeof employeeData]) {
+        showAlert(`Field ${field} must be filled out.`, 'error');
+        return false;
+      }
+    }
+
+    if (employeeData.pesel.length !== 11 || !/^\d+$/.test(employeeData.pesel)) {
+      showAlert('PESEL must be exactly 11 digits long and only contain numbers.', 'error');
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(employeeData.email)) {
+      showAlert('Please enter a valid email address.', 'error');
+      return false;
+    }
+
+    if (employeeData.phoneNumber.length < 9 || employeeData.phoneNumber.length > 15 || !/^\d+$/.test(employeeData.phoneNumber)) {
+      showAlert('Phone number must be between 9 and 15 digits and only contain numbers.', 'error');
+      return false;
+    }
+
+    if (employeeData.role !== 'admin' && employeeData.role !== 'employee') {
+      showAlert('Role must be either "admin" or "employee".', 'error');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:5000/api/employees', employeeData);
 

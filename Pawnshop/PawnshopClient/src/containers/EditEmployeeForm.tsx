@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
+import { useAlert } from '../context/AlertContext';
 
 type EmployeeData = {
   _id: string;
@@ -28,7 +29,8 @@ interface EditEmployeeFormProps {
 
 export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
   const [employeeData, setEmployeeData] = useState<EmployeeData>(employee);
-  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setEmployeeData(employee);
@@ -42,20 +44,75 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
     }));
   };
 
+  const validateForm = () => {
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'pesel',
+      'dateOfBirth',
+      'street',
+      'houseNumber',
+      'postalCode',
+      'city',
+      'idSeries',
+      'idNumber',
+      'phoneNumber',
+      'email',
+      'login',
+      'password',
+      'role',
+    ];
+
+    for (const field of requiredFields) {
+      if (!employeeData[field as keyof EmployeeData]) {
+        showAlert(`Field ${field} must be filled out.`, 'error');
+        return false;
+      }
+    }
+  
+    if (employeeData.pesel.length !== 11 || !/^\d+$/.test(employeeData.pesel)) {
+      showAlert('PESEL must be exactly 11 digits long and only contain numbers.', 'error');
+      return false;
+    }
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(employeeData.email)) {
+      showAlert('Please enter a valid email address.', 'error');
+      return false;
+    }
+  
+    if (employeeData.phoneNumber.length < 9 || employeeData.phoneNumber.length > 15 || !/^\d+$/.test(employeeData.phoneNumber)) {
+      showAlert('Phone number must be between 9 and 15 digits and only contain numbers.', 'error');
+      return false;
+    }
+  
+    if (employeeData.role !== 'admin' && employeeData.role !== 'employee') {
+      showAlert('Role must be either "admin" or "employee".', 'error');
+      return false;
+    }
+  
+    return true;
+  };
+  
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+  
     try {
       const response = await axios.put(`http://localhost:5000/api/employees/${employeeData._id}`, employeeData);
-
+  
       if (response.status === 200) {
-        setMessage('Employee updated successfully!');
+        showAlert('Employee updated successfully!', 'success');
+        navigate('/dashboard/employees');
       }
     } catch (error) {
       console.error('Error updating employee:', error);
-      setMessage('Failed to update employee. Please try again.');
+      showAlert('Failed to update employee. Please try again.', 'error');
     }
   };
-
-  const navigate = useNavigate();
+  
 
   const handleGoBack = () => {
     navigate('/dashboard/employees');
@@ -98,7 +155,6 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
           Save Changes
         </button>
       </div>
-      {message && <p className="mt-4 text-center text-green-600">{message}</p>}
     </form>
   );
 }
