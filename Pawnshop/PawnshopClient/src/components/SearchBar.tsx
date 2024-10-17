@@ -26,7 +26,8 @@ export default function SearchBar<T>({
       })
     );
     onSearch(filteredData);
-  }, [query, data, onSearch, searchKeys]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, data]);
 
   return (
     <input
