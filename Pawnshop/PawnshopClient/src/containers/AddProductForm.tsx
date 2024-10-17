@@ -2,10 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
 import CustomerSelect from '../components/CustomerSelect';
+import { useAlert } from '../context/AlertContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddProductForm() {
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
-
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -24,18 +25,30 @@ export default function AddProductForm() {
   const [loanValue, setLoanValue] = useState<number | undefined>();
   const [interestRate, setInterestRate] = useState<number | undefined>();
 
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { showAlert } = useAlert();
+  const navigate = useNavigate();
+
+  const validateForm = () => {
+    if (
+      !selectedCustomerId ||
+      !productName ||
+      !productDescription ||
+      !category ||
+      !technicalCondition ||
+      !purchasePrice ||
+      !transactionType ||
+      !dateOfReceipt
+    ) {
+      showAlert('Please fill in all required fields.', 'error');
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
-    setSuccessMessage(null);
 
-    if (!productName || !transactionType || !selectedCustomerId) {
-      setError('Product Name, Transaction Type, and Customer selection are required.');
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       const formData = new FormData();
@@ -69,9 +82,10 @@ export default function AddProductForm() {
         },
       });
 
-      setSuccessMessage('Product successfully added!');
+      showAlert('Product successfully added!', 'success');
+      navigate('/dashboard/products');
     } catch {
-      setError('Failed to add product. Please try again.');
+      showAlert('Failed to add product. Please try again.', 'error');
     }
   };
 
@@ -82,8 +96,6 @@ export default function AddProductForm() {
         onCustomerSelect={setSelectedCustomerId} 
       />
       <h2 className="text-xl font-semibold mb-6 text-center">Product Details</h2>
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div>
           <CreateForm label="Product Name" placeholder="Enter product name" type="text" value={productName} required={true} onChange={(e) => setProductName(e.target.value)} />
