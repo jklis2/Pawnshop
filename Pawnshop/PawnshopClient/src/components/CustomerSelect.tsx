@@ -62,6 +62,15 @@ export default function CustomerSelect({
     }
   }, [searchTerm, customers]);
 
+  useEffect(() => {
+    if (initialCustomer) {
+      setSelectedCustomer(initialCustomer);
+      setSearchTerm(
+        `${initialCustomer.firstName} ${initialCustomer.lastName}; PESEL: ${initialCustomer.pesel}`
+      );
+    }
+  }, [initialCustomer]);
+
   const handleCustomerSelect = (customer: Customer) => {
     setSelectedCustomer(customer);
     onCustomerSelect(customer._id);
@@ -101,7 +110,6 @@ export default function CustomerSelect({
           </button>
         )}
       </div>
-
       {!selectedCustomer &&
         searchTerm.length >= 5 &&
         filteredCustomers.length > 0 && (
@@ -120,7 +128,6 @@ export default function CustomerSelect({
             ))}
           </ul>
         )}
-
       {!selectedCustomer &&
         searchTerm.length >= 5 &&
         filteredCustomers.length === 0 && (
