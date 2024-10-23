@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
 import CustomerSelect from '../components/CustomerSelect';
+import { useAlert } from '../context/AlertContext';
 
 interface Customer {
   _id: string;
@@ -59,10 +60,8 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [loanValue, setLoanValue] = useState(initialData.loanValue || undefined);
   const [interestRate, setInterestRate] = useState(initialData.interestRate || undefined);
 
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/customers/${initialData.clientId}`)
@@ -70,14 +69,12 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
         setSelectedCustomer(response.data);
       })
       .catch(() => {
-        setError('Failed to load customer data.');
+        showAlert('Failed to load customer data.', 'error');
       });
-  }, [initialData.clientId]);
+  }, [initialData.clientId, showAlert]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
-    setSuccessMessage(null);
 
     try {
       const formData = new FormData();
@@ -110,12 +107,13 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       });
 
       if (response.status === 200) {
-        setSuccessMessage('Product successfully updated!');
+        showAlert('Product updated successfully!', 'success');
+        navigate('/dashboard/products');
       } else {
-        setError('Failed to update product. Please try again.');
+        showAlert('Failed to update product. Please try again.', 'error'); 
       }
     } catch {
-      setError('Failed to update product. Please try again.');
+      showAlert('Failed to update product. Please try again.', 'error');
     }
   };
 
@@ -127,13 +125,11 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
     <div>
       <h1 className="text-2xl font-bold text-center">Edit Product</h1>
       <div className="p-4">
-          <CustomerSelect 
-            selectedCustomerId={selectedCustomerId} 
-            onCustomerSelect={setSelectedCustomerId} 
-            initialCustomer={selectedCustomer}
-          />
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
+        <CustomerSelect 
+          selectedCustomerId={selectedCustomerId} 
+          onCustomerSelect={setSelectedCustomerId} 
+          initialCustomer={selectedCustomer}
+        />
         <h2 className="text-xl font-semibold mb-6 text-center">Product Details</h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <CreateForm label="Product Name" placeholder="Enter product name" type="text" value={productName} required={true} onChange={(e) => setProductName(e.target.value)} />

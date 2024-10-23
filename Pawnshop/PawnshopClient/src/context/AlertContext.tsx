@@ -24,7 +24,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
     setAlert({ message, type });
     setTimeout(() => {
       setAlert(null);
-    }, 5000); // alert znika po 5 sekundach
+    }, 5000); // The alert disappears after 5 seconds
   };
 
   return (
