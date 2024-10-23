@@ -38,9 +38,17 @@ interface EditProductFormProps {
   initialData: Product;
 }
 
+const formatDateToInput = (dateString: string) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>(initialData.clientId);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null); 
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const [productName, setProductName] = useState(initialData.productName);
   const [productDescription, setProductDescription] = useState(initialData.productDescription);
@@ -55,8 +63,10 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [productImages, setProductImages] = useState<FileList | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState(initialData.additionalNotes || '');
   const [transactionType, setTransactionType] = useState(initialData.transactionType);
-  const [dateOfReceipt, setDateOfReceipt] = useState(initialData.dateOfReceipt);
-  const [redemptionDeadline, setRedemptionDeadline] = useState(initialData.redemptionDeadline || '');
+  
+  const [dateOfReceipt, setDateOfReceipt] = useState(formatDateToInput(initialData.dateOfReceipt));
+  const [redemptionDeadline, setRedemptionDeadline] = useState(initialData.redemptionDeadline ? formatDateToInput(initialData.redemptionDeadline) : '');
+
   const [loanValue, setLoanValue] = useState(initialData.loanValue || undefined);
   const [interestRate, setInterestRate] = useState(initialData.interestRate || undefined);
 

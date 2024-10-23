@@ -5,6 +5,14 @@ import CustomerSelect from '../components/CustomerSelect';
 import { useAlert } from '../context/AlertContext';
 import { useNavigate } from 'react-router-dom';
 
+const getCurrentDate = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function AddProductForm() {
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
   const [productName, setProductName] = useState('');
@@ -20,7 +28,8 @@ export default function AddProductForm() {
   const [productImages, setProductImages] = useState<FileList | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [transactionType, setTransactionType] = useState<'pawn' | 'sale' | ''>('');
-  const [dateOfReceipt, setDateOfReceipt] = useState('');
+  
+  const [dateOfReceipt, setDateOfReceipt] = useState(getCurrentDate());
   const [redemptionDeadline, setRedemptionDeadline] = useState('');
   const [loanValue, setLoanValue] = useState<number | undefined>();
   const [interestRate, setInterestRate] = useState<number | undefined>();
