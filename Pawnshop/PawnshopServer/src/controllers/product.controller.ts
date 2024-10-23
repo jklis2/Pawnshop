@@ -163,14 +163,14 @@ export const updateProduct = [
         return;
       }
 
-      if (
-        (product.transactionType === "pawn" && transactionType !== "redeemed") ||
-        (product.transactionType === "sale" && transactionType !== "sold")
-      ) {
-        res
-          .status(400)
-          .json({ message: `Invalid transaction type change.` });
-        return;
+      if (transactionType && transactionType !== product.transactionType) {
+        if (
+          (product.transactionType === "pawn" && transactionType !== "redeemed") ||
+          (product.transactionType === "sale" && transactionType !== "sold")
+        ) {
+          res.status(400).json({ message: "Invalid transaction type change." });
+          return;
+        }
       }
 
       const productImages = req.files
@@ -225,7 +225,6 @@ export const updateProduct = [
     }
   },
 ];
-
 
 export const deleteProduct = async (
   req: Request,
