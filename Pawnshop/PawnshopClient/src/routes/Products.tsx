@@ -3,6 +3,7 @@ import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
+import { useAuth } from "../context/AuthContext";
 
 interface Product {
   _id: string;
@@ -41,6 +42,7 @@ export default function Products() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 20;
+  const { employee } = useAuth();
 
   const fetchProductsAndCustomers = async () => {
     try {
@@ -139,6 +141,7 @@ export default function Products() {
                     transactionNotes={product.notes}
                     clientName={product.clientName}
                     onDelete={handleDeleteProduct}
+                    role={employee?.role || ""}
                   />
                 ))
               ) : (

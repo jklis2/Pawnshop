@@ -6,7 +6,7 @@ import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 import deleteIcon from "../assets/icons/delete.svg";
-import placeholder from "../assets/Placeholder.png"
+import placeholder from "../assets/Placeholder.png";
 
 interface ProductCardProps {
   _id: string;
@@ -31,6 +31,7 @@ interface ProductCardProps {
   clientName?: string;
   canEdit?: boolean;
   onDelete: () => void;
+  role: string;
 }
 
 export default function ProductCard({
@@ -56,6 +57,7 @@ export default function ProductCard({
   clientName,
   canEdit = true,
   onDelete,
+  role,
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTransactionType, setCurrentTransactionType] = useState(transactionType);
@@ -153,24 +155,24 @@ export default function ProductCard({
               {currentTransactionType === "pawn" ? "Mark as Redeem" : "Mark as Sold"}
             </button>
           )}
+          {role === "admin" && (
+            <img
+              src={deleteIcon}
+              alt="Delete"
+              className="w-5 h-5 cursor-pointer mr-4"
+              onClick={confirmDelete}
+            />
+          )}
           {canEdit && (
-            <>
-              <img
-                src={deleteIcon}
-                alt="Delete"
-                className="w-5 h-5 cursor-pointer mr-4"
-                onClick={confirmDelete}
-              />
-              <img
-                src={editIcon}
-                alt="Edit"
-                className="w-5 h-5 cursor-pointer mr-4"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/dashboard/edit-product/${_id}`);
-                }}
-              />
-            </>
+            <img
+              src={editIcon}
+              alt="Edit"
+              className="w-5 h-5 cursor-pointer mr-4"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/dashboard/edit-product/${_id}`);
+              }}
+            />
           )}
           {isExpanded ? (
             <img src={arrowTop} alt="Collapse" className="w-6 h-6" />

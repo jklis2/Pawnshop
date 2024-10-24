@@ -27,6 +27,7 @@ type CustomerCardProps = {
   onExpand: (id: string) => void;
   onEdit?: () => void;
   onDelete: () => void;
+  role: string;
 };
 
 type Item = {
@@ -55,6 +56,7 @@ export default function CustomerCard({
   onExpand,
   onEdit,
   onDelete,
+  role,
 }: CustomerCardProps) {
   const [customerItems, setCustomerItems] = useState<Item[]>([]);
   const navigate = useNavigate();
@@ -72,7 +74,6 @@ export default function CustomerCard({
       onDelete
     );
   };
-  
 
   useEffect(() => {
     if (isExpanded) {
@@ -145,16 +146,15 @@ export default function CustomerCard({
               onClick={handleEdit}
             />
           </button>
-          <button
-            className="text-blue-500 mr-2"
-            onClick={handleDelete}
-          >
-            <img
-              src={deleteIcon}
-              alt="Delete"
-              className="w-5 h-5 cursor-pointer"
-            />
-          </button>
+          {role === "admin" && (
+            <button className="text-blue-500 mr-2" onClick={handleDelete}>
+              <img
+                src={deleteIcon}
+                alt="Delete"
+                className="w-5 h-5 cursor-pointer"
+              />
+            </button>
+          )}
           <button className="text-blue-500">
             <img
               src={isExpanded ? arrowTop : arrowBottom}

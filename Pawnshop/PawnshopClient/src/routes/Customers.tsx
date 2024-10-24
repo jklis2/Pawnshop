@@ -4,6 +4,7 @@ import CustomerCard from "../components/CustomerCard";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import { useAlert } from "../context/AlertContext";
+import { useAuth } from "../context/AuthContext";
 
 interface Customer {
   _id: string;
@@ -30,6 +31,7 @@ export default function Customers() {
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 15;
   const { showAlert } = useAlert();
+  const { employee } = useAuth();
 
   const fetchCustomers = async () => {
     try {
@@ -103,6 +105,7 @@ export default function Customers() {
                 isExpanded={expandedCardId === customer._id}
                 onExpand={() => handleCardExpansion(customer._id)}
                 onDelete={() => handleDelete(customer._id)}
+                role={employee?.role || ""}
               />
             ))
           ) : (
