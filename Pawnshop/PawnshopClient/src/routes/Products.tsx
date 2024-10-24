@@ -42,50 +42,54 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 20;
 
+  const fetchProductsAndCustomers = async () => {
+    try {
+      const productsResponse = await axios.get(
+        "http://localhost:5000/api/products"
+      );
+      const productsData: Product[] = productsResponse.data;
+
+      const customersResponse = await axios.get(
+        "http://localhost:5000/api/customers"
+      );
+      const customersData: Customer[] = customersResponse.data;
+
+      const updatedProducts = productsData.map((product) => {
+        const customer = customersData.find(
+          (c) => c._id === product.clientId
+        );
+        return {
+          ...product,
+          clientName: customer
+            ? `${customer.firstName} ${customer.lastName}`
+            : "Unknown Client",
+        };
+      });
+
+      const filteredProducts = updatedProducts.filter(
+        (product) =>
+          product.transactionType === "pawn" ||
+          product.transactionType === "sale"
+      );
+
+      setProducts(filteredProducts);
+      setFilteredProducts(filteredProducts);
+      setLoading(false);
+    } catch {
+      setError(
+        "Failed to load products or customers. Please try again later."
+      );
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProductsAndCustomers = async () => {
-      try {
-        const productsResponse = await axios.get(
-          "http://localhost:5000/api/products"
-        );
-        const productsData: Product[] = productsResponse.data;
-
-        const customersResponse = await axios.get(
-          "http://localhost:5000/api/customers"
-        );
-        const customersData: Customer[] = customersResponse.data;
-
-        const updatedProducts = productsData.map((product) => {
-          const customer = customersData.find(
-            (c) => c._id === product.clientId
-          );
-          return {
-            ...product,
-            clientName: customer
-              ? `${customer.firstName} ${customer.lastName}`
-              : "Unknown Client",
-          };
-        });
-
-        const filteredProducts = updatedProducts.filter(
-          (product) =>
-            product.transactionType === "pawn" ||
-            product.transactionType === "sale"
-        );
-
-        setProducts(filteredProducts);
-        setFilteredProducts(filteredProducts);
-        setLoading(false);
-      } catch {
-        setError(
-          "Failed to load products or customers. Please try again later."
-        );
-        setLoading(false);
-      }
-    };
-
     fetchProductsAndCustomers();
   }, []);
+
+  const handleDeleteProduct = () => {
+    fetchProductsAndCustomers();
+  };
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -134,6 +138,7 @@ export default function Products() {
                     interestRate={product.interestRate}
                     transactionNotes={product.notes}
                     clientName={product.clientName}
+                    onDelete={handleDeleteProduct}
                   />
                 ))
               ) : (

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAlert } from "../context/AlertContext";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
+import deleteIcon from "../assets/icons/delete.svg";
 
 interface ProductCardProps {
   _id: string;
@@ -27,6 +29,7 @@ interface ProductCardProps {
   transactionNotes?: string;
   clientName?: string;
   canEdit?: boolean;
+  onDelete: () => void;
 }
 
 export default function ProductCard({
@@ -51,13 +54,33 @@ export default function ProductCard({
   transactionNotes,
   clientName,
   canEdit = true,
+  onDelete,
 }: ProductCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentTransactionType, setCurrentTransactionType] =
-    useState(transactionType);
+  const [currentTransactionType, setCurrentTransactionType] = useState(transactionType);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/products/${_id}`);
+      onDelete();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      showAlert("There was an error deleting the product.", "error");
+    }
+  };
+
+  const confirmDelete = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.stopPropagation();
+    showAlert(
+      `Are you sure you want to delete ${productName}?`,
+      "error",
+      handleDelete
+    );
+  };
 
   const handleStatusChange = async () => {
     try {
@@ -118,10 +141,9 @@ export default function ProductCard({
         <div className="flex items-center">
           <p className="text-xl font-bold text-black mr-4">${salePrice}</p>
 
-          {(currentTransactionType === "pawn" ||
-            currentTransactionType === "sale") && (
+          {(currentTransactionType === "pawn" || currentTransactionType === "sale") && (
             <button
-              className=" font-bold mr-4 bg-teal-600 text-white px-4 py-2 w-44 rounded hover:bg-teal-700 transition duration-300 ease-in-ou"
+              className="font-bold mr-4 bg-teal-600 text-white px-4 py-2 w-44 rounded hover:bg-teal-700 transition duration-300 ease-in-out"
               onClick={(e) => {
                 e.stopPropagation();
                 handleStatusChange();
@@ -131,15 +153,23 @@ export default function ProductCard({
             </button>
           )}
           {canEdit && (
-            <img
-              src={editIcon}
-              alt="Edit"
-              className="w-5 h-5 cursor-pointer mr-4"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/dashboard/edit-product/${_id}`);
-              }}
-            />
+            <>
+              <img
+                src={deleteIcon}
+                alt="Delete"
+                className="w-5 h-5 cursor-pointer mr-4"
+                onClick={confirmDelete}
+              />
+              <img
+                src={editIcon}
+                alt="Edit"
+                className="w-5 h-5 cursor-pointer mr-4"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/dashboard/edit-product/${_id}`);
+                }}
+              />
+            </>
           )}
           {isExpanded ? (
             <img src={arrowTop} alt="Collapse" className="w-6 h-6" />
