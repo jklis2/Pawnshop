@@ -6,6 +6,7 @@ import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 import deleteIcon from "../assets/icons/delete.svg";
+import placeholder from "../assets/Placeholder.png"
 
 interface ProductCardProps {
   _id: string;
@@ -127,7 +128,7 @@ export default function ProductCard({
             src={
               productImages && productImages.length > 0
                 ? `data:image/jpeg;base64,${productImages[0]}`
-                : "/placeholder.jpg"
+                : placeholder
             }
             alt={productName}
           />
