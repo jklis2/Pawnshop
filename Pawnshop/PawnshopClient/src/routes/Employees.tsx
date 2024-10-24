@@ -26,7 +26,7 @@ export default function Employees() {
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchEmployees = () => {
     axios
       .get("http://localhost:5000/api/employees")
       .then((response) => {
@@ -38,7 +38,15 @@ export default function Employees() {
         console.error("Error fetching employees:", error);
         setIsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchEmployees();
   }, []);
+
+  const handleDelete = () => {
+    fetchEmployees();
+  };
 
   return (
     <div>
@@ -57,7 +65,11 @@ export default function Employees() {
           <div className="grid grid-cols-1 gap-4">
             {filteredEmployees.length > 0 ? (
               filteredEmployees.map((employee) => (
-                <EmployeeCard key={employee._id} employee={employee} />
+                <EmployeeCard
+                  key={employee._id}
+                  employee={employee}
+                  onDelete={handleDelete}
+                />
               ))
             ) : (
               <p>No employees found.</p>

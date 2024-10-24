@@ -1,12 +1,16 @@
 import { createContext, useState, useContext, ReactNode } from "react";
 
 interface AlertContextProps {
-  showAlert: (message: string, type: "success" | "info" | "error") => void;
+  showAlert: (
+    message: string,
+    type: "success" | "info" | "error",
+    onConfirm?: () => void
+  ) => void;
 }
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 
-// eslint-disable-next-line
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAlert = () => {
   const context = useContext(AlertContext);
   if (!context) {
@@ -16,15 +20,34 @@ export const useAlert = () => {
 };
 
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
-  const [alert, setAlert] = useState<{ message: string; type: string } | null>(
-    null
-  );
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: string;
+    onConfirm?: () => void;
+  } | null>(null);
 
-  const showAlert = (message: string, type: "success" | "info" | "error") => {
-    setAlert({ message, type });
+  const showAlert = (
+    message: string,
+    type: "success" | "info" | "error",
+    onConfirm?: () => void
+  ) => {
+    setAlert({ message, type, onConfirm });
+
+    const duration = onConfirm ? 10000 : 5000; // 10 seconds for confirmation alerts, 5 seconds for others
     setTimeout(() => {
       setAlert(null);
-    }, 5000); // The alert disappears after 5 seconds
+    }, duration);
+  };
+
+  const handleCancel = () => {
+    setAlert(null);
+  };
+
+  const handleConfirm = () => {
+    if (alert?.onConfirm) {
+      alert.onConfirm();
+    }
+    setAlert(null);
   };
 
   return (
@@ -41,6 +64,22 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
           }`}
         >
           {alert.message}
+          {alert.onConfirm && (
+            <div className="mt-4 flex justify-center space-x-4">
+              <button
+                onClick={handleCancel}
+                className="bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded"
+              >
+                Anuluj
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded"
+              >
+                Potwierdź
+              </button>
+            </div>
+          )}
         </div>
       )}
     </AlertContext.Provider>

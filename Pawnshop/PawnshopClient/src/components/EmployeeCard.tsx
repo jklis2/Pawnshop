@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAlert } from "../context/AlertContext";
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
@@ -32,25 +33,27 @@ interface EmployeeCardProps {
 export default function EmployeeCard({ employee, onDelete }: EmployeeCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const toggleCard = () => setIsExpanded((prev) => !prev);
 
-  const handleDelete = async (e: React.MouseEvent<HTMLImageElement>) => {
-    e.stopPropagation();
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`
-    );
-
-    if (confirmDelete) {
-      try {
-        await axios.delete(`http://localhost:5000/api/employees/${employee._id}`);
-        alert("Employee deleted successfully.");
-        onDelete();
-      } catch (error) {
-        console.error("Error deleting employee:", error);
-        alert("There was an error deleting the employee.");
-      }
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/employees/${employee._id}`);
+      onDelete();
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      showAlert("There was an error deleting the employee.", "error");
     }
+  };
+
+  const confirmDelete = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.stopPropagation();
+    showAlert(
+      `Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`,
+      "error",
+      handleDelete
+    );
   };
 
   return (
@@ -68,7 +71,7 @@ export default function EmployeeCard({ employee, onDelete }: EmployeeCardProps) 
             src={deleteIcon}
             alt="Delete"
             className="w-5 h-5 cursor-pointer mr-4"
-            onClick={handleDelete}
+            onClick={confirmDelete}
           />
           <img
             src={editIcon}
