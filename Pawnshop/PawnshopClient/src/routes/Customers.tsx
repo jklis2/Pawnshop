@@ -3,6 +3,7 @@ import axios from "axios";
 import CustomerCard from "../components/CustomerCard";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
+import { useAlert } from "../context/AlertContext";
 
 interface Customer {
   _id: string;
@@ -28,6 +29,7 @@ export default function Customers() {
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 15;
+  const { showAlert } = useAlert();
 
   const fetchCustomers = async () => {
     try {
@@ -36,12 +38,25 @@ export default function Customers() {
       setFilteredCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
+      showAlert("Error fetching customers.", "error");
     }
   };
 
   useEffect(() => {
     fetchCustomers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/customers/${id}`);
+      showAlert("Customer successfully deleted.", "success");
+      fetchCustomers();
+    } catch (error) {
+      console.error("Error deleting customer:", error);
+      showAlert("Error deleting customer.", "error");
+    }
+  };
 
   const handleCardExpansion = (id: string) => {
     setExpandedCardId(expandedCardId === id ? null : id);
@@ -87,6 +102,7 @@ export default function Customers() {
                 items={customer.items}
                 isExpanded={expandedCardId === customer._id}
                 onExpand={() => handleCardExpansion(customer._id)}
+                onDelete={() => handleDelete(customer._id)}
               />
             ))
           ) : (

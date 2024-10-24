@@ -1,9 +1,11 @@
 import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
+import deleteIcon from "../assets/icons/delete.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../context/AlertContext";
 
 type CustomerCardProps = {
   id: string;
@@ -24,6 +26,7 @@ type CustomerCardProps = {
   isExpanded: boolean;
   onExpand: (id: string) => void;
   onEdit?: () => void;
+  onDelete: () => void;
 };
 
 type Item = {
@@ -51,14 +54,25 @@ export default function CustomerCard({
   isExpanded,
   onExpand,
   onEdit,
+  onDelete,
 }: CustomerCardProps) {
   const [customerItems, setCustomerItems] = useState<Item[]>([]);
-
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const handleEdit = () => {
     navigate(`/dashboard/edit-customer/${id}`);
   };
+
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    showAlert(
+      `Are you sure you want to delete ${firstName} ${lastName}?`,
+      "error",
+      onDelete
+    );
+  };
+  
 
   useEffect(() => {
     if (isExpanded) {
@@ -129,6 +143,16 @@ export default function CustomerCard({
               alt="Edit"
               className="w-5 h-5 cursor-pointer"
               onClick={handleEdit}
+            />
+          </button>
+          <button
+            className="text-blue-500 mr-2"
+            onClick={handleDelete}
+          >
+            <img
+              src={deleteIcon}
+              alt="Delete"
+              className="w-5 h-5 cursor-pointer"
             />
           </button>
           <button className="text-blue-500">
