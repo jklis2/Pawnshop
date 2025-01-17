@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import burgerIcon from "../assets/icons/burger.svg";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,6 +9,20 @@ type NavbarProps = {
 export default function Navbar({ toggleSidebar }: NavbarProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const { employee, logout } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -36,7 +50,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             )}
           </span>
 
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={toggleDropdown}
               className="w-10 h-10 bg-emerald-500 hover:bg-emerald-400 rounded-full cursor-pointer 
@@ -49,7 +63,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             </button>
 
             {isDropdownVisible && (
-              <div className="absolute top-14 right-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-200">
+              <div className="absolute top-full mt-2 right-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-200 z-50">
                 <div className="px-4 py-3 bg-emerald-50 border-b border-emerald-100">
                   <p className="text-sm text-emerald-900 font-medium">Zalogowany jako</p>
                   <p className="text-sm text-emerald-700">{`${employee?.firstName || 'John'} ${employee?.lastName || 'Doe'}`}</p>
