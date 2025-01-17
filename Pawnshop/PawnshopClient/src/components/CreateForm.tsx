@@ -22,8 +22,8 @@ export default function CreateForm({
   required,
 }: CreateFormProps) {
   return (
-    <div className={`w-full mb-4 ${className || ""}`}>
-      <label className="block text-gray-700 text-sm font-bold mb-2">
+    <div className={`w-full ${className || ""}`}>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
@@ -32,7 +32,10 @@ export default function CreateForm({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required={required}
+        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm 
+                 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                 focus:border-emerald-500 transition-colors duration-200"
       />
     </div>
   );

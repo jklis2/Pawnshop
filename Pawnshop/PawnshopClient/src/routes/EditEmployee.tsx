@@ -24,6 +24,7 @@ export default function EditEmployee() {
 
   return (
     <div className="container mx-auto">
+      <h2 className="text-2xl font-bold text-center">Edit Employee</h2>
       {employeeData ? (
         <EditEmployeeForm employee={employeeData} />
       ) : (

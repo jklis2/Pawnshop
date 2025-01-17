@@ -76,7 +76,7 @@ export default function ProductCard({
     }
   };
 
-  const confirmDelete = (e: React.MouseEvent<HTMLImageElement>) => {
+  const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     showAlert(
       `Are you sure you want to delete ${productName}?`,
@@ -118,142 +118,167 @@ export default function ProductCard({
 
   return (
     <div
-      className={`w-full mb-8 cursor-pointer transition-transform duration-300 ${
-        isExpanded ? "shadow-lg" : ""
-      }`}
+      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden mb-4 w-full"
       onClick={toggleExpand}
     >
-      <div className="flex items-center justify-between px-6 py-4 border border-gray-200 rounded-md bg-white">
-        <div className="flex items-center">
-          <img
-            className="h-24 w-24 object-cover rounded-md mr-4"
-            src={
-              productImages && productImages.length > 0
-                ? `data:image/jpeg;base64,${productImages[0]}`
-                : placeholder
-            }
-            alt={productName}
-          />
-          <div>
-            <h2 className="text-xl font-bold text-black">{productName}</h2>
-            <p className="text-sm text-gray-600">
-              {category} - {brand}
-            </p>
+      <div className="px-6 py-4 cursor-pointer">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <img
+              className="h-24 w-24 object-cover rounded-lg shadow-sm"
+              src={
+                productImages && productImages.length > 0
+                  ? `data:image/jpeg;base64,${productImages[0]}`
+                  : placeholder
+              }
+              alt={productName}
+            />
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800">{productName}</h2>
+              <p className="text-sm text-gray-600">
+                {category} - {brand}
+              </p>
+              <p className="text-sm font-medium text-emerald-600 mt-1">
+                ${salePrice}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center">
-          <p className="text-xl font-bold text-black mr-4">${salePrice}</p>
-
-          {(currentTransactionType === "pawn" || currentTransactionType === "sale") && (
-            <button
-              className="font-bold mr-4 bg-teal-600 text-white px-4 py-2 w-44 rounded hover:bg-teal-700 transition duration-300 ease-in-out"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleStatusChange();
-              }}
-            >
-              {currentTransactionType === "pawn" ? "Mark as Redeem" : "Mark as Sold"}
-            </button>
-          )}
-          {role === "admin" && (
-            <img
-              src={deleteIcon}
-              alt="Delete"
-              className="w-5 h-5 cursor-pointer mr-4"
-              onClick={confirmDelete}
-            />
-          )}
-          {canEdit && (
-            <img
-              src={editIcon}
-              alt="Edit"
-              className="w-5 h-5 cursor-pointer mr-4"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/dashboard/edit-product/${_id}`);
-              }}
-            />
-          )}
-          {isExpanded ? (
-            <img src={arrowTop} alt="Collapse" className="w-6 h-6" />
-          ) : (
-            <img src={arrowBottom} alt="Expand" className="w-6 h-6" />
-          )}
+          <div className="flex items-center space-x-3">
+            {(currentTransactionType === "pawn" || currentTransactionType === "sale") && (
+              <button
+                className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg
+                         hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                         focus:ring-offset-2 transition-colors duration-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusChange();
+                }}
+              >
+                {currentTransactionType === "pawn" ? "Mark as Redeem" : "Mark as Sold"}
+              </button>
+            )}
+            <div className="flex items-center space-x-2">
+              {canEdit && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/dashboard/edit-product/${_id}`);
+                  }}
+                  className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors duration-200"
+                >
+                  <img src={editIcon} alt="Edit" className="w-5 h-5" />
+                </button>
+              )}
+              {role === "admin" && (
+                <button
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.stopPropagation();
+                    confirmDelete(e);
+                  }}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                >
+                  <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
+                </button>
+              )}
+              <button className="p-2 text-gray-400 hover:bg-gray-50 rounded-full transition-colors duration-200">
+                <img
+                  src={isExpanded ? arrowTop : arrowBottom}
+                  alt={isExpanded ? "Collapse" : "Expand"}
+                  className="w-5 h-5"
+                />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       {isExpanded && (
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          <p className="text-gray-700 mb-4">
-            <strong>Description:</strong> {productDescription}
-          </p>
-          {model && (
-            <p className="text-gray-700">
-              <strong>Model:</strong> {model}
-            </p>
-          )}
-
-          {serialNumber && (
-            <p className="text-gray-700">
-              <strong>Serial Number:</strong> {serialNumber}
-            </p>
-          )}
-          {yearOfProduction && (
-            <p className="text-gray-700">
-              <strong>Year of Production:</strong> {yearOfProduction}
-            </p>
-          )}
-          <p className="text-gray-700">
-            <strong>Technical Condition:</strong> {technicalCondition}
-          </p>
-          {salePrice && (
-            <p className="text-gray-700">
-              <strong>Purchase Price:</strong> ${purchasePrice}
-            </p>
-          )}
+        <div className="px-6 py-4 bg-gray-50 space-y-4 border-t border-gray-100">
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-2">Product Details</h4>
+              <div className="space-y-2">
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Description:</span>{" "}
+                  <span className="text-gray-600">{productDescription}</span>
+                </p>
+                {model && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Model:</span>{" "}
+                    <span className="text-gray-600">{model}</span>
+                  </p>
+                )}
+                {serialNumber && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Serial Number:</span>{" "}
+                    <span className="text-gray-600">{serialNumber}</span>
+                  </p>
+                )}
+                {yearOfProduction && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Year of Production:</span>{" "}
+                    <span className="text-gray-600">{yearOfProduction}</span>
+                  </p>
+                )}
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Technical Condition:</span>{" "}
+                  <span className="text-gray-600">{technicalCondition}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Purchase Price:</span>{" "}
+                  <span className="text-gray-600">${purchasePrice}</span>
+                </p>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-2">Transaction Details</h4>
+              <div className="space-y-2">
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Transaction Type:</span>{" "}
+                  <span className="text-gray-600">{currentTransactionType}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Date of Receipt:</span>{" "}
+                  <span className="text-gray-600">{formattedDateOfReceipt}</span>
+                </p>
+                {formattedRedemptionDeadline && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Redemption Deadline:</span>{" "}
+                    <span className="text-gray-600">{formattedRedemptionDeadline}</span>
+                  </p>
+                )}
+                {loanValue && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Loan Value:</span>{" "}
+                    <span className="text-gray-600">${loanValue}</span>
+                  </p>
+                )}
+                {interestRate && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Interest Rate:</span>{" "}
+                    <span className="text-gray-600">{interestRate}%</span>
+                  </p>
+                )}
+                {clientName && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Client:</span>{" "}
+                    <span className="text-gray-600">{clientName}</span>
+                  </p>
+                )}
+                {transactionNotes && (
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Transaction Notes:</span>{" "}
+                    <span className="text-gray-600">{transactionNotes}</span>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
           {additionalNotes && (
-            <div className="mt-2">
-              <p className="text-gray-700">
-                <strong>Additional Notes:</strong> {additionalNotes}
-              </p>
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-2">Additional Notes</h4>
+              <p className="text-sm text-gray-600">{additionalNotes}</p>
             </div>
           )}
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Transaction Details
-            </h3>
-            <p className="text-gray-700">
-              <strong>Type:</strong> {currentTransactionType}
-            </p>
-            <p className="text-gray-700">
-              <strong>Date of Receipt:</strong> {formattedDateOfReceipt}
-            </p>
-            {formattedRedemptionDeadline && (
-              <p className="text-gray-700">
-                <strong>Redemption Deadline:</strong>{" "}
-                {formattedRedemptionDeadline}
-              </p>
-            )}
-            {loanValue && (
-              <p className="text-gray-700">
-                <strong>Loan Value:</strong> ${loanValue}
-              </p>
-            )}
-            {interestRate && (
-              <p className="text-gray-700">
-                <strong>Interest Rate:</strong> {interestRate}%
-              </p>
-            )}
-            {transactionNotes && (
-              <p className="text-gray-700">
-                <strong>Notes:</strong> {transactionNotes}
-              </p>
-            )}
-          </div>
-          <div className="mt-6">
-            <p className="text-gray-700">
-              <strong>Client Name:</strong> {clientName || "Unknown Client"}
-            </p>
-          </div>
         </div>
       )}
     </div>

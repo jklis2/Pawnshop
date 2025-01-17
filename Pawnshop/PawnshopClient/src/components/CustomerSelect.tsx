@@ -86,11 +86,15 @@ export default function CustomerSelect({
   };
 
   return (
-    <div className="mb-4">
-      <label className="text-xl font-semibold mb-6 block text-center">
+    <div className="mb-8">
+      <label className="text-xl font-semibold mb-4 block text-gray-800">
         Search for Customer<span className="text-red-500"> *</span>
       </label>
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg">
+          {error}
+        </div>
+      )}
 
       <div className="relative">
         <input
@@ -98,41 +102,39 @@ export default function CustomerSelect({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Enter first name, last name, or PESEL"
-          className="border p-2 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200"
           disabled={!!selectedCustomer}
         />
         {selectedCustomer && (
           <button
             onClick={clearSelection}
-            className="absolute right-2 top-2 text-red-500 hover:text-red-700"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
           >
-            Clear
+            ×
           </button>
         )}
       </div>
-      {!selectedCustomer &&
-        searchTerm.length >= 5 &&
-        filteredCustomers.length > 0 && (
-          <ul className="bg-white border border-gray-300 rounded-md shadow-md">
-            {filteredCustomers.map((customer) => (
-              <li
-                key={customer._id}
-                onClick={() => handleCustomerSelect(customer)}
-                className={`cursor-pointer px-4 py-2 hover:bg-gray-200 ${
-                  selectedCustomerId === customer._id ? "bg-gray-300" : ""
-                }`}
-              >
-                {customer.firstName} {customer.lastName}; PESEL:{" "}
-                {customer.pesel}
-              </li>
-            ))}
-          </ul>
-        )}
-      {!selectedCustomer &&
-        searchTerm.length >= 5 &&
-        filteredCustomers.length === 0 && (
-          <p className="text-center text-gray-500">No customers found.</p>
-        )}
+
+      {filteredCustomers.length > 0 && (
+        <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          {filteredCustomers.map((customer) => (
+            <button
+              key={customer._id}
+              onClick={() => handleCustomerSelect(customer)}
+              className={`w-full px-4 py-3 text-left hover:bg-emerald-50 transition-colors duration-200 ${
+                selectedCustomer?._id === customer._id || selectedCustomerId === customer._id
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "text-gray-700"
+              }`}
+            >
+              <div className="font-medium">
+                {customer.firstName} {customer.lastName}
+              </div>
+              <div className="text-sm text-gray-500">PESEL: {customer.pesel}</div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

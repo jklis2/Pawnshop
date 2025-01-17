@@ -53,5 +53,10 @@ export default function EditCustomer() {
     return <p>Loading...</p>;
   }
 
-  return <EditCustomerForm initialValues={customer} onSubmit={handleUpdate} />;
+  return (
+    <div className="container mx-auto">
+      <h2 className="text-2xl font-bold text-center">Edit Customer</h2>
+      <EditCustomerForm initialValues={customer} onSubmit={handleUpdate} />
+    </div>
+  );
 }

@@ -19,38 +19,89 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const { employee } = useAuth();
 
   return (
-    <div
-      className={`w-64 bg-emerald-800 text-white h-screen fixed top-0 left-0 flex flex-col justify-between transform ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform duration-300 ease-in-out`}
-    >
-      <div>
-        <div className="p-4 flex justify-center">
-          <img src={PawnshopLogo} alt="Pawnshop Logo" className="w-32 h-auto" />
+    <>
+      {/* Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20 lg:hidden"
+          onClick={() => isOpen = false}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`w-72 bg-gradient-to-b from-emerald-800 to-emerald-900 text-white fixed top-0 left-0 
+                   bottom-0 z-30 transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out flex flex-col`}
+      >
+        {/* Logo */}
+        <div className="h-16 flex items-center justify-center border-b border-emerald-700/50">
+          <img 
+            src={PawnshopLogo} 
+            alt="Pawnshop Logo" 
+            className="h-10 w-auto filter brightness-0 invert opacity-90 hover:opacity-100 transition-opacity duration-200" 
+          />
         </div>
-        <nav className="p-4">
-          <ul>
-            <SidebarLink to="/dashboard" iconSrc={dashboardIcon} label="Dashboard" />
-            <SidebarLink to="/dashboard/add-customer" iconSrc={addCustomerIcon} label="Add new customer" />
-            <SidebarLink to="/dashboard/customers" iconSrc={allCustomersIcon} label="All Customers" />
-            <SidebarLink to="/dashboard/add-product" iconSrc={addProductIcon} label="Add new product" />
-            <SidebarLink to="/dashboard/products" iconSrc={allProductIcon} label="All Products" />
+
+        {/* Navigation */}
+        <nav className="flex-1 flex flex-col justify-between overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-transparent">
+          {/* Main Navigation */}
+          <div className="flex-1 px-2 py-2 space-y-6 [&_li]:list-none [&_li]:before:content-none">
+            <div>
+              <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
+                Główne
+              </h2>
+              <ul className="list-none space-y-1">
+                <li><SidebarLink to="/dashboard" iconSrc={dashboardIcon} label="Dashboard" end={true} /></li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
+                Klienci
+              </h2>
+              <ul className="list-none space-y-1">
+                <li><SidebarLink to="/dashboard/add-customer" iconSrc={addCustomerIcon} label="Dodaj klienta" /></li>
+                <li><SidebarLink to="/dashboard/customers" iconSrc={allCustomersIcon} label="Lista klientów" /></li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
+                Produkty
+              </h2>
+              <ul className="list-none space-y-1">
+                <li><SidebarLink to="/dashboard/add-product" iconSrc={addProductIcon} label="Dodaj produkt" /></li>
+                <li><SidebarLink to="/dashboard/products" iconSrc={allProductIcon} label="Lista produktów" /></li>
+              </ul>
+            </div>
+
             {employee?.role === "admin" && (
-              <>
-                <SidebarLink to="/dashboard/add-employee" iconSrc={addEmployeeIcon} label="Add new Employee" />
-                <SidebarLink to="/dashboard/employees" iconSrc={allEmployeesIcon} label="All Employees" />
-              </>
+              <div>
+                <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
+                  Pracownicy
+                </h2>
+                <ul className="list-none space-y-1">
+                  <li><SidebarLink to="/dashboard/add-employee" iconSrc={addEmployeeIcon} label="Dodaj pracownika" /></li>
+                  <li><SidebarLink to="/dashboard/employees" iconSrc={allEmployeesIcon} label="Lista pracowników" /></li>
+                </ul>
+              </div>
             )}
-            
-          </ul>
+          </div>
+
+          {/* Footer Navigation */}
+          <div className="border-t border-emerald-700/50 px-2 py-2">
+            <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
+              System
+            </h2>
+            <ul className="list-none space-y-1">
+              <li><SidebarLink to="/dashboard/archives" iconSrc={archivesIcon} label="Archiwum" /></li>
+              <li><SidebarLink to="/dashboard/settings" iconSrc={settingsIcon} label="Ustawienia" /></li>
+            </ul>
+          </div>
         </nav>
-      </div>
-      <div className="p-4">
-        <ul>
-        <SidebarLink to="/dashboard/archives" iconSrc={archivesIcon} label="Archives" />
-        <SidebarLink to="/dashboard/settings" iconSrc={settingsIcon} label="Settings" />
-        </ul>
-      </div>
-    </div>
+      </aside>
+    </>
   );
 }

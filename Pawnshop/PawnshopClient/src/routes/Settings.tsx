@@ -15,33 +15,45 @@ export default function Settings() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold">{t('welcome')}</h1>
-      <p>{t('description')}</p>
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('welcome')}</h1>
+          <p className="text-gray-600">{t('description')}</p>
+        </div>
 
-      <div className="mt-4">
-        <label htmlFor="language" className="block text-sm font-medium text-gray-700">
-          {t('selectLanguage')}
-        </label>
-        <select
-          id="language"
-          name="language"
-          value={language}
-          onChange={handleLanguageChange}
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option value="en">English</option>
-          <option value="pl">Polish</option>
-        </select>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">
+              {t('selectLanguage')}
+            </label>
+            <select
+              id="language"
+              name="language"
+              value={language}
+              onChange={handleLanguageChange}
+              className="block w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                       shadow-sm transition-colors duration-200"
+            >
+              <option value="en">English</option>
+              <option value="pl">Polish</option>
+            </select>
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="button"
+              onClick={saveLanguage}
+              className="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 text-white font-medium rounded-lg
+                       hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                       focus:ring-offset-2 transition-colors duration-200"
+            >
+              {t('saveButton')}
+            </button>
+          </div>
+        </div>
       </div>
-
-      <button
-        type="button"
-        className="mt-4 bg-blue-500 rounded-md p-4 w-32"
-        onClick={saveLanguage}
-      >
-        {t('saveButton')}
-      </button>
     </div>
   );
 }

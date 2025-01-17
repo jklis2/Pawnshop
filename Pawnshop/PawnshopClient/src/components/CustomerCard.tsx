@@ -25,7 +25,6 @@ type CustomerCardProps = {
   items: string[];
   isExpanded: boolean;
   onExpand: (id: string) => void;
-  onEdit?: () => void;
   onDelete: () => void;
   role: string;
 };
@@ -54,7 +53,6 @@ export default function CustomerCard({
   items,
   isExpanded,
   onExpand,
-  onEdit,
   onDelete,
   role,
 }: CustomerCardProps) {
@@ -62,11 +60,12 @@ export default function CustomerCard({
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 
-  const handleEdit = () => {
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigate(`/dashboard/edit-customer/${id}`);
   };
 
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     showAlert(
       `Are you sure you want to delete ${firstName} ${lastName}?`,
@@ -112,90 +111,103 @@ export default function CustomerCard({
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 mb-4 shadow-md w-full">
+    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden mb-4 w-full">
       <div
-        className="flex justify-between items-center cursor-pointer"
+        className="px-6 py-4 cursor-pointer border-b border-gray-100"
         onClick={() => onExpand(id)}
       >
-        <div className="flex items-center">
-          <h2 className="text-lg font-bold">
-            {firstName} {lastName}
-          </h2>
-          <span className="text-gray-500 ml-4">
-            <strong>Date of Birth:</strong>{" "}
-            {new Date(dateOfBirth).toLocaleDateString()}
-          </span>
-          {notes && (
-            <span className="text-gray-500 ml-4">
-              <strong>Notes:</strong> {notes}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center">
-          <button
-            className="text-blue-500 mr-2"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onEdit) onEdit();
-            }}
-          >
-            <img
-              src={editIcon}
-              alt="Edit"
-              className="w-5 h-5 cursor-pointer"
+        <div className="flex justify-between items-center">
+          <div className="flex-1">
+            <div className="flex items-center">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {firstName} {lastName}
+              </h3>
+              <span className="text-sm text-gray-500 ml-4">
+                PESEL: {pesel}
+              </span>
+            </div>
+            {notes && (
+              <p className="text-sm text-gray-500 mt-1">
+                Notes: {notes}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center space-x-4">
+            <button
               onClick={handleEdit}
-            />
-          </button>
-          {role === "admin" && (
-            <button className="text-blue-500 mr-2" onClick={handleDelete}>
+              className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors duration-200"
+            >
+              <img src={editIcon} alt="Edit" className="w-5 h-5" />
+            </button>
+            {role === "admin" && (
+              <button
+                onClick={handleDelete}
+                className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+              >
+                <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
+              </button>
+            )}
+            <button className="p-2 text-gray-400 hover:bg-gray-50 rounded-full transition-colors duration-200">
               <img
-                src={deleteIcon}
-                alt="Delete"
-                className="w-5 h-5 cursor-pointer"
+                src={isExpanded ? arrowTop : arrowBottom}
+                alt={isExpanded ? "Collapse" : "Expand"}
+                className="w-5 h-5"
               />
             </button>
-          )}
-          <button className="text-blue-500">
-            <img
-              src={isExpanded ? arrowTop : arrowBottom}
-              alt={isExpanded ? "Collapse" : "Expand"}
-              className="w-5 h-5"
-            />
-          </button>
+          </div>
         </div>
       </div>
       <div
-        className={`mt-4 text-sm text-gray-700 transition-all duration-300 ease-in-out ${
+        className={`transition-all duration-300 ease-in-out ${
           isExpanded ? "block" : "hidden"
         }`}
       >
-        <p>
-          <strong>PESEL:</strong> {pesel}
-        </p>
-        <p>
-          <strong>ID:</strong> {idSeries} {idNumber}
-        </p>
-        <p>
-          <strong>Address:</strong> {street} {houseNumber}, {postalCode} {city}
-        </p>
-        <p>
-          <strong>Email:</strong> {email}
-        </p>
-        <p>
-          <strong>Phone Number:</strong> {phoneNumber}
-        </p>
-        <div className="mt-4">
-          <strong>Items:</strong>{" "}
-          {customerItems.length > 0
-            ? customerItems
-                .map(
-                  (item) =>
-                    `${item.productName} (${getStatusLabel(
-                      item.transactionType
-                    )})`
-                )
-                .join(", ")
-            : "No items available."}
+        <div className="px-6 py-4 bg-gray-50 space-y-3">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">Personal Information</h4>
+              <p className="text-sm">
+                <span className="font-medium text-gray-700">Date of Birth:</span>{" "}
+                <span className="text-gray-600">{new Date(dateOfBirth).toLocaleDateString()}</span>
+              </p>
+              <p className="text-sm">
+                <span className="font-medium text-gray-700">ID:</span>{" "}
+                <span className="text-gray-600">{idSeries} {idNumber}</span>
+              </p>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">Contact Information</h4>
+              <p className="text-sm">
+                <span className="font-medium text-gray-700">Email:</span>{" "}
+                <span className="text-gray-600">{email}</span>
+              </p>
+              <p className="text-sm">
+                <span className="font-medium text-gray-700">Phone:</span>{" "}
+                <span className="text-gray-600">{phoneNumber}</span>
+              </p>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-sm font-medium text-gray-500 mb-1">Address</h4>
+            <p className="text-sm text-gray-600">
+              {street} {houseNumber}, {postalCode} {city}
+            </p>
+          </div>
+          <div>
+            <h4 className="text-sm font-medium text-gray-500 mb-1">Items</h4>
+            <p className="text-sm text-gray-600">
+              {customerItems.length > 0
+                ? customerItems
+                    .map(
+                      (item) =>
+                        `${item.productName} (${getStatusLabel(
+                          item.transactionType
+                        )})`
+                    )
+                    .join(", ")
+                : "No items available."}
+            </p>
+          </div>
         </div>
       </div>
     </div>

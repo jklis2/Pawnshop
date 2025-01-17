@@ -4,37 +4,71 @@ import ContactForm from "../components/ContactForm";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-white via-emerald-50 to-white">
       <HomeNavbar />
-      <div className="flex-grow p-4 flex flex-col lg:flex-row justify-between">
-        <div className="lg:w-1/2 p-4 flex items-center justify-start">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">O systemie</h2>
-          <p>
-            Nasz system <strong>Lombard</strong> to nowoczesne i efektywne narzędzie do zarządzania lombardem, które upraszcza codzienne operacje i automatyzuje wiele kluczowych zadań. Dzięki intuicyjnemu interfejsowi możesz z łatwością zarządzać pracownikami, klientami i przedmiotami.
-          </p>
-          <p>Główne funkcje systemu obejmują:</p>
-          <ul className="list-disc list-inside my-4">
-            <li>Dodawanie, edytowanie oraz usuwanie pracowników, klientów i przedmiotów w prostym panelu zarządzania.</li>
-            <li>Możliwość przypisania przedmiotów jako zastawionych lub na sprzedaż, z automatyczną zmianą statusu po upływie terminu wykupu.</li>
-            <li>Archiwizowanie sprzedanych i wykupionych przedmiotów, co pozwala na łatwe śledzenie historii transakcji.</li>
-            <li>Generowanie raportów, które pomagają analizować dane dotyczące zastawów i sprzedaży.</li>
-          </ul>
-          <p>
-            System został zaprojektowany z myślą o optymalizacji procesów w lombardzie, co pozwala zaoszczędzić czas i minimalizować błędy. Dzięki automatyzacji ważnych zadań, możesz skupić się na rozwoju swojego biznesu.
-          </p>
-          <p className="mt-4">
-            Jeśli chcesz wdrożyć nasz system <strong>Lombard</strong> w swoim lombardzie, zapraszamy do kontaktu za pomocą formularza kontaktowego po prawej stronie. Chętnie odpowiemy na Twoje pytania i pomożemy w procesie wdrożenia.
-          </p>
-        </div>
-        </div>
-        <div className="lg:w-1/2 p-4 flex items-center justify-end">
-          <div className="w-full lg:w-3/4">
-            <h2 className="text-xl font-semibold mb-4">Skontaktuj się z nami</h2>
-            <ContactForm />
+      
+      <main className="flex-grow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex flex-col lg:flex-row justify-between gap-12">
+            
+            {/* About Section */}
+            <div className="lg:w-1/2">
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
+                <h2 className="text-4xl font-bold mb-8 text-emerald-800 border-b-2 border-emerald-200 pb-4">
+                  O systemie
+                </h2>
+                <div className="prose prose-emerald max-w-none">
+                  <p className="text-gray-700 leading-relaxed text-lg mb-6">
+                    Nasz system <strong className="text-emerald-700">Lombard</strong> to nowoczesne i efektywne narzędzie do zarządzania lombardem, które upraszcza codzienne operacje i automatyzuje wiele kluczowych zadań. Dzięki intuicyjnemu interfejsowi możesz z łatwością zarządzać pracownikami, klientami i przedmiotami.
+                  </p>
+                  
+                  <h3 className="text-2xl font-semibold text-emerald-700 mb-4">
+                    Główne funkcje systemu
+                  </h3>
+                  
+                  <ul className="space-y-4 mb-8">
+                    {[
+                      "Dodawanie, edytowanie oraz usuwanie pracowników, klientów i przedmiotów w prostym panelu zarządzania.",
+                      "Możliwość przypisania przedmiotów jako zastawionych lub na sprzedaż, z automatyczną zmianą statusu po upływie terminu wykupu.",
+                      "Archiwizowanie sprzedanych i wykupionych przedmiotów, co pozwala na łatwe śledzenie historii transakcji.",
+                      "Generowanie raportów, które pomagają analizować dane dotyczące zastawów i sprzedaży."
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                        <span className="text-gray-700">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <p className="text-gray-700 leading-relaxed mb-6">
+                    System został zaprojektowany z myślą o optymalizacji procesów w lombardzie, co pozwala zaoszczędzić czas i minimalizować błędy. Dzięki automatyzacji ważnych zadań, możesz skupić się na rozwoju swojego biznesu.
+                  </p>
+                  
+                  <p className="text-gray-700 leading-relaxed">
+                    Jeśli chcesz wdrożyć nasz system <strong className="text-emerald-700">Lombard</strong> w swoim lombardzie, zapraszamy do kontaktu za pomocą formularza. Chętnie odpowiemy na Twoje pytania i pomożemy w procesie wdrożenia.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Contact Form Section */}
+            <div className="lg:w-1/2">
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
+                <h2 className="text-4xl font-bold mb-8 text-emerald-800 border-b-2 border-emerald-200 pb-4">
+                  Skontaktuj się z nami
+                </h2>
+                <ContactForm />
+              </div>
+            </div>
+            
           </div>
         </div>
-      </div>
+      </main>
+      
       <Footer />
     </div>
   );

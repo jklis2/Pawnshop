@@ -37,6 +37,7 @@ export default function EditProduct() {
 
   return (
     <div>
+      <h2 className="text-2xl font-bold text-center">Edit Product</h2>
       {product ? (
         <EditProductForm initialData={product} />
       ) : (

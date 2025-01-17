@@ -24,51 +24,49 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar isOpen={isSidebarOpen} />
-      <div
-        className={`flex-grow transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? "ml-64" : "ml-0"
-        }`}
-      >
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? "lg:ml-72" : ""}`}>
         <Navbar toggleSidebar={toggleSidebar} />
-        <div className="p-4">
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/add-customer" element={<AddCustomer />} />
-            <Route path="/add-product" element={<AddProduct />} />
-            <Route
-              path="/employees"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <Employees />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/add-employee"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <AddEmployee />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/edit-customer/:id" element={<EditCustomer />} />
-            <Route path="/edit-product/:id" element={<EditProduct />} />
-            <Route
-              path="/edit-employee/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <EditEmployee />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/archives" element={<Archives />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </div>
+        <main className="flex-1 overflow-y-auto">
+          <div className="container mx-auto px-6 py-8">
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/add-customer" element={<AddCustomer />} />
+              <Route path="/add-product" element={<AddProduct />} />
+              <Route
+                path="/employees"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <Employees />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add-employee"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AddEmployee />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/edit-customer/:id" element={<EditCustomer />} />
+              <Route path="/edit-product/:id" element={<EditProduct />} />
+              <Route
+                path="/edit-employee/:id"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <EditEmployee />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/archives" element={<Archives />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </div>
+        </main>
       </div>
     </div>
   );
