@@ -39,7 +39,7 @@ export default function EmployeeCard({ employee, onDelete }: EmployeeCardProps) 
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/employees/${employee._id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/employees/${employee._id}`);
       onDelete();
     } catch (error) {
       console.error("Error deleting employee:", error);

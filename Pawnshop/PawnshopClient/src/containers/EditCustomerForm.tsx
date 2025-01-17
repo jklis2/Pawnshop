@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import CreateForm from "../components/CreateForm";
 import { useAlert } from '../context/AlertContext';
 
@@ -20,32 +19,24 @@ interface Customer {
   notes: string;
 }
 
-export default function EditCustomerForm() {
-  const { id: customerId } = useParams<{ id: string }>();
-  const [customerData, setCustomerData] = useState<Customer | null>(null);
+interface EditCustomerFormProps {
+  initialValues: Customer;
+  onSubmit: (values: Customer) => Promise<void>;
+}
+
+export default function EditCustomerForm({ initialValues, onSubmit }: EditCustomerFormProps) {
+  const [customerData, setCustomerData] = useState<Customer>(initialValues);
   const { showAlert } = useAlert();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCustomerData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/customers/${customerId}`);
-        setCustomerData(response.data);
-      } catch (error) {
-        console.error('Error fetching customer data:', error);
-        showAlert('Failed to fetch customer data. Please try again later.', 'error');
-      }
-    };
-
-    if (customerId) {
-      fetchCustomerData();
-    }
-  }, [customerId, showAlert]);
+    setCustomerData(initialValues);
+  }, [initialValues]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCustomerData((prevData) => ({
-      ...prevData!,
+      ...prevData,
       [name]: value,
     }));
   };
@@ -85,12 +76,9 @@ export default function EditCustomerForm() {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/customers/${customerId}`, customerData);
-
-      if (response.status === 200) {
-        showAlert('Customer updated successfully!', 'success');
-        navigate('/dashboard/customers');
-      }
+      await onSubmit(customerData);
+      showAlert('Customer updated successfully!', 'success');
+      navigate('/dashboard/customers');
     } catch (error) {
       console.error('Error updating customer:', error);
       showAlert('Failed to update customer. Please try again.', 'error');
@@ -100,10 +88,6 @@ export default function EditCustomerForm() {
   const handleGoBack = () => {
     navigate('/dashboard/customers');
   };
-
-  if (!customerData) {
-    return <div>Loading customer data...</div>;
-  }
 
   return (
     <div className="p-4">

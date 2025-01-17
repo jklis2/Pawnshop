@@ -35,7 +35,7 @@ export default function Customers() {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/customers");
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/customers`);
       setCustomers(response.data);
       setFilteredCustomers(response.data);
     } catch (error) {
@@ -51,7 +51,7 @@ export default function Customers() {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/customers/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/customers/${id}`);
       showAlert("Customer successfully deleted.", "success");
       fetchCustomers();
     } catch (error) {

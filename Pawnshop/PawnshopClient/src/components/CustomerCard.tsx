@@ -82,7 +82,7 @@ export default function CustomerCard({
           const fetchedItems = await Promise.all(
             items.map(async (itemId) => {
               const response = await axios.get(
-                `http://localhost:5000/api/products/${itemId}`
+                `${import.meta.env.VITE_API_URL}/api/products/${itemId}`
               );
               return response.data;
             })

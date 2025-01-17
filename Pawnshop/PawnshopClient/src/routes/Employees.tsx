@@ -28,7 +28,7 @@ export default function Employees() {
 
   const fetchEmployees = () => {
     axios
-      .get("http://localhost:5000/api/employees")
+      .get(`${import.meta.env.VITE_API_URL}/api/employees`)
       .then((response) => {
         setEmployees(response.data);
         setFilteredEmployees(response.data);

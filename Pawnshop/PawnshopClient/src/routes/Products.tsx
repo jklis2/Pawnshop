@@ -47,12 +47,12 @@ export default function Products() {
   const fetchProductsAndCustomers = async () => {
     try {
       const productsResponse = await axios.get(
-        "http://localhost:5000/api/products"
+        `${import.meta.env.VITE_API_URL}/api/products`
       );
       const productsData: Product[] = productsResponse.data;
 
       const customersResponse = await axios.get(
-        "http://localhost:5000/api/customers"
+        `${import.meta.env.VITE_API_URL}/api/customers`
       );
       const customersData: Customer[] = customersResponse.data;
 

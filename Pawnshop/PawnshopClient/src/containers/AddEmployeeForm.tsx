@@ -90,7 +90,7 @@ export default function AddEmployeeForm() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/employees', employeeData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/employees`, employeeData);
 
       if (response.status === 201) {
         showAlert('Employee added successfully!', 'success');

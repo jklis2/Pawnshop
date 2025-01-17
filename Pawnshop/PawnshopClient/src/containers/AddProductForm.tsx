@@ -85,7 +85,7 @@ export default function AddProductForm() {
         }
       }
 
-      await axios.post('http://localhost:5000/api/products', formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/products`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

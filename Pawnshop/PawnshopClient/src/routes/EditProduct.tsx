@@ -30,7 +30,7 @@ export default function EditProduct() {
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/products/${id}`).then((response) => {
+    axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`).then((response) => {
       setProduct(response.data);
     });
   }, [id]);

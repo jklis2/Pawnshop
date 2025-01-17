@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   const login = async (login: string, password: string) => {
-    const response = await axios.post("http://localhost:5000/api/login", { login, password });
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { login, password });
     const employeeData = response.data;
     setEmployee(employeeData);
 

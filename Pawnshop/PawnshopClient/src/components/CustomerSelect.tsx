@@ -33,7 +33,7 @@ export default function CustomerSelect({
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/customers")
+      .get(`${import.meta.env.VITE_API_URL}/api/customers`)
       .then((response) => {
         if (Array.isArray(response.data)) {
           setCustomers(response.data);

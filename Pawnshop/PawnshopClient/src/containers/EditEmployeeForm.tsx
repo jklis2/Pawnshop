@@ -101,7 +101,7 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
     }
   
     try {
-      const response = await axios.put(`http://localhost:5000/api/employees/${employeeData._id}`, employeeData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/employees/${employeeData._id}`, employeeData);
   
       if (response.status === 200) {
         showAlert('Employee updated successfully!', 'success');

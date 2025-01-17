@@ -46,12 +46,12 @@ export default function Archives() {
     const fetchProductsAndCustomers = async () => {
       try {
         const productsResponse = await axios.get(
-          "http://localhost:5000/api/products"
+          `${import.meta.env.VITE_API_URL}/api/products`
         );
         const productsData: Product[] = productsResponse.data;
 
         const customersResponse = await axios.get(
-          "http://localhost:5000/api/customers"
+          `${import.meta.env.VITE_API_URL}/api/customers`
         );
         const customersData: Customer[] = customersResponse.data;
 
@@ -135,6 +135,8 @@ export default function Archives() {
                     transactionNotes={product.notes}
                     clientName={product.clientName}
                     canEdit={false}
+                    onDelete={() => {}}
+                    role="employee"
                   />
                 ))
               ) : (

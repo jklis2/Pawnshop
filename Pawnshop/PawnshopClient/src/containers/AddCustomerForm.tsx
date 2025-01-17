@@ -67,7 +67,7 @@ export default function AddCustomerForm() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/customers', customerData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/customers`, customerData);
 
       if (response.status === 201) {
         showAlert('Customer added successfully!', 'success');

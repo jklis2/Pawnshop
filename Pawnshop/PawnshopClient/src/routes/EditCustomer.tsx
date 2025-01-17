@@ -27,7 +27,7 @@ export default function EditCustomer() {
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/customers/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/customers/${id}`);
         setCustomer(response.data);
       } catch (error) {
         console.error("Error fetching customer data:", error);
@@ -40,7 +40,7 @@ export default function EditCustomer() {
 
   const handleUpdate = async (updatedValues: Customer) => {
     try {
-      await axios.put(`http://localhost:5000/api/customers/${id}`, updatedValues);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/customers/${id}`, updatedValues);
       alert("Customer updated successfully!");
       navigate("/dashboard");
     } catch (error) {

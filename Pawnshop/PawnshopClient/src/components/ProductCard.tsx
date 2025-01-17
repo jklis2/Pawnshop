@@ -68,7 +68,7 @@ export default function ProductCard({
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${_id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${_id}`);
       onDelete();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -89,7 +89,7 @@ export default function ProductCard({
     try {
       const newStatus = currentTransactionType === "pawn" ? "redeemed" : "sold";
 
-      await axios.put(`http://localhost:5000/api/products/${_id}`, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${_id}`, {
         transactionType: newStatus,
       });
 

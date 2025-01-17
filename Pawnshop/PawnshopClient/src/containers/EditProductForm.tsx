@@ -74,7 +74,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const { showAlert } = useAlert();
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/customers/${initialData.clientId}`)
+    axios.get(`${import.meta.env.VITE_API_URL}/api/customers/${initialData.clientId}`)
       .then((response) => {
         setSelectedCustomer(response.data);
       })
@@ -112,7 +112,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
         }
       }
 
-      const response = await axios.put(`http://localhost:5000/api/products/${initialData._id}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${initialData._id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
