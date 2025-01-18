@@ -51,32 +51,33 @@ export default function EditProduct() {
     return <p>{t('routes.loading.product')}</p>;
   }
 
+  const formattedProduct = {
+    id: product._id,
+    clientId: product.clientId,
+    name: product.productName,
+    description: product.productDescription,
+    category: product.category,
+    brand: product.brand,
+    model: product.productModel,
+    serialNumber: product.serialNumber || '',
+    yearOfProduction: product.yearOfProduction,
+    technicalCondition: product.technicalCondition,
+    purchasePrice: product.purchasePrice,
+    salePrice: product.salePrice,
+    additionalNotes: product.additionalNotes,
+    transactionType: product.transactionType,
+    dateOfReceipt: product.dateOfReceipt,
+    redemptionDeadline: product.redemptionDeadline,
+    loanValue: product.loanValue,
+    interestRate: product.interestRate,
+  };
+
   return (
-    <div className="container mx-auto">
-      <h2 className="text-2xl font-bold text-center">{t('routes.edit.product')}</h2>
-      <EditProductForm
-        initialData={{
-          id: product._id,
-          name: product.productName,
-          description: product.productDescription,
-          category: product.category,
-          brand: product.brand,
-          model: product.productModel,
-          serialNumber: product.serialNumber || "",
-          yearOfProduction: product.yearOfProduction,
-          technicalCondition: product.technicalCondition,
-          purchasePrice: product.purchasePrice,
-          salePrice: product.salePrice,
-          additionalNotes: product.additionalNotes,
-          transactionType: product.transactionType,
-          dateOfReceipt: product.dateOfReceipt,
-          redemptionDeadline: product.redemptionDeadline,
-          loanValue: product.loanValue,
-          interestRate: product.interestRate,
-          clientId: product.clientId,
-          images: []
-        }}
-      />
+    <div>
+      <h1 className="text-2xl font-bold text-center mb-8">{t('routes.edit.product')}</h1>
+      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-sm p-6">
+        <EditProductForm initialData={formattedProduct} />
+      </div>
     </div>
   );
 }
