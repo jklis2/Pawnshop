@@ -1,12 +1,15 @@
+import { useTranslation } from 'react-i18next';
 import StatsCard from './StatsCard';
 
 export default function StatsGrid() {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       {/* Główne statystyki - pierwszy rząd */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <StatsCard
-          title="Dzienna sprzedaż"
+          title={t('stats.dailySales.title')}
           value="2,450 zł"
           icon={
             <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -14,11 +17,11 @@ export default function StatsGrid() {
             </svg>
           }
           trend={{ value: 12, isPositive: true }}
-          timeFrame="Dzisiaj"
+          timeFrame={t('stats.dailySales.timeFrame')}
         />
 
         <StatsCard
-          title="Aktywne zastawy"
+          title={t('stats.activePawns.title')}
           value="48"
           icon={
             <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,25 +29,25 @@ export default function StatsGrid() {
             </svg>
           }
           trend={{ value: 5, isPositive: true }}
-          timeFrame="Ostatnie 24h"
+          timeFrame={t('stats.activePawns.timeFrame')}
         />
       </div>
 
       {/* Główne statystyki - drugi rząd */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <StatsCard
-          title="Nowi klienci"
+          title={t('stats.newCustomers.title')}
           value="15"
           icon={
             <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           }
-          timeFrame="Ten tydzień"
+          timeFrame={t('stats.newCustomers.timeFrame')}
         />
 
         <StatsCard
-          title="Średnia wartość zastawu"
+          title={t('stats.averagePawnValue.title')}
           value="1,250 zł"
           icon={
             <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,16 +55,16 @@ export default function StatsGrid() {
             </svg>
           }
           trend={{ value: 2.5, isPositive: true }}
-          timeFrame="Ostatni miesiąc"
+          timeFrame={t('stats.averagePawnValue.timeFrame')}
         />
       </div>
 
       {/* Podsumowanie miesięczne */}
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Podsumowanie miesięczne</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">{t('stats.monthlySummary.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatsCard
-            title="Łączna sprzedaż"
+            title={t('stats.monthlySummary.totalSales.title')}
             value="45,750 zł"
             icon={
               <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +75,7 @@ export default function StatsGrid() {
           />
 
           <StatsCard
-            title="Wykupione zastawy"
+            title={t('stats.monthlySummary.redeemedPawns.title')}
             value="32"
             icon={
               <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +86,7 @@ export default function StatsGrid() {
           />
 
           <StatsCard
-            title="Przeterminowane zastawy"
+            title={t('stats.monthlySummary.overduePawns.title')}
             value="8"
             icon={
               <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,10 +100,10 @@ export default function StatsGrid() {
 
       {/* Roczne statystyki */}
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Statystyki roczne</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">{t('stats.yearlyStats.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatsCard
-            title="Łączny obrót"
+            title={t('stats.yearlyStats.totalTurnover.title')}
             value="524,850 zł"
             icon={
               <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +114,7 @@ export default function StatsGrid() {
           />
 
           <StatsCard
-            title="Całkowita liczba klientów"
+            title={t('stats.yearlyStats.totalCustomers.title')}
             value="456"
             icon={
               <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

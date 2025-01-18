@@ -20,6 +20,8 @@ import contactFormEN from "./translations/contactForm/en.json";
 import contactFormPL from "./translations/contactForm/pl.json";
 import formsEN from "./translations/forms/en.json";
 import formsPL from "./translations/forms/pl.json";
+import dashboardEN from "./translations/dashboard/en.json";
+import dashboardPL from "./translations/dashboard/pl.json";
 
 const resources = {
   en: {
@@ -33,7 +35,8 @@ const resources = {
       ...navbarEN,
       ...sidebarEN,
       ...contactFormEN,
-      ...formsEN
+      ...formsEN,
+      ...dashboardEN
     }
   },
   pl: {
@@ -47,7 +50,8 @@ const resources = {
       ...navbarPL,
       ...sidebarPL,
       ...contactFormPL,
-      ...formsPL
+      ...formsPL,
+      ...dashboardPL
     }
   }
 };
