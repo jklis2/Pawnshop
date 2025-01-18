@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import PawnshopLogo from "../assets/PawnshopLogo.png";
 
 export default function HomeNavbar() {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,7 +19,7 @@ export default function HomeNavbar() {
                          hover:bg-white hover:text-emerald-600 transition-all duration-200 ease-in-out
                          shadow-sm hover:shadow-md text-sm tracking-wide"
             >
-              Zaloguj się
+              {t('login')}
             </Link>
           </nav>
         </div>

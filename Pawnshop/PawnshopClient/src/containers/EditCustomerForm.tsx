@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import CreateForm from "../components/CreateForm";
 import { useAlert } from '../context/AlertContext';
+import { useTranslation } from 'react-i18next';
 
 interface Customer {
   firstName: string;
@@ -25,6 +26,7 @@ interface EditCustomerFormProps {
 }
 
 export default function EditCustomerForm({ initialValues, onSubmit }: EditCustomerFormProps) {
+  const { t } = useTranslation();
   const [customerData, setCustomerData] = useState<Customer>(initialValues);
   const { showAlert } = useAlert();
   const navigate = useNavigate();
@@ -57,13 +59,13 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
 
     for (const field of requiredFields) {
       if (!customerData?.[field as keyof typeof customerData]) {
-        showAlert(`Field ${field} must be filled out.`, 'error');
+        showAlert(t('forms.customer.validation.required', { field: t(`forms.customer.fields.${field}.label`) }), 'error');
         return false;
       }
     }
 
     if (customerData?.pesel.length !== 11 || !/^\d+$/.test(customerData.pesel)) {
-      showAlert('PESEL must be exactly 11 digits long and only contain numbers.', 'error');
+      showAlert(t('forms.customer.validation.pesel'), 'error');
       return false;
     }
 
@@ -77,11 +79,11 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
 
     try {
       await onSubmit(customerData);
-      showAlert('Customer updated successfully!', 'success');
+      showAlert(t('forms.customer.validation.editSuccess'), 'success');
       navigate('/dashboard/customers');
     } catch (error) {
       console.error('Error updating customer:', error);
-      showAlert('Failed to update customer. Please try again.', 'error');
+      showAlert(t('forms.customer.validation.editError'), 'error');
     }
   };
 
@@ -95,49 +97,49 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
         <form className="space-y-6">
           {/* Personal Information */}
           <div>
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Personal Information</h3>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.sections.personal')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CreateForm label="First Name" type="text" name="firstName" value={customerData.firstName} required={true} onChange={handleInputChange} />
-              <CreateForm label="Last Name" type="text" name="lastName" value={customerData.lastName} required={true} onChange={handleInputChange} />
-              <CreateForm label="PESEL" type="text" name="pesel" value={customerData.pesel} required={true} onChange={handleInputChange} />
-              <CreateForm label="Date of Birth" type="date" name="dateOfBirth" value={customerData.dateOfBirth} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.firstName.label')} type="text" name="firstName" value={customerData.firstName} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.lastName.label')} type="text" name="lastName" value={customerData.lastName} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.pesel.label')} type="text" name="pesel" value={customerData.pesel} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.dateOfBirth.label')} type="date" name="dateOfBirth" value={customerData.dateOfBirth} required={true} onChange={handleInputChange} />
             </div>
           </div>
 
           {/* Address Information */}
           <div>
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Address Information</h3>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.sections.address')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CreateForm label="Street" type="text" name="street" value={customerData.street} required={true} onChange={handleInputChange} />
-              <CreateForm label="House Number" type="text" name="houseNumber" value={customerData.houseNumber} required={true} onChange={handleInputChange} />
-              <CreateForm label="Postal Code" type="text" name="postalCode" value={customerData.postalCode} required={true} onChange={handleInputChange} />
-              <CreateForm label="City" type="text" name="city" value={customerData.city} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.street.label')} type="text" name="street" value={customerData.street} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.houseNumber.label')} type="text" name="houseNumber" value={customerData.houseNumber} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.postalCode.label')} type="text" name="postalCode" value={customerData.postalCode} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.city.label')} type="text" name="city" value={customerData.city} required={true} onChange={handleInputChange} />
             </div>
           </div>
 
           {/* ID Information */}
           <div>
-            <h3 className="text-lg font-medium text-gray-700 mb-4">ID Information</h3>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.sections.identification')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CreateForm label="ID Series" type="text" name="idSeries" value={customerData.idSeries} required={true} onChange={handleInputChange} />
-              <CreateForm label="ID Number" type="text" name="idNumber" value={customerData.idNumber} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.idSeries.label')} type="text" name="idSeries" value={customerData.idSeries} required={true} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.idNumber.label')} type="text" name="idNumber" value={customerData.idNumber} required={true} onChange={handleInputChange} />
             </div>
           </div>
 
           {/* Contact Information */}
           <div>
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Contact Information</h3>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.sections.contact')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CreateForm label="Phone Number" type="text" name="phoneNumber" value={customerData.phoneNumber} onChange={handleInputChange} />
-              <CreateForm label="Email" type="email" name="email" value={customerData.email} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.phoneNumber.label')} type="text" name="phoneNumber" value={customerData.phoneNumber} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.email.label')} type="email" name="email" value={customerData.email} onChange={handleInputChange} />
             </div>
           </div>
 
-          {/* Additional Information */}
+          {/* Notes */}
           <div>
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Additional Information</h3>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.sections.notes')}</h3>
             <div className="grid grid-cols-1 gap-6">
-              <CreateForm label="Notes" type="text" name="notes" value={customerData.notes} onChange={handleInputChange} />
+              <CreateForm label={t('forms.customer.fields.notes.label')} type="text" name="notes" value={customerData.notes} onChange={handleInputChange} />
             </div>
           </div>
 
@@ -149,7 +151,7 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
                        hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 
                        focus:ring-offset-2 transition-colors duration-200"
             >
-              Cancel
+              {t('forms.customer.cancel')}
             </button>
             <button
               type="button"
@@ -158,7 +160,7 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
                        hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 
                        focus:ring-offset-2 transition-colors duration-200"
             >
-              Save Changes
+              {t('forms.customer.editSubmit')}
             </button>
           </div>
         </form>

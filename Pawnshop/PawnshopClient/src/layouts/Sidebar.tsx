@@ -1,4 +1,5 @@
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import PawnshopLogo from "../assets/PawnshopLogo.png";
 import dashboardIcon from "../assets/icons/dashboard.svg";
 import addCustomerIcon from "../assets/icons/addCustomer.svg";
@@ -16,6 +17,7 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ isOpen }: SidebarProps) {
+  const { t } = useTranslation();
   const { employee } = useAuth();
 
   return (
@@ -50,41 +52,41 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           <div className="flex-1 px-2 py-2 space-y-6 [&_li]:list-none [&_li]:before:content-none">
             <div>
               <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
-                Główne
+                {t('sidebar.sections.main')}
               </h2>
               <ul className="list-none space-y-1">
-                <li><SidebarLink to="/dashboard" iconSrc={dashboardIcon} label="Dashboard" end={true} /></li>
+                <li><SidebarLink to="/dashboard" iconSrc={dashboardIcon} label={t('sidebar.links.dashboard')} end={true} /></li>
               </ul>
             </div>
 
             <div>
               <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
-                Klienci
+                {t('sidebar.sections.customers')}
               </h2>
               <ul className="list-none space-y-1">
-                <li><SidebarLink to="/dashboard/add-customer" iconSrc={addCustomerIcon} label="Dodaj klienta" /></li>
-                <li><SidebarLink to="/dashboard/customers" iconSrc={allCustomersIcon} label="Lista klientów" /></li>
+                <li><SidebarLink to="/dashboard/add-customer" iconSrc={addCustomerIcon} label={t('sidebar.links.addCustomer')} /></li>
+                <li><SidebarLink to="/dashboard/customers" iconSrc={allCustomersIcon} label={t('sidebar.links.customerList')} /></li>
               </ul>
             </div>
 
             <div>
               <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
-                Produkty
+                {t('sidebar.sections.products')}
               </h2>
               <ul className="list-none space-y-1">
-                <li><SidebarLink to="/dashboard/add-product" iconSrc={addProductIcon} label="Dodaj produkt" /></li>
-                <li><SidebarLink to="/dashboard/products" iconSrc={allProductIcon} label="Lista produktów" /></li>
+                <li><SidebarLink to="/dashboard/add-product" iconSrc={addProductIcon} label={t('sidebar.links.addProduct')} /></li>
+                <li><SidebarLink to="/dashboard/products" iconSrc={allProductIcon} label={t('sidebar.links.productList')} /></li>
               </ul>
             </div>
 
             {employee?.role === "admin" && (
               <div>
                 <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
-                  Pracownicy
+                  {t('sidebar.sections.employees')}
                 </h2>
                 <ul className="list-none space-y-1">
-                  <li><SidebarLink to="/dashboard/add-employee" iconSrc={addEmployeeIcon} label="Dodaj pracownika" /></li>
-                  <li><SidebarLink to="/dashboard/employees" iconSrc={allEmployeesIcon} label="Lista pracowników" /></li>
+                  <li><SidebarLink to="/dashboard/add-employee" iconSrc={addEmployeeIcon} label={t('sidebar.links.addEmployee')} /></li>
+                  <li><SidebarLink to="/dashboard/employees" iconSrc={allEmployeesIcon} label={t('sidebar.links.employeeList')} /></li>
                 </ul>
               </div>
             )}
@@ -93,11 +95,11 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           {/* Footer Navigation */}
           <div className="border-t border-emerald-700/50 px-2 py-2">
             <h2 className="px-3 text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-2">
-              System
+              {t('sidebar.sections.system')}
             </h2>
             <ul className="list-none space-y-1">
-              <li><SidebarLink to="/dashboard/archives" iconSrc={archivesIcon} label="Archiwum" /></li>
-              <li><SidebarLink to="/dashboard/settings" iconSrc={settingsIcon} label="Ustawienia" /></li>
+              <li><SidebarLink to="/dashboard/archives" iconSrc={archivesIcon} label={t('sidebar.links.archives')} /></li>
+              <li><SidebarLink to="/dashboard/settings" iconSrc={settingsIcon} label={t('sidebar.links.settings')} /></li>
             </ul>
           </div>
         </nav>

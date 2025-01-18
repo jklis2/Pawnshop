@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import EmployeeCard from "../components/EmployeeCard";
 import SearchBar from "../components/SearchBar";
 
@@ -22,6 +24,8 @@ type Employee = {
 };
 
 export default function Employees() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,33 +52,36 @@ export default function Employees() {
     fetchEmployees();
   };
 
+  const handleEdit = (id: string) => {
+    navigate(`/dashboard/employees/edit/${id}`);
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center mb-4">All Employees</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">{t('routes.employees.title')}</h1>
       <div className="p-4">
         <SearchBar
-          placeholder="Search by first name, last name, or PESEL"
+          placeholder={t('routes.employees.searchPlaceholder')}
           data={employees}
           onSearch={(results) => setFilteredEmployees(results)}
-          searchKeys={["firstName", "lastName", "pesel"]}
+          searchKeys={["firstName", "lastName", "role"]}
         />
 
         {isLoading ? (
-          <p>Loading employees...</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4">
-            {filteredEmployees.length > 0 ? (
-              filteredEmployees.map((employee) => (
-                <EmployeeCard
-                  key={employee._id}
-                  employee={employee}
-                  onDelete={handleDelete}
-                />
-              ))
-            ) : (
-              <p>No employees found.</p>
-            )}
+          <p className="text-center">{t('routes.employees.loading')}</p>
+        ) : filteredEmployees.length > 0 ? (
+          <div className="space-y-4">
+            {filteredEmployees.map((employee) => (
+              <EmployeeCard
+                key={employee._id}
+                employee={employee}
+                onDelete={handleDelete}
+                onEdit={() => handleEdit(employee._id)}
+              />
+            ))}
           </div>
+        ) : (
+          <p className="text-center">{t('routes.employees.noEmployees')}</p>
         )}
       </div>
     </div>

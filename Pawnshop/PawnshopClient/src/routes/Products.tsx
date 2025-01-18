@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import { useAuth } from "../context/AuthContext";
+import { useAlert } from "../context/AlertContext";
 
 interface Product {
   _id: string;
@@ -36,6 +38,7 @@ interface Customer {
 }
 
 export default function Products() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +46,7 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 20;
   const { employee } = useAuth();
+  const { showAlert } = useAlert();
 
   const fetchProductsAndCustomers = async () => {
     try {
@@ -57,9 +61,7 @@ export default function Products() {
       const customersData: Customer[] = customersResponse.data;
 
       const updatedProducts = productsData.map((product) => {
-        const customer = customersData.find(
-          (c) => c._id === product.clientId
-        );
+        const customer = customersData.find((c) => c._id === product.clientId);
         return {
           ...product,
           clientName: customer
@@ -68,29 +70,36 @@ export default function Products() {
         };
       });
 
-      const filteredProducts = updatedProducts.filter(
+      const activeProducts = updatedProducts.filter(
         (product) =>
           product.transactionType === "pawn" ||
           product.transactionType === "sale"
       );
 
-      setProducts(filteredProducts);
-      setFilteredProducts(filteredProducts);
+      setProducts(activeProducts);
+      setFilteredProducts(activeProducts);
       setLoading(false);
+      setError(null);
     } catch {
-      setError(
-        "Failed to load products or customers. Please try again later."
-      );
+      setError(t('routes.products.error.fetch'));
       setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchProductsAndCustomers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDeleteProduct = () => {
-    fetchProductsAndCustomers();
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
+      showAlert(t('routes.products.success.delete'), "success");
+      fetchProductsAndCustomers();
+    } catch {
+      console.error("Error deleting product");
+      showAlert(t('routes.products.error.delete'), "error");
+    }
   };
 
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -102,15 +111,15 @@ export default function Products() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center mb-4">All products</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">{t('routes.products.title')}</h1>
       <div className="p-4">
         <SearchBar
-          placeholder="Search by product name, brand, or category"
+          placeholder={t('routes.products.searchPlaceholder')}
           data={products}
           onSearch={(results) => setFilteredProducts(results)}
           searchKeys={["productName", "brand", "category"]}
         />
-        {loading && <p className="text-center">Loading products...</p>}
+        {loading && <p className="text-center">{t('routes.products.loading')}</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
         {!loading && !error && (
@@ -140,12 +149,13 @@ export default function Products() {
                     interestRate={product.interestRate}
                     transactionNotes={product.notes}
                     clientName={product.clientName}
-                    onDelete={handleDeleteProduct}
+                    canEdit={true}
+                    onDelete={() => handleDelete(product._id)}
                     role={employee?.role || ""}
                   />
                 ))
               ) : (
-                <p>No products found.</p>
+                <p>{t('routes.products.noProducts')}</p>
               )}
             </div>
             <Pagination

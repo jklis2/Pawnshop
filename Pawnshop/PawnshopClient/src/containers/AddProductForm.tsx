@@ -4,6 +4,7 @@ import CreateForm from '../components/CreateForm';
 import CustomerSelect from '../components/CustomerSelect';
 import { useAlert } from '../context/AlertContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const getCurrentDate = () => {
   const date = new Date();
@@ -14,6 +15,7 @@ const getCurrentDate = () => {
 };
 
 export default function AddProductForm() {
+  const { t } = useTranslation();
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
@@ -48,7 +50,7 @@ export default function AddProductForm() {
       !transactionType ||
       !dateOfReceipt
     ) {
-      showAlert('Please fill in all required fields.', 'error');
+      showAlert(t('forms.product.validation.required', { field: t('forms.product.fields.required') }), 'error');
       return false;
     }
     return true;
@@ -91,10 +93,10 @@ export default function AddProductForm() {
         },
       });
 
-      showAlert('Product successfully added!', 'success');
+      showAlert(t('forms.product.validation.success'), 'success');
       navigate('/dashboard/products');
     } catch {
-      showAlert('Failed to add product. Please try again.', 'error');
+      showAlert(t('forms.product.validation.error'), 'error');
     }
   };
 
@@ -105,20 +107,20 @@ export default function AddProductForm() {
         onCustomerSelect={setSelectedCustomerId} 
       />
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Product Details</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('forms.product.title')}</h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
           <div className="space-y-6">
             <CreateForm 
-              label="Product Name" 
-              placeholder="Enter product name" 
+              label={t('forms.product.fields.name.label')} 
+              placeholder={t('forms.product.fields.name.placeholder')} 
               type="text" 
               value={productName} 
               required={true} 
               onChange={(e) => setProductName(e.target.value)} 
             />
             <CreateForm 
-              label="Product Description" 
-              placeholder="Enter product description" 
+              label={t('forms.product.fields.description.label')} 
+              placeholder={t('forms.product.fields.description.placeholder')} 
               type="text" 
               value={productDescription} 
               required={true} 
@@ -126,60 +128,60 @@ export default function AddProductForm() {
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CreateForm 
-                label="Category" 
-                placeholder="Enter category" 
+                label={t('forms.product.fields.category.label')} 
+                placeholder={t('forms.product.fields.category.placeholder')} 
                 type="text" 
                 value={category} 
                 required={true} 
                 onChange={(e) => setCategory(e.target.value)} 
               />
               <CreateForm 
-                label="Brand" 
-                placeholder="Enter brand" 
+                label={t('forms.product.fields.brand.label')} 
+                placeholder={t('forms.product.fields.brand.placeholder')} 
                 type="text" 
                 value={brand} 
                 onChange={(e) => setBrand(e.target.value)} 
               />
               <CreateForm 
-                label="Model" 
-                placeholder="Enter model" 
+                label={t('forms.product.fields.model.label')} 
+                placeholder={t('forms.product.fields.model.placeholder')} 
                 type="text" 
                 value={productModel} 
                 onChange={(e) => setProductModel(e.target.value)} 
               />
               <CreateForm 
-                label="Serial Number" 
-                placeholder="Enter serial number (if applicable)" 
+                label={t('forms.product.fields.serialNumber.label')} 
+                placeholder={t('forms.product.fields.serialNumber.placeholder')} 
                 type="text" 
                 value={serialNumber} 
                 onChange={(e) => setSerialNumber(e.target.value)} 
               />
               <CreateForm 
-                label="Year of Production" 
-                placeholder="Enter year of production (if applicable)" 
+                label={t('forms.product.fields.yearOfProduction.label')} 
+                placeholder={t('forms.product.fields.yearOfProduction.placeholder')} 
                 type="number" 
                 value={yearOfProduction?.toString()} 
                 onChange={(e) => setYearOfProduction(Number(e.target.value))} 
               />
               <CreateForm 
-                label="Technical Condition" 
-                placeholder="Enter technical condition" 
+                label={t('forms.product.fields.technicalCondition.label')} 
+                placeholder={t('forms.product.fields.technicalCondition.placeholder')} 
                 type="text" 
                 value={technicalCondition} 
                 required={true} 
                 onChange={(e) => setTechnicalCondition(e.target.value)} 
               />
               <CreateForm 
-                label="Purchase Price" 
-                placeholder="Enter purchase price" 
+                label={t('forms.product.fields.purchasePrice.label')} 
+                placeholder={t('forms.product.fields.purchasePrice.placeholder')} 
                 type="number" 
                 value={purchasePrice?.toString()} 
                 required={true} 
                 onChange={(e) => setPurchasePrice(Number(e.target.value))} 
               />
               <CreateForm 
-                label="Sale Price" 
-                placeholder="Enter sale price (if for sale)" 
+                label={t('forms.product.fields.salePrice.label')} 
+                placeholder={t('forms.product.fields.salePrice.placeholder')} 
                 type="number" 
                 value={salePrice?.toString()} 
                 onChange={(e) => setSalePrice(Number(e.target.value))} 
@@ -188,7 +190,7 @@ export default function AddProductForm() {
             <div className="space-y-4">
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Images
+                  {t('forms.product.fields.productImages.label')}
                 </label>
                 <input
                   type="file"
@@ -204,8 +206,8 @@ export default function AddProductForm() {
                 />
               </div>
               <CreateForm 
-                label="Additional Notes" 
-                placeholder="Enter additional notes (if applicable)" 
+                label={t('forms.product.fields.additionalNotes.label')} 
+                placeholder={t('forms.product.fields.additionalNotes.placeholder')} 
                 type="text" 
                 value={additionalNotes} 
                 onChange={(e) => setAdditionalNotes(e.target.value)} 
@@ -214,20 +216,20 @@ export default function AddProductForm() {
           </div>
 
           <div className="mt-12 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Transaction Details</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('forms.product.sections.transaction')}</h2>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <CreateForm 
-                  label="Transaction Type" 
-                  placeholder="Enter transaction type (pawn / sale)" 
+                  label={t('forms.product.fields.transactionType.label')} 
+                  placeholder={t('forms.product.fields.transactionType.placeholder')} 
                   type="text" 
                   value={transactionType} 
                   required={true} 
                   onChange={(e) => setTransactionType(e.target.value as 'pawn' | 'sale')} 
                 />
                 <CreateForm 
-                  label="Date of Receipt" 
-                  placeholder="Enter date of receipt" 
+                  label={t('forms.product.fields.dateOfReceipt.label')} 
+                  placeholder={t('forms.product.fields.dateOfReceipt.placeholder')} 
                   type="date" 
                   value={dateOfReceipt} 
                   required={true} 
@@ -236,22 +238,22 @@ export default function AddProductForm() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <CreateForm 
-                  label="Redemption Deadline" 
-                  placeholder="Enter redemption deadline (if pawned)" 
+                  label={t('forms.product.fields.redemptionDeadline.label')} 
+                  placeholder={t('forms.product.fields.redemptionDeadline.placeholder')} 
                   type="date" 
                   value={redemptionDeadline} 
                   onChange={(e) => setRedemptionDeadline(e.target.value)} 
                 />
                 <CreateForm 
-                  label="Loan Value" 
-                  placeholder="Enter loan value (if pawned)" 
+                  label={t('forms.product.fields.loanValue.label')} 
+                  placeholder={t('forms.product.fields.loanValue.placeholder')} 
                   type="number" 
                   value={loanValue?.toString()} 
                   onChange={(e) => setLoanValue(Number(e.target.value))} 
                 />
                 <CreateForm 
-                  label="Interest Rate" 
-                  placeholder="Enter interest rate (if pawned)" 
+                  label={t('forms.product.fields.interestRate.label')} 
+                  placeholder={t('forms.product.fields.interestRate.placeholder')} 
                   type="number" 
                   value={interestRate?.toString()} 
                   onChange={(e) => setInterestRate(Number(e.target.value))} 
@@ -265,7 +267,7 @@ export default function AddProductForm() {
               type="submit" 
               className="bg-emerald-600 text-white px-8 py-3 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors duration-200"
             >
-              Add Product
+              {t('forms.product.submit')}
             </button>
           </div>
         </form>

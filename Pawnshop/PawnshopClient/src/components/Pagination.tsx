@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface PaginationProps {
   currentPage: number;
   totalCustomers: number;
@@ -11,6 +13,7 @@ export default function Pagination({
   customersPerPage,
   onPageChange,
 }: PaginationProps) {
+  const { t } = useTranslation();
   const totalPages = Math.ceil(totalCustomers / customersPerPage);
 
   const handlePreviousPage = () => {
@@ -39,15 +42,15 @@ export default function Pagination({
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          <span>Previous</span>
+          <span>{t('pagination.previous')}</span>
         </div>
       </button>
 
       <div className="flex items-center space-x-2 text-sm">
         <span className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-medium">
-          Page {currentPage}
+          {t('pagination.page')} {currentPage}
         </span>
-        <span className="text-gray-500">of</span>
+        <span className="text-gray-500">{t('pagination.of')}</span>
         <span className="px-3 py-1 rounded-lg bg-gray-50 text-gray-700 font-medium">
           {totalPages}
         </span>
@@ -62,7 +65,7 @@ export default function Pagination({
                     : 'bg-white text-emerald-600 border border-emerald-600 hover:bg-emerald-50'}`}
       >
         <div className="flex items-center space-x-2">
-          <span>Next</span>
+          <span>{t('pagination.next')}</span>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>

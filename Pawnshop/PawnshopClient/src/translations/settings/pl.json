@@ -1,6 +1,8 @@
 {
-  "welcome": "Witamy na stronie ustawień",
-  "description": "To jest główna strona ustawień.",
-  "selectLanguage": "Wybierz język:",
-  "saveButton": "Zapisz"
+  "settings": {
+    "welcome": "Ustawienia",
+    "description": "Tutaj możesz zarządzać ustawieniami aplikacji",
+    "selectLanguage": "Wybierz język:",
+    "saveButton": "Zapisz"
+  }
 }

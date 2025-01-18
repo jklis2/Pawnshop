@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
@@ -35,6 +36,7 @@ interface Customer {
 }
 
 export default function Archives() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,15 +79,13 @@ export default function Archives() {
         setFilteredProducts(filteredProducts);
         setLoading(false);
       } catch {
-        setError(
-          "Failed to load products or customers. Please try again later."
-        );
+        setError(t('routes.archives.error'));
         setLoading(false);
       }
     };
 
     fetchProductsAndCustomers();
-  }, []);
+  }, [t]);
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -96,15 +96,15 @@ export default function Archives() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center mb-4">Archives</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">{t('routes.archives.title')}</h1>
       <div className="p-4">
         <SearchBar
-          placeholder="Search by product name, brand, or category"
+          placeholder={t('routes.archives.searchPlaceholder')}
           data={products}
           onSearch={(results) => setFilteredProducts(results)}
           searchKeys={["productName", "brand", "category"]}
         />
-        {loading && <p className="text-center">Loading products...</p>}
+        {loading && <p className="text-center">{t('routes.archives.loading')}</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
         {!loading && !error && (
@@ -140,7 +140,7 @@ export default function Archives() {
                   />
                 ))
               ) : (
-                <p>No products found.</p>
+                <p>{t('routes.archives.noProducts')}</p>
               )}
             </div>
             <Pagination

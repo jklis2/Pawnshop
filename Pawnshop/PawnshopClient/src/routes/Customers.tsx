@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import CustomerCard from "../components/CustomerCard";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
@@ -25,6 +26,7 @@ interface Customer {
 }
 
 export default function Customers() {
+  const { t } = useTranslation();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
@@ -40,7 +42,7 @@ export default function Customers() {
       setFilteredCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
-      showAlert("Error fetching customers.", "error");
+      showAlert(t('routes.customers.error.fetch'), "error");
     }
   };
 
@@ -52,11 +54,11 @@ export default function Customers() {
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/customers/${id}`);
-      showAlert("Customer successfully deleted.", "success");
+      showAlert(t('routes.customers.success.delete'), "success");
       fetchCustomers();
     } catch (error) {
       console.error("Error deleting customer:", error);
-      showAlert("Error deleting customer.", "error");
+      showAlert(t('routes.customers.error.delete'), "error");
     }
   };
 
@@ -73,10 +75,10 @@ export default function Customers() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center mb-4">All Customers</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">{t('routes.customers.title')}</h1>
       <div className="p-4">
         <SearchBar
-          placeholder="Search by first name, last name, or PESEL"
+          placeholder={t('routes.customers.searchPlaceholder')}
           data={customers}
           onSearch={(results) => setFilteredCustomers(results)}
           searchKeys={["firstName", "lastName", "pesel"]}
@@ -109,9 +111,10 @@ export default function Customers() {
               />
             ))
           ) : (
-            <p>No customers found.</p>
+            <p>{t('routes.customers.noCustomers')}</p>
           )}
         </div>
+
         <Pagination
           currentPage={currentPage}
           totalCustomers={filteredCustomers.length}

@@ -1,6 +1,8 @@
 {
-  "welcome": "Welcome in Settings page",
-  "description": "This is the main Settings page.",
-  "selectLanguage": "Select language:",
-  "saveButton": "Save"
+  "settings": {
+    "welcome": "Settings",
+    "description": "Here you can manage your application settings",
+    "selectLanguage": "Select language:",
+    "saveButton": "Save"
+  }
 }

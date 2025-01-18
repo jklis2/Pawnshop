@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../context/AlertContext";
+import { useTranslation } from 'react-i18next';
 
 type CustomerCardProps = {
   id: string;
@@ -56,6 +57,7 @@ export default function CustomerCard({
   onDelete,
   role,
 }: CustomerCardProps) {
+  const { t } = useTranslation();
   const [customerItems, setCustomerItems] = useState<Item[]>([]);
   const navigate = useNavigate();
   const { showAlert } = useAlert();
@@ -68,7 +70,7 @@ export default function CustomerCard({
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     showAlert(
-      `Are you sure you want to delete ${firstName} ${lastName}?`,
+      t('cards.customer.confirmDelete', { firstName, lastName }),
       "error",
       onDelete
     );
@@ -98,15 +100,15 @@ export default function CustomerCard({
   const getStatusLabel = (transactionType: string) => {
     switch (transactionType) {
       case "pawn":
-        return "pawn";
+        return t('cards.customer.pawn');
       case "sale":
-        return "sale";
+        return t('cards.customer.sale');
       case "redeemed":
-        return "redeemed";
+        return t('cards.customer.redeemed');
       case "sold":
-        return "sold";
+        return t('cards.customer.sold');
       default:
-        return "unknown";
+        return t('cards.customer.unknown');
     }
   };
 
@@ -123,12 +125,12 @@ export default function CustomerCard({
                 {firstName} {lastName}
               </h3>
               <span className="text-sm text-gray-500 ml-4">
-                PESEL: {pesel}
+                {t('cards.customer.pesel')}: {pesel}
               </span>
             </div>
             {notes && (
               <p className="text-sm text-gray-500 mt-1">
-                Notes: {notes}
+                {t('cards.customer.notes')}: {notes}
               </p>
             )}
           </div>
@@ -137,20 +139,20 @@ export default function CustomerCard({
               onClick={handleEdit}
               className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors duration-200"
             >
-              <img src={editIcon} alt="Edit" className="w-5 h-5" />
+              <img src={editIcon} alt={t('cards.customer.edit')} className="w-5 h-5" />
             </button>
             {role === "admin" && (
               <button
                 onClick={handleDelete}
                 className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
               >
-                <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
+                <img src={deleteIcon} alt={t('cards.customer.delete')} className="w-5 h-5" />
               </button>
             )}
             <button className="p-2 text-gray-400 hover:bg-gray-50 rounded-full transition-colors duration-200">
               <img
                 src={isExpanded ? arrowTop : arrowBottom}
-                alt={isExpanded ? "Collapse" : "Expand"}
+                alt={isExpanded ? t('cards.customer.collapse') : t('cards.customer.expand')}
                 className="w-5 h-5"
               />
             </button>
@@ -165,36 +167,36 @@ export default function CustomerCard({
         <div className="px-6 py-4 bg-gray-50 space-y-3">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-1">Personal Information</h4>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.personalInformation')}</h4>
               <p className="text-sm">
-                <span className="font-medium text-gray-700">Date of Birth:</span>{" "}
+                <span className="font-medium text-gray-700">{t('cards.customer.dateOfBirth')}:</span>{" "}
                 <span className="text-gray-600">{new Date(dateOfBirth).toLocaleDateString()}</span>
               </p>
               <p className="text-sm">
-                <span className="font-medium text-gray-700">ID:</span>{" "}
+                <span className="font-medium text-gray-700">{t('cards.customer.id')}:</span>{" "}
                 <span className="text-gray-600">{idSeries} {idNumber}</span>
               </p>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-1">Contact Information</h4>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.contactInformation')}</h4>
               <p className="text-sm">
-                <span className="font-medium text-gray-700">Email:</span>{" "}
+                <span className="font-medium text-gray-700">{t('cards.customer.email')}:</span>{" "}
                 <span className="text-gray-600">{email}</span>
               </p>
               <p className="text-sm">
-                <span className="font-medium text-gray-700">Phone:</span>{" "}
+                <span className="font-medium text-gray-700">{t('cards.customer.phoneNumber')}:</span>{" "}
                 <span className="text-gray-600">{phoneNumber}</span>
               </p>
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-500 mb-1">Address</h4>
+            <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.address')}</h4>
             <p className="text-sm text-gray-600">
               {street} {houseNumber}, {postalCode} {city}
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-500 mb-1">Items</h4>
+            <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.items')}</h4>
             <p className="text-sm text-gray-600">
               {customerItems.length > 0
                 ? customerItems
@@ -205,7 +207,7 @@ export default function CustomerCard({
                         )})`
                     )
                     .join(", ")
-                : "No items available."}
+                : t('cards.customer.noItemsAvailable')}
             </p>
           </div>
         </div>

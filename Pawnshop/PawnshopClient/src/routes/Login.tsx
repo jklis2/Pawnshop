@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import LoginBackground from "../assets/LoginBackground.svg";
 
 export default function Login() {
+  const { t } = useTranslation();
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,7 +18,7 @@ export default function Login() {
       await authLogin(login, password);
       navigate("/dashboard");
     } catch {
-      setError("Nieprawidłowy login lub hasło");
+      setError(t('error.invalid'));
     }
   };
 
@@ -31,13 +33,13 @@ export default function Login() {
     >
       <div className="bg-white/80 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-md transform hover:shadow-3xl transition-all duration-300">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-emerald-800">Panel logowania</h1>
-          <p className="text-gray-600 mt-2">Zaloguj się do systemu</p>
+          <h1 className="text-3xl font-bold text-emerald-800">{t('title')}</h1>
+          <p className="text-gray-600 mt-2">{t('subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Login</label>
+            <label className="block text-sm font-medium text-gray-700">{t('form.login')}</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -57,7 +59,7 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Hasło</label>
+            <label className="block text-sm font-medium text-gray-700">{t('form.password')}</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -99,7 +101,7 @@ export default function Login() {
                      focus:outline-none focus:ring-4 focus:ring-emerald-100
                      shadow-lg hover:shadow-xl"
           >
-            Zaloguj się
+            {t('form.submit')}
           </button>
         </form>
       </div>

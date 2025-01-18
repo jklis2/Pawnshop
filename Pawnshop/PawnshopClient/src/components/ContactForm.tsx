@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function ContactForm() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,7 +25,7 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium text-gray-700">Imię i nazwisko</label>
+        <label htmlFor="name" className="text-sm font-medium text-gray-700">{t('contactForm.labels.name')}</label>
         <input
           id="name"
           type="text"
@@ -36,7 +38,7 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
+        <label htmlFor="email" className="text-sm font-medium text-gray-700">{t('contactForm.labels.email')}</label>
         <input
           id="email"
           type="email"
@@ -49,7 +51,7 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="subject" className="text-sm font-medium text-gray-700">Temat</label>
+        <label htmlFor="subject" className="text-sm font-medium text-gray-700">{t('contactForm.labels.subject')}</label>
         <input
           id="subject"
           type="text"
@@ -62,7 +64,7 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="message" className="text-sm font-medium text-gray-700">Wiadomość</label>
+        <label htmlFor="message" className="text-sm font-medium text-gray-700">{t('contactForm.labels.message')}</label>
         <textarea
           id="message"
           name="message"
@@ -82,7 +84,7 @@ export default function ContactForm() {
                  focus:outline-none focus:ring-4 focus:ring-emerald-100
                  shadow-lg hover:shadow-xl"
       >
-        Wyślij wiadomość
+        {t('contactForm.submitButton')}
       </button>
     </form>
   );

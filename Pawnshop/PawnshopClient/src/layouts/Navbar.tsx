@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import burgerIcon from "../assets/icons/burger.svg";
 import { useAuth } from "../context/AuthContext";
 
@@ -7,6 +8,7 @@ type NavbarProps = {
 };
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
+  const { t } = useTranslation();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const { employee, logout } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -65,7 +67,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             {isDropdownVisible && (
               <div className="absolute top-full mt-2 right-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-200 z-50">
                 <div className="px-4 py-3 bg-emerald-50 border-b border-emerald-100">
-                  <p className="text-sm text-emerald-900 font-medium">Zalogowany jako</p>
+                  <p className="text-sm text-emerald-900 font-medium">{t('navbar.loggedInAs')}</p>
                   <p className="text-sm text-emerald-700">{`${employee?.firstName || 'John'} ${employee?.lastName || 'Doe'}`}</p>
                 </div>
                 <ul className="py-2">
@@ -78,7 +80,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                       <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                       </svg>
-                      <span>Wyloguj się</span>
+                      <span>{t('navbar.logout')}</span>
                     </button>
                   </li>
                 </ul>

@@ -2,21 +2,57 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import enSettings from "./translations/settings/en.json";
 import plSettings from "./translations/settings/pl.json";
-import enWelcome from "./translations/welcome/en.json";
-import plWelcome from "./translations/welcome/pl.json";
+import enHomeNavbar from "./translations/homeNavbar/en.json";
+import plHomeNavbar from "./translations/homeNavbar/pl.json";
+import enFooter from "./translations/footer/en.json";
+import plFooter from "./translations/footer/pl.json";
+import enContactForm from "./translations/contactForm/en.json";
+import plContactForm from "./translations/contactForm/pl.json";
+import enHome from "./translations/home/en.json";
+import plHome from "./translations/home/pl.json";
+import loginEN from "./translations/login/en.json";
+import loginPL from "./translations/login/pl.json";
+import navbarEN from "./translations/navbar/en.json";
+import navbarPL from "./translations/navbar/pl.json";
+import sidebarEN from "./translations/sidebar/en.json";
+import sidebarPL from "./translations/sidebar/pl.json";
+import contactFormEN from "./translations/contactForm/en.json";
+import contactFormPL from "./translations/contactForm/pl.json";
+import formsEN from "./translations/forms/en.json";
+import formsPL from "./translations/forms/pl.json";
 
 const resources = {
   en: {
-    settings: enSettings,
-    welcome: enWelcome,
+    translation: {
+      ...enSettings,
+      ...enHomeNavbar,
+      ...enFooter,
+      ...enContactForm,
+      ...enHome,
+      ...loginEN,
+      ...navbarEN,
+      ...sidebarEN,
+      ...contactFormEN,
+      ...formsEN
+    }
   },
   pl: {
-    settings: plSettings,
-    welcome: plWelcome,
-  },
+    translation: {
+      ...plSettings,
+      ...plHomeNavbar,
+      ...plFooter,
+      ...plContactForm,
+      ...plHome,
+      ...loginPL,
+      ...navbarPL,
+      ...sidebarPL,
+      ...contactFormPL,
+      ...formsPL
+    }
+  }
 };
 
-const savedLanguage = localStorage.getItem("language") || "en";
+const savedLanguage = localStorage.getItem("language") || "pl";
 
 i18n.use(initReactI18next).init({
   resources,
