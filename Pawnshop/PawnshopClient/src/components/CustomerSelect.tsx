@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
 
 interface Customer {
   _id: string;
@@ -30,6 +31,7 @@ export default function CustomerSelect({
     initialCustomer
   );
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -88,7 +90,7 @@ export default function CustomerSelect({
   return (
     <div className="mb-8">
       <label className="text-xl font-semibold mb-4 block text-gray-800">
-        Search for Customer<span className="text-red-500"> *</span>
+        {t('forms.product.fields.searchCustomer.label')}<span className="text-red-500"> *</span>
       </label>
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg">
@@ -101,7 +103,7 @@ export default function CustomerSelect({
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Enter first name, last name, or PESEL"
+          placeholder={t('forms.product.fields.searchCustomer.placeholder')}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200"
           disabled={!!selectedCustomer}
         />

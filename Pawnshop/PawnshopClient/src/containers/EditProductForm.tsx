@@ -241,7 +241,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
               />
             </div>
           </div>
-          <div>
+          <div className="mt-12 mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('forms.product.sections.transactionData')}</h2>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

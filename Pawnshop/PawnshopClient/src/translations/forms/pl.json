@@ -8,7 +8,8 @@
         "address": "Dane adresowe",
         "identification": "Dane identyfikacyjne",
         "contact": "Dane kontaktowe",
-        "account": "Dane konta"
+        "account": "Dane konta",
+        "id": "Dane identyfikacyjne"
       },
       "fields": {
         "firstName": {
@@ -171,12 +172,17 @@
         "productDetails": "Szczegóły Produktu",
         "pricingData": "Informacje o Cenach",
         "additionalData": "Dodatkowe Informacje",
-        "transactionData": "Szczegóły Transakcji"
+        "transactionData": "Szczegóły Transakcji",
+        "transaction": "Transakcja"
       },
       "fields": {
         "name": {
           "label": "Nazwa Produktu",
           "placeholder": "Wprowadź nazwę produktu"
+        },
+        "searchCustomer": {
+          "label": "Wyszukaj klienta",
+          "placeholder": "Wpisz imię, nazwisko lub PESEL klienta"
         },
         "description": {
           "label": "Opis",
@@ -232,6 +238,9 @@
         "notes": {
           "label": "Uwagi",
           "placeholder": "Wprowadź dodatkowe uwagi"
+        },
+        "productImages": {
+          "label": "Zdjęcia produktu"
         },
         "images": {
           "label": "Zdjęcia produktu"
@@ -372,76 +381,76 @@
       "redeemed": "wykupiony",
       "sold": "sprzedany",
       "unknown": "nieznany"
-    }
-  },
-  "routes": {
-    "add": {
-      "customer": "Dodaj nowego klienta",
-      "employee": "Dodaj nowego pracownika",
-      "product": "Dodaj nowy produkt"
     },
-    "edit": {
-      "customer": "Edytuj klienta",
-      "employee": "Edytuj pracownika",
-      "product": "Edytuj produkt"
-    },
-    "loading": {
-      "customer": "Ładowanie danych klienta...",
-      "employee": "Ładowanie danych pracownika...",
-      "product": "Ładowanie danych produktu..."
-    },
-    "errors": {
-      "fetchCustomer": "Nie udało się pobrać danych klienta.",
-      "updateCustomer": "Nie udało się zaktualizować danych klienta.",
-      "fetchEmployee": "Nie udało się pobrać danych pracownika.",
-      "updateEmployee": "Nie udało się zaktualizować danych pracownika.",
-      "fetchProduct": "Nie udało się pobrać danych produktu.",
-      "updateProduct": "Nie udało się zaktualizować danych produktu."
-    },
-    "success": {
-      "updateCustomer": "Pomyślnie zaktualizowano dane klienta!",
-      "updateEmployee": "Pomyślnie zaktualizowano dane pracownika!",
-      "updateProduct": "Pomyślnie zaktualizowano dane produktu!"
-    },
-    "archives": {
-      "title": "Archiwum",
-      "searchPlaceholder": "Szukaj po nazwie produktu, marce lub kategorii",
-      "loading": "Ładowanie produktów...",
-      "error": "Nie udało się załadować produktów lub klientów. Spróbuj ponownie później.",
-      "noProducts": "Nie znaleziono produktów."
-    },
-    "customers": {
-      "title": "Wszyscy Klienci",
-      "searchPlaceholder": "Szukaj po imieniu, nazwisku lub PESEL",
-      "noCustomers": "Nie znaleziono klientów",
-      "error": {
-        "fetch": "Błąd podczas pobierania klientów.",
-        "delete": "Błąd podczas usuwania klienta."
+    "routes": {
+      "add": {
+        "customer": "Dodaj nowego klienta",
+        "employee": "Dodaj nowego pracownika",
+        "product": "Dodaj nowy produkt"
+      },
+      "edit": {
+        "customer": "Edytuj klienta",
+        "employee": "Edytuj pracownika",
+        "product": "Edytuj produkt"
+      },
+      "loading": {
+        "customer": "Ładowanie danych klienta...",
+        "employee": "Ładowanie danych pracownika...",
+        "product": "Ładowanie danych produktu..."
+      },
+      "errors": {
+        "fetchCustomer": "Nie udało się pobrać danych klienta.",
+        "updateCustomer": "Nie udało się zaktualizować danych klienta.",
+        "fetchEmployee": "Nie udało się pobrać danych pracownika.",
+        "updateEmployee": "Nie udało się zaktualizować danych pracownika.",
+        "fetchProduct": "Nie udało się pobrać danych produktu.",
+        "updateProduct": "Nie udało się zaktualizować danych produktu."
       },
       "success": {
-        "delete": "Klient został pomyślnie usunięty."
-      }
-    },
-    "employees": {
-      "title": "Wszyscy Pracownicy",
-      "searchPlaceholder": "Szukaj po imieniu, nazwisku lub stanowisku",
-      "noEmployees": "Nie znaleziono pracowników",
-      "loading": "Ładowanie pracowników...",
-      "error": {
-        "fetch": "Błąd podczas pobierania pracowników."
-      }
-    },
-    "products": {
-      "title": "Wszystkie Produkty",
-      "searchPlaceholder": "Szukaj po nazwie produktu, marce lub kategorii",
-      "noProducts": "Nie znaleziono produktów",
-      "loading": "Ładowanie produktów...",
-      "error": {
-        "fetch": "Nie udało się załadować produktów lub klientów. Spróbuj ponownie później.",
-        "delete": "Błąd podczas usuwania produktu."
+        "updateCustomer": "Pomyślnie zaktualizowano dane klienta!",
+        "updateEmployee": "Pomyślnie zaktualizowano dane pracownika!",
+        "updateProduct": "Pomyślnie zaktualizowano dane produktu!"
       },
-      "success": {
-        "delete": "Produkt został pomyślnie usunięty."
+      "archives": {
+        "title": "Archiwum",
+        "searchPlaceholder": "Szukaj po nazwie produktu, marce lub kategorii",
+        "loading": "Ładowanie produktów...",
+        "error": "Nie udało się załadować produktów lub klientów. Spróbuj ponownie później.",
+        "noProducts": "Nie znaleziono produktów."
+      },
+      "customers": {
+        "title": "Wszyscy Klienci",
+        "searchPlaceholder": "Szukaj po imieniu, nazwisku lub PESEL",
+        "noCustomers": "Nie znaleziono klientów",
+        "error": {
+          "fetch": "Błąd podczas pobierania klientów.",
+          "delete": "Błąd podczas usuwania klienta."
+        },
+        "success": {
+          "delete": "Klient został pomyślnie usunięty."
+        }
+      },
+      "employees": {
+        "title": "Wszyscy Pracownicy",
+        "searchPlaceholder": "Szukaj po imieniu, nazwisku lub stanowisku",
+        "noEmployees": "Nie znaleziono pracowników",
+        "loading": "Ładowanie pracowników...",
+        "error": {
+          "fetch": "Błąd podczas pobierania pracowników."
+        }
+      },
+      "products": {
+        "title": "Wszystkie Produkty",
+        "searchPlaceholder": "Szukaj po nazwie produktu, marce lub kategorii",
+        "noProducts": "Nie znaleziono produktów",
+        "loading": "Ładowanie produktów...",
+        "error": {
+          "fetch": "Nie udało się załadować produktów lub klientów. Spróbuj ponownie później.",
+          "delete": "Błąd podczas usuwania produktu."
+        },
+        "success": {
+          "delete": "Produkt został pomyślnie usunięty."
+        }
       }
     }
   },

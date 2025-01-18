@@ -6,9 +6,10 @@
       "sections": {
         "personal": "Personal Information",
         "address": "Address Information",
-        "identification": "ID Information",
+        "identification": "Identification Information",
         "contact": "Contact Information",
-        "account": "Account Information"
+        "account": "Account Information",
+        "id": "Identification Information"
       },
       "fields": {
         "firstName": {
@@ -171,12 +172,20 @@
         "productDetails": "Product Details",
         "pricingData": "Pricing Information",
         "additionalData": "Additional Information",
-        "transactionData": "Transaction Details"
+        "transactionData": "Transaction Details",
+        "transaction": "Transaction"
       },
       "fields": {
         "name": {
           "label": "Product Name",
           "placeholder": "Enter product name"
+        },
+        "searchCustomer": {
+          "label": "Search for Customer",
+          "placeholder": "Enter first name, last name, or PESEL"
+        },
+        "productImages": {
+          "label": "Product Images"
         },
         "description": {
           "label": "Description",
@@ -289,166 +298,166 @@
       "submit": "Add Product",
       "editSubmit": "Save Changes",
       "cancel": "Cancel"
+    }
+  },
+  "cards": {
+    "customer": {
+      "title": "Customer Details",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "pesel": "PESEL",
+      "address": "Address",
+      "city": "City",
+      "postalCode": "Postal Code",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete customer {{firstName}} {{lastName}}?",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "personalInformation": "Personal Information",
+      "contactInformation": "Contact Information",
+      "dateOfBirth": "Date of Birth",
+      "id": "ID Number",
+      "notes": "Notes",
+      "items": "Items",
+      "noItemsAvailable": "No items available",
+      "pawn": "pawn",
+      "sale": "sale",
+      "redeemed": "redeemed",
+      "sold": "sold",
+      "unknown": "unknown"
     },
-    "cards": {
-      "product": {
-        "title": "Product Details",
-        "name": "Name",
-        "description": "Description",
-        "category": "Category",
-        "brand": "Brand",
-        "model": "Model",
-        "serialNumber": "Serial Number",
-        "yearOfProduction": "Year of Production",
-        "technicalCondition": "Technical Condition",
-        "purchasePrice": "Purchase Price",
-        "salePrice": "Sale Price",
-        "transactionType": "Transaction Type",
-        "dateOfReceipt": "Date of Receipt",
-        "redemptionDeadline": "Redemption Deadline",
-        "loanValue": "Loan Value",
-        "interestRate": "Interest Rate",
-        "additionalNotes": "Additional Notes",
-        "edit": "Edit",
-        "delete": "Delete",
-        "confirmDelete": "Are you sure you want to delete this product?",
-        "productDetails": "Product Details",
-        "transactionDetails": "Transaction Details",
-        "collapse": "Collapse",
-        "expand": "Expand",
-        "client": "Client",
-        "transactionNotes": "Transaction Notes",
-        "markAsRedeem": "Mark as Redeemed",
-        "markAsSold": "Mark as Sold"
-      },
-      "employee": {
-        "title": "Employee Details",
-        "firstName": "First Name",
-        "lastName": "Last Name",
-        "email": "Email",
-        "phoneNumber": "Phone Number",
-        "position": "Position",
-        "dateOfEmployment": "Date of Employment",
-        "salary": "Salary",
-        "edit": "Edit",
-        "delete": "Delete",
-        "confirmDelete": "Are you sure you want to delete this employee?",
-        "errorDelete": "There was an error deleting the employee",
-        "collapse": "Collapse",
-        "expand": "Expand",
-        "personalInformation": "Personal Information",
-        "contactInformation": "Contact Information",
-        "address": "Address",
-        "idInformation": "ID Information",
-        "id": "ID Number",
-        "pesel": "PESEL",
-        "dateOfBirth": "Date of Birth"
-      },
-      "customer": {
-        "title": "Customer Details",
-        "firstName": "First Name",
-        "lastName": "Last Name",
-        "email": "Email",
-        "phoneNumber": "Phone Number",
-        "pesel": "PESEL",
-        "address": "Address",
-        "city": "City",
-        "postalCode": "Postal Code",
-        "edit": "Edit",
-        "delete": "Delete",
-        "confirmDelete": "Are you sure you want to delete customer {{firstName}} {{lastName}}?",
-        "collapse": "Collapse",
-        "expand": "Expand",
-        "personalInformation": "Personal Information",
-        "contactInformation": "Contact Information",
-        "dateOfBirth": "Date of Birth",
-        "id": "ID Number",
-        "notes": "Notes",
-        "items": "Items",
-        "noItemsAvailable": "No items available",
-        "pawn": "pawn",
-        "sale": "sale",
-        "redeemed": "redeemed",
-        "sold": "sold",
-        "unknown": "unknown"
-      }
+    "product": {
+      "title": "Product Details",
+      "name": "Name",
+      "description": "Description",
+      "category": "Category",
+      "brand": "Brand",
+      "model": "Model",
+      "serialNumber": "Serial Number",
+      "yearOfProduction": "Year of Production",
+      "technicalCondition": "Technical Condition",
+      "purchasePrice": "Purchase Price",
+      "salePrice": "Sale Price",
+      "transactionType": "Transaction Type",
+      "dateOfReceipt": "Date of Receipt",
+      "redemptionDeadline": "Redemption Deadline",
+      "loanValue": "Loan Value",
+      "interestRate": "Interest Rate",
+      "additionalNotes": "Additional Notes",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this product?",
+      "productDetails": "Product Details",
+      "transactionDetails": "Transaction Details",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "client": "Client",
+      "transactionNotes": "Transaction Notes",
+      "markAsRedeem": "Mark as Redeemed",
+      "markAsSold": "Mark as Sold"
     },
-    "routes": {
-      "add": {
-        "customer": "Add new Customer",
-        "employee": "Add new Employee",
-        "product": "Add new Product"
-      },
-      "edit": {
-        "customer": "Edit Customer",
-        "employee": "Edit Employee",
-        "product": "Edit Product"
-      },
-      "loading": {
-        "customer": "Loading customer data...",
-        "employee": "Loading employee data...",
-        "product": "Loading product data..."
-      },
-      "errors": {
-        "fetchCustomer": "Failed to fetch customer data.",
-        "updateCustomer": "Failed to update customer.",
-        "fetchEmployee": "Failed to fetch employee data.",
-        "updateEmployee": "Failed to update employee.",
-        "fetchProduct": "Failed to fetch product data.",
-        "updateProduct": "Failed to update product."
+    "employee": {
+      "title": "Employee Details",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "position": "Position",
+      "dateOfEmployment": "Date of Employment",
+      "salary": "Salary",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this employee?",
+      "errorDelete": "There was an error deleting the employee",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "personalInformation": "Personal Information",
+      "contactInformation": "Contact Information",
+      "address": "Address",
+      "idInformation": "ID Information",
+      "id": "ID Number",
+      "pesel": "PESEL",
+      "dateOfBirth": "Date of Birth"
+    }
+  },
+  "routes": {
+    "add": {
+      "customer": "Add new Customer",
+      "employee": "Add new Employee",
+      "product": "Add new Product"
+    },
+    "edit": {
+      "customer": "Edit Customer",
+      "employee": "Edit Employee",
+      "product": "Edit Product"
+    },
+    "loading": {
+      "customer": "Loading customer data...",
+      "employee": "Loading employee data...",
+      "product": "Loading product data..."
+    },
+    "errors": {
+      "fetchCustomer": "Failed to fetch customer data.",
+      "updateCustomer": "Failed to update customer.",
+      "fetchEmployee": "Failed to fetch employee data.",
+      "updateEmployee": "Failed to update employee.",
+      "fetchProduct": "Failed to fetch product data.",
+      "updateProduct": "Failed to update product."
+    },
+    "success": {
+      "updateCustomer": "Customer updated successfully!",
+      "updateEmployee": "Employee updated successfully!",
+      "updateProduct": "Product updated successfully!"
+    },
+    "archives": {
+      "title": "Archives",
+      "searchPlaceholder": "Search by product name, brand, or category",
+      "loading": "Loading products...",
+      "error": "Failed to load products or customers. Please try again later.",
+      "noProducts": "No products found."
+    },
+    "customers": {
+      "title": "All Customers",
+      "searchPlaceholder": "Search by first name, last name, or PESEL",
+      "noCustomers": "No customers found",
+      "error": {
+        "fetch": "Error fetching customers.",
+        "delete": "Error deleting customer."
       },
       "success": {
-        "updateCustomer": "Customer updated successfully!",
-        "updateEmployee": "Employee updated successfully!",
-        "updateProduct": "Product updated successfully!"
-      },
-      "archives": {
-        "title": "Archives",
-        "searchPlaceholder": "Search by product name, brand, or category",
-        "loading": "Loading products...",
-        "error": "Failed to load products or customers. Please try again later.",
-        "noProducts": "No products found."
-      },
-      "customers": {
-        "title": "All Customers",
-        "searchPlaceholder": "Search by first name, last name, or PESEL",
-        "noCustomers": "No customers found",
-        "error": {
-          "fetch": "Error fetching customers.",
-          "delete": "Error deleting customer."
-        },
-        "success": {
-          "delete": "Customer successfully deleted."
-        }
-      },
-      "employees": {
-        "title": "All Employees",
-        "searchPlaceholder": "Search by first name, last name, or position",
-        "noEmployees": "No employees found",
-        "loading": "Loading employees...",
-        "error": {
-          "fetch": "Error fetching employees."
-        }
-      },
-      "products": {
-        "title": "All Products",
-        "searchPlaceholder": "Search by product name, brand, or category",
-        "noProducts": "No products found",
-        "loading": "Loading products...",
-        "error": {
-          "fetch": "Failed to load products or customers. Please try again later.",
-          "delete": "Error deleting product."
-        },
-        "success": {
-          "delete": "Product successfully deleted."
-        }
+        "delete": "Customer successfully deleted."
       }
     },
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "page": "Page",
-      "of": "of"
+    "employees": {
+      "title": "All Employees",
+      "searchPlaceholder": "Search by first name, last name, or position",
+      "noEmployees": "No employees found",
+      "loading": "Loading employees...",
+      "error": {
+        "fetch": "Error fetching employees."
+      }
+    },
+    "products": {
+      "title": "All Products",
+      "searchPlaceholder": "Search by product name, brand, or category",
+      "noProducts": "No products found",
+      "loading": "Loading products...",
+      "error": {
+        "fetch": "Failed to load products or customers. Please try again later.",
+        "delete": "Error deleting product."
+      },
+      "success": {
+        "delete": "Product successfully deleted."
+      }
     }
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
   }
 }
