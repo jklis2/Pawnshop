@@ -76,13 +76,15 @@ export default function Customers() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center mb-4">{t('routes.customers.title')}</h1>
-      <div className="p-4">
-        <SearchBar
-          placeholder={t('routes.customers.searchPlaceholder')}
-          data={customers}
-          onSearch={(results) => setFilteredCustomers(results)}
-          searchKeys={["firstName", "lastName", "pesel"]}
-        />
+      <div className="container mx-auto px-6 py-8">
+        <div className="mb-8">
+          <SearchBar<Customer>
+            placeholder={t('search.customers')}
+            data={customers}
+            onSearch={(results) => setFilteredCustomers(results)}
+            searchKeys={['firstName', 'lastName', 'pesel', 'phoneNumber', 'email']}
+          />
+        </div>
 
         <div className="flex flex-col items-center">
           {currentCustomers.length > 0 ? (

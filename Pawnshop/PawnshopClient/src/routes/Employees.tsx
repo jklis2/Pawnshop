@@ -59,13 +59,15 @@ export default function Employees() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center mb-4">{t('routes.employees.title')}</h1>
-      <div className="p-4">
-        <SearchBar
-          placeholder={t('routes.employees.searchPlaceholder')}
-          data={employees}
-          onSearch={(results) => setFilteredEmployees(results)}
-          searchKeys={["firstName", "lastName", "role"]}
-        />
+      <div className="container mx-auto px-6 py-8">
+        <div className="mb-8">
+          <SearchBar<Employee>
+            placeholder={t('search.employees')}
+            data={employees}
+            onSearch={(results) => setFilteredEmployees(results)}
+            searchKeys={['firstName', 'lastName', 'email', 'phoneNumber', 'role']}
+          />
+        </div>
 
         {isLoading ? (
           <p className="text-center">{t('routes.employees.loading')}</p>

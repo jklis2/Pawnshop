@@ -23,6 +23,11 @@
       "view": "Zobacz"
     }
   },
+  "search": {
+    "customers": "Szukaj klientów...",
+    "products": "Szukaj produktów...",
+    "employees": "Szukaj pracowników..."
+  },
   "stats": {
     "dailySales": {
       "title": "Dzienna sprzedaż",

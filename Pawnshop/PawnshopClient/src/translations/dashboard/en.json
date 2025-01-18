@@ -23,6 +23,11 @@
       "view": "View"
     }
   },
+  "search": {
+    "customers": "Search customers...",
+    "products": "Search products...",
+    "employees": "Search employees..."
+  },
   "stats": {
     "dailySales": {
       "title": "Daily Sales",

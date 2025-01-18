@@ -113,12 +113,16 @@ export default function Products() {
     <div>
       <h1 className="text-2xl font-bold text-center mb-4">{t('routes.products.title')}</h1>
       <div className="p-4">
-        <SearchBar
-          placeholder={t('routes.products.searchPlaceholder')}
-          data={products}
-          onSearch={(results) => setFilteredProducts(results)}
-          searchKeys={["productName", "brand", "category"]}
-        />
+        <div className="container mx-auto px-6 py-8">
+          <div className="mb-8">
+            <SearchBar<Product>
+              placeholder={t('search.products')}
+              data={products}
+              onSearch={(results) => setFilteredProducts(results)}
+              searchKeys={['productName', 'productDescription', 'brand', 'productModel', 'serialNumber']}
+            />
+          </div>
+        </div>
         {loading && <p className="text-center">{t('routes.products.loading')}</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
