@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import EditCustomerForm from "../containers/EditCustomerForm";
 
 interface Customer {
+  id: string;
   firstName: string;
   lastName: string;
   pesel: string;

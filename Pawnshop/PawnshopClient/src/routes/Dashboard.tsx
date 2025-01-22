@@ -171,7 +171,7 @@ export default function Dashboard() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/edit-customer/:id" element={<EditCustomer />} />
+              <Route path="/customers/edit/:id" element={<EditCustomer />} />
               <Route path="/edit-product/:id" element={<EditProduct />} />
               <Route
                 path="/employees/edit/:id"

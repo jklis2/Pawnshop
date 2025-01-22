@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { useAlert } from "../context/AlertContext";
 
 interface Product {
-  _id: string;
+  id: string;
   productName: string;
   productDescription: string;
   category: string;
@@ -28,11 +28,15 @@ interface Product {
   interestRate?: number;
   notes?: string;
   clientId: string;
-  clientName?: string;
+  client?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
 }
 
 interface Customer {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
 }
@@ -61,12 +65,20 @@ export default function Products() {
       const customersData: Customer[] = customersResponse.data;
 
       const updatedProducts = productsData.map((product) => {
-        const customer = customersData.find((c) => c._id === product.clientId);
+        const customer = customersData.find((c) => c.id === product.clientId);
         return {
           ...product,
-          clientName: customer
-            ? `${customer.firstName} ${customer.lastName}`
-            : "Unknown Client",
+          client: customer
+            ? {
+                id: customer.id,
+                firstName: customer.firstName,
+                lastName: customer.lastName,
+              }
+            : {
+                id: '',
+                firstName: 'Unknown',
+                lastName: 'Client',
+              },
         };
       });
 
@@ -132,29 +144,9 @@ export default function Products() {
               {currentProducts.length > 0 ? (
                 currentProducts.map((product) => (
                   <ProductCard
-                    key={product._id}
-                    _id={product._id}
-                    productName={product.productName}
-                    productDescription={product.productDescription}
-                    category={product.category}
-                    brand={product.brand}
-                    model={product.productModel}
-                    serialNumber={product.serialNumber}
-                    yearOfProduction={product.yearOfProduction}
-                    technicalCondition={product.technicalCondition}
-                    purchasePrice={product.purchasePrice}
-                    salePrice={product.salePrice}
-                    productImages={product.productImages}
-                    additionalNotes={product.additionalNotes}
-                    transactionType={product.transactionType}
-                    dateOfReceipt={product.dateOfReceipt}
-                    redemptionDeadline={product.redemptionDeadline}
-                    loanValue={product.loanValue}
-                    interestRate={product.interestRate}
-                    transactionNotes={product.notes}
-                    clientName={product.clientName}
-                    canEdit={true}
-                    onDelete={() => handleDelete(product._id)}
+                    key={product.id}
+                    product={product}
+                    onDelete={() => handleDelete(product.id)}
                     role={employee?.role || ""}
                   />
                 ))

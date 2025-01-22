@@ -8,7 +8,7 @@ import { useAlert } from "../context/AlertContext";
 import { useAuth } from "../context/AuthContext";
 
 interface Customer {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   street: string;
@@ -22,14 +22,17 @@ interface Customer {
   dateOfBirth: string;
   email: string;
   notes?: string;
-  items: string[];
+  products: {
+    id: string;
+    productName: string;
+    transactionType: string;
+  }[];
 }
 
 export default function Customers() {
   const { t } = useTranslation();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 15;
   const { showAlert } = useAlert();
@@ -62,10 +65,6 @@ export default function Customers() {
     }
   };
 
-  const handleCardExpansion = (id: string) => {
-    setExpandedCardId(expandedCardId === id ? null : id);
-  };
-
   const indexOfLastCustomer = currentPage * customersPerPage;
   const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
   const currentCustomers = filteredCustomers.slice(
@@ -90,8 +89,8 @@ export default function Customers() {
           {currentCustomers.length > 0 ? (
             currentCustomers.map((customer) => (
               <CustomerCard
-                key={customer._id}
-                id={customer._id}
+                key={customer.id}
+                id={customer.id}
                 firstName={customer.firstName}
                 lastName={customer.lastName}
                 street={customer.street}
@@ -105,10 +104,8 @@ export default function Customers() {
                 dateOfBirth={customer.dateOfBirth}
                 email={customer.email}
                 notes={customer.notes || ""}
-                items={customer.items}
-                isExpanded={expandedCardId === customer._id}
-                onExpand={() => handleCardExpansion(customer._id)}
-                onDelete={() => handleDelete(customer._id)}
+                products={customer.products || []}
+                onDelete={() => handleDelete(customer.id)}
                 role={employee?.role || ""}
               />
             ))

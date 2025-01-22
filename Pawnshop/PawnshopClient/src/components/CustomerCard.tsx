@@ -2,8 +2,7 @@ import arrowTop from "../assets/icons/arrowTop.svg";
 import arrowBottom from "../assets/icons/arrowBottom.svg";
 import editIcon from "../assets/icons/edit.svg";
 import deleteIcon from "../assets/icons/delete.svg";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../context/AlertContext";
 import { useTranslation } from 'react-i18next';
@@ -23,17 +22,13 @@ type CustomerCardProps = {
   dateOfBirth: string;
   email: string;
   notes?: string;
-  items: string[];
-  isExpanded: boolean;
-  onExpand: (id: string) => void;
+  products: {
+    id: string;
+    productName: string;
+    transactionType: string;
+  }[];
   onDelete: () => void;
   role: string;
-};
-
-type Item = {
-  _id: string;
-  productName: string;
-  transactionType: string;
 };
 
 export default function CustomerCard({
@@ -51,20 +46,20 @@ export default function CustomerCard({
   dateOfBirth,
   email,
   notes,
-  items,
-  isExpanded,
-  onExpand,
+  products,
   onDelete,
   role,
 }: CustomerCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useTranslation();
-  const [customerItems, setCustomerItems] = useState<Item[]>([]);
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 
+  const toggleCard = () => setIsExpanded(prev => !prev);
+
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/dashboard/edit-customer/${id}`);
+    navigate(`/dashboard/customers/edit/${id}`);
   };
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -75,27 +70,6 @@ export default function CustomerCard({
       onDelete
     );
   };
-
-  useEffect(() => {
-    if (isExpanded) {
-      const fetchItems = async () => {
-        try {
-          const fetchedItems = await Promise.all(
-            items.map(async (itemId) => {
-              const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/products/${itemId}`
-              );
-              return response.data;
-            })
-          );
-          setCustomerItems(fetchedItems);
-        } catch (error) {
-          console.error("Error fetching items:", error);
-        }
-      };
-      fetchItems();
-    }
-  }, [isExpanded, items]);
 
   const getStatusLabel = (transactionType: string) => {
     switch (transactionType) {
@@ -113,11 +87,11 @@ export default function CustomerCard({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden mb-4 w-full">
-      <div
-        className="px-6 py-4 cursor-pointer border-b border-gray-100"
-        onClick={() => onExpand(id)}
-      >
+    <div
+      onClick={toggleCard}
+      className="bg-white shadow-sm rounded-lg overflow-hidden cursor-pointer transition-shadow duration-200 hover:shadow-md mb-4 w-full"
+    >
+      <div className="p-6">
         <div className="flex justify-between items-center">
           <div className="flex-1">
             <div className="flex items-center">
@@ -159,51 +133,47 @@ export default function CustomerCard({
           </div>
         </div>
       </div>
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          isExpanded ? "block" : "hidden"
-        }`}
-      >
+      {isExpanded && (
         <div className="px-6 py-4 bg-gray-50 space-y-3">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.personalInformation')}</h4>
               <p className="text-sm">
                 <span className="font-medium text-gray-700">{t('cards.customer.dateOfBirth')}:</span>{" "}
-                <span className="text-gray-600">{new Date(dateOfBirth).toLocaleDateString()}</span>
+                <span className="text-gray-600">{dateOfBirth === 'Invalid Date' ? t('cards.customer.noDate') : dateOfBirth}</span>
               </p>
               <p className="text-sm">
                 <span className="font-medium text-gray-700">{t('cards.customer.id')}:</span>{" "}
-                <span className="text-gray-600">{idSeries} {idNumber}</span>
+                <span className="text-gray-600">{idSeries || '-'} {idNumber || '-'}</span>
               </p>
             </div>
             <div>
               <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.contactInformation')}</h4>
               <p className="text-sm">
                 <span className="font-medium text-gray-700">{t('cards.customer.email')}:</span>{" "}
-                <span className="text-gray-600">{email}</span>
+                <span className="text-gray-600">{email || '-'}</span>
               </p>
               <p className="text-sm">
                 <span className="font-medium text-gray-700">{t('cards.customer.phoneNumber')}:</span>{" "}
-                <span className="text-gray-600">{phoneNumber}</span>
+                <span className="text-gray-600">{phoneNumber || '-'}</span>
               </p>
             </div>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.address')}</h4>
             <p className="text-sm text-gray-600">
-              {street} {houseNumber}, {postalCode} {city}
+              {street || '-'} {houseNumber || ''}, {postalCode || '-'} {city || '-'}
             </p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-1">{t('cards.customer.items')}</h4>
             <p className="text-sm text-gray-600">
-              {customerItems.length > 0
-                ? customerItems
+              {products.length > 0
+                ? products
                     .map(
-                      (item) =>
-                        `${item.productName} (${getStatusLabel(
-                          item.transactionType
+                      (product) =>
+                        `${product.productName} (${getStatusLabel(
+                          product.transactionType
                         )})`
                     )
                     .join(", ")
@@ -211,7 +181,7 @@ export default function CustomerCard({
             </p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
