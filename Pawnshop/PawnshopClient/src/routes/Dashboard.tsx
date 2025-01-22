@@ -153,8 +153,6 @@ export default function Dashboard() {
               } />
               <Route path="/customers" element={<Customers />} />
               <Route path="/products" element={<Products />} />
-              <Route path="/add-customer" element={<AddCustomer />} />
-              <Route path="/add-product" element={<AddProduct />} />
               <Route
                 path="/employees"
                 element={
@@ -163,6 +161,8 @@ export default function Dashboard() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/add-customer" element={<AddCustomer />} />
+              <Route path="/add-product" element={<AddProduct />} />
               <Route
                 path="/add-employee"
                 element={
@@ -172,7 +172,7 @@ export default function Dashboard() {
                 }
               />
               <Route path="/customers/edit/:id" element={<EditCustomer />} />
-              <Route path="/edit-product/:id" element={<EditProduct />} />
+              <Route path="/products/edit/:id" element={<EditProduct />} />
               <Route
                 path="/employees/edit/:id"
                 element={

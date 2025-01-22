@@ -6,7 +6,7 @@ import EmployeeCard from "../components/EmployeeCard";
 import SearchBar from "../components/SearchBar";
 
 type Employee = {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   pesel: string;
@@ -53,6 +53,8 @@ export default function Employees() {
   };
 
   const handleEdit = (id: string) => {
+    console.log("Employee ID:", id);
+    console.log("Employee object:", employees.find(emp => emp.id === id));
     navigate(`/dashboard/employees/edit/${id}`);
   };
 
@@ -75,10 +77,10 @@ export default function Employees() {
           <div className="space-y-4">
             {filteredEmployees.map((employee) => (
               <EmployeeCard
-                key={employee._id}
+                key={employee.id}
                 employee={employee}
                 onDelete={handleDelete}
-                onEdit={() => handleEdit(employee._id)}
+                onEdit={() => handleEdit(employee.id)}
               />
             ))}
           </div>

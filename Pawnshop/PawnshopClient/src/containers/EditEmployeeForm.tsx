@@ -6,7 +6,7 @@ import { useAlert } from '../context/AlertContext';
 import { useTranslation } from 'react-i18next';
 
 type EmployeeData = {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   pesel: string;
@@ -103,7 +103,7 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
     }
   
     try {
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/employees/${employeeData._id}`, employeeData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/employees/${employeeData.id}`, employeeData);
   
       if (response.status === 200) {
         showAlert(t('forms.employee.validation.editSuccess'), 'success');

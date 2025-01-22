@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAlert } from "../context/AlertContext";
 import { useTranslation } from 'react-i18next';
@@ -9,7 +8,7 @@ import editIcon from "../assets/icons/edit.svg";
 import deleteIcon from "../assets/icons/delete.svg";
 
 type Employee = {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   pesel: string;
@@ -34,7 +33,6 @@ interface EmployeeCardProps {
 
 export default function EmployeeCard({ employee, onDelete, onEdit }: EmployeeCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const navigate = useNavigate();
   const { showAlert } = useAlert();
   const { t } = useTranslation();
 
@@ -47,7 +45,7 @@ export default function EmployeeCard({ employee, onDelete, onEdit }: EmployeeCar
       "error",
       async () => {
         try {
-          await axios.delete(`${import.meta.env.VITE_API_URL}/api/employees/${employee._id}`);
+          await axios.delete(`${import.meta.env.VITE_API_URL}/api/employees/${employee.id}`);
           onDelete();
         } catch (error) {
           console.error("Error deleting employee:", error);
@@ -59,8 +57,9 @@ export default function EmployeeCard({ employee, onDelete, onEdit }: EmployeeCar
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log("Employee in card:", employee);
+    console.log("Employee ID in card:", employee.id);
     onEdit();
-    navigate(`/dashboard/employees/edit/${employee._id}`);
   };
 
   return (
