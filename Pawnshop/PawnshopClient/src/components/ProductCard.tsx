@@ -10,12 +10,12 @@ import deleteIcon from "../assets/icons/delete.svg";
 import placeholder from "../assets/Placeholder.png";
 
 interface ProductCardProps {
-  _id: string;
+  id: string;
   productName: string;
   productDescription: string;
   category: string;
   brand: string;
-  model?: string;
+  productModel?: string;
   serialNumber?: string;
   yearOfProduction?: number;
   technicalCondition: string;
@@ -23,12 +23,12 @@ interface ProductCardProps {
   salePrice?: number;
   productImages?: string[];
   additionalNotes?: string;
-  transactionType: string;
+  transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: string;
   redemptionDeadline?: string;
   loanValue?: number;
   interestRate?: number;
-  transactionNotes?: string;
+  notes?: string;
   clientName?: string;
   canEdit?: boolean;
   onDelete: () => void;
@@ -36,12 +36,12 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({
-  _id,
+  id,
   productName,
   productDescription,
   category,
   brand,
-  model,
+  productModel,
   serialNumber,
   yearOfProduction,
   technicalCondition,
@@ -54,7 +54,7 @@ export default function ProductCard({
   redemptionDeadline,
   loanValue,
   interestRate,
-  transactionNotes,
+  notes,
   clientName,
   canEdit = true,
   onDelete,
@@ -70,7 +70,7 @@ export default function ProductCard({
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${_id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
       onDelete();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -91,7 +91,7 @@ export default function ProductCard({
     try {
       const newStatus = currentTransactionType === "pawn" ? "redeemed" : "sold";
 
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${_id}`, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${id}`, {
         transactionType: newStatus,
       });
 
@@ -164,7 +164,7 @@ export default function ProductCard({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate(`/dashboard/edit-product/${_id}`);
+                    navigate(`/dashboard/products/edit/${id}`);
                   }}
                   className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors duration-200"
                 >
@@ -203,10 +203,10 @@ export default function ProductCard({
                   <span className="font-medium text-gray-700">{t('cards.product.description')}:</span>{" "}
                   <span className="text-gray-600">{productDescription}</span>
                 </p>
-                {model && (
+                {productModel && (
                   <p className="text-sm">
                     <span className="font-medium text-gray-700">{t('cards.product.model')}:</span>{" "}
-                    <span className="text-gray-600">{model}</span>
+                    <span className="text-gray-600">{productModel}</span>
                   </p>
                 )}
                 {serialNumber && (
@@ -266,10 +266,10 @@ export default function ProductCard({
                     <span className="text-gray-600">{clientName}</span>
                   </p>
                 )}
-                {transactionNotes && (
+                {notes && (
                   <p className="text-sm">
                     <span className="font-medium text-gray-700">{t('cards.product.transactionNotes')}:</span>{" "}
-                    <span className="text-gray-600">{transactionNotes}</span>
+                    <span className="text-gray-600">{notes}</span>
                   </p>
                 )}
               </div>

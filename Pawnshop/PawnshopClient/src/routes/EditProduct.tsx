@@ -5,7 +5,7 @@ import EditProductForm from "../containers/EditProductForm";
 import { useTranslation } from 'react-i18next';
 
 interface Product {
-  _id: string;
+  id: string;
   productName: string;
   productDescription: string;
   category: string;
@@ -16,43 +16,69 @@ interface Product {
   technicalCondition: string;
   purchasePrice: number;
   salePrice?: number;
+  productImages?: string[];
   additionalNotes?: string;
-  transactionType: "pawn" | "sale";
+  transactionType: string;
   dateOfReceipt: string;
   redemptionDeadline?: string;
   loanValue?: number;
   interestRate?: number;
   notes?: string;
-  clientId: string; 
+  clientId: string;
+  client?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
 }
 
 export default function EditProduct() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/products/${id}`
         );
         setProduct(response.data);
+        setError(null);
       } catch (error) {
         console.error("Failed to fetch product data:", error);
-        alert(t('routes.errors.fetchProduct'));
+        setError(t('routes.errors.fetchProduct'));
+      } finally {
+        setLoading(false);
       }
     };
 
     if (id) fetchProduct();
   }, [id, t]);
 
-  if (!product) {
-    return <p>{t('routes.loading.product')}</p>;
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">
+      <p className="text-lg text-gray-600">{t('routes.loading.product')}</p>
+    </div>;
   }
 
-  const formattedProduct = {
-    id: product._id,
+  if (error) {
+    return <div className="flex justify-center items-center min-h-screen">
+      <p className="text-lg text-red-600">{error}</p>
+    </div>;
+  }
+
+  if (!product) {
+    return <div className="flex justify-center items-center min-h-screen">
+      <p className="text-lg text-gray-600">{t('routes.errors.productNotFound')}</p>
+    </div>;
+  }
+
+  const formattedData = {
+    id: product.id,
     clientId: product.clientId,
     name: product.productName,
     description: product.productDescription,
@@ -64,20 +90,19 @@ export default function EditProduct() {
     technicalCondition: product.technicalCondition,
     purchasePrice: product.purchasePrice,
     salePrice: product.salePrice,
+    images: product.productImages,
     additionalNotes: product.additionalNotes,
     transactionType: product.transactionType,
     dateOfReceipt: product.dateOfReceipt,
     redemptionDeadline: product.redemptionDeadline,
     loanValue: product.loanValue,
-    interestRate: product.interestRate,
+    interestRate: product.interestRate
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-center mb-8">{t('routes.edit.product')}</h1>
-      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-sm p-6">
-        <EditProductForm initialData={formattedProduct} />
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-center">Edytuj Produkt</h1>
+      <EditProductForm initialData={formattedData} />
     </div>
   );
 }

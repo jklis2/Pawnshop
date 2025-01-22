@@ -35,12 +35,6 @@ interface Product {
   };
 }
 
-interface Customer {
-  id: string;
-  firstName: string;
-  lastName: string;
-}
-
 export default function Products() {
   const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
@@ -52,37 +46,14 @@ export default function Products() {
   const { employee } = useAuth();
   const { showAlert } = useAlert();
 
-  const fetchProductsAndCustomers = async () => {
+  const fetchProducts = async () => {
     try {
       const productsResponse = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/products`
       );
       const productsData: Product[] = productsResponse.data;
 
-      const customersResponse = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/customers`
-      );
-      const customersData: Customer[] = customersResponse.data;
-
-      const updatedProducts = productsData.map((product) => {
-        const customer = customersData.find((c) => c.id === product.clientId);
-        return {
-          ...product,
-          client: customer
-            ? {
-                id: customer.id,
-                firstName: customer.firstName,
-                lastName: customer.lastName,
-              }
-            : {
-                id: '',
-                firstName: 'Unknown',
-                lastName: 'Client',
-              },
-        };
-      });
-
-      const activeProducts = updatedProducts.filter(
+      const activeProducts = productsData.filter(
         (product) =>
           product.transactionType === "pawn" ||
           product.transactionType === "sale"
@@ -99,7 +70,7 @@ export default function Products() {
   };
 
   useEffect(() => {
-    fetchProductsAndCustomers();
+    fetchProducts();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -107,7 +78,7 @@ export default function Products() {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
       showAlert(t('routes.products.success.delete'), "success");
-      fetchProductsAndCustomers();
+      fetchProducts();
     } catch {
       console.error("Error deleting product");
       showAlert(t('routes.products.error.delete'), "error");
@@ -141,16 +112,36 @@ export default function Products() {
         {!loading && !error && (
           <>
             <div className="space-y-8">
-              {currentProducts.length > 0 ? (
+              {currentProducts.length > 0 && (
                 currentProducts.map((product) => (
                   <ProductCard
                     key={product.id}
-                    product={product}
+                    id={product.id}
+                    productName={product.productName}
+                    productDescription={product.productDescription}
+                    category={product.category}
+                    brand={product.brand}
+                    productModel={product.productModel}
+                    serialNumber={product.serialNumber}
+                    yearOfProduction={product.yearOfProduction}
+                    technicalCondition={product.technicalCondition}
+                    purchasePrice={product.purchasePrice}
+                    salePrice={product.salePrice}
+                    productImages={product.productImages}
+                    additionalNotes={product.additionalNotes}
+                    transactionType={product.transactionType}
+                    dateOfReceipt={product.dateOfReceipt}
+                    redemptionDeadline={product.redemptionDeadline}
+                    loanValue={product.loanValue}
+                    interestRate={product.interestRate}
+                    notes={product.notes}
+                    clientName={product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined}
                     onDelete={() => handleDelete(product.id)}
                     role={employee?.role || ""}
                   />
                 ))
-              ) : (
+              )}
+              {currentProducts.length === 0 && (
                 <p>{t('routes.products.noProducts')}</p>
               )}
             </div>

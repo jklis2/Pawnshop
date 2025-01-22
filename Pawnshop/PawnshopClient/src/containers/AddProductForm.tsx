@@ -1,22 +1,15 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import CreateForm from '../components/CreateForm';
 import CustomerSelect from '../components/CustomerSelect';
-import { useAlert } from '../context/AlertContext';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-
-const getCurrentDate = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
 
 export default function AddProductForm() {
   const { t } = useTranslation();
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -25,108 +18,87 @@ export default function AddProductForm() {
   const [serialNumber, setSerialNumber] = useState('');
   const [yearOfProduction, setYearOfProduction] = useState<number | undefined>();
   const [technicalCondition, setTechnicalCondition] = useState('');
-  const [purchasePrice, setPurchasePrice] = useState<number | undefined>();
+  const [purchasePrice, setPurchasePrice] = useState<number>(0);
   const [salePrice, setSalePrice] = useState<number | undefined>();
-  const [productImages, setProductImages] = useState<FileList | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState('');
-  const [transactionType, setTransactionType] = useState<'pawn' | 'sale' | ''>('');
-  
-  const [dateOfReceipt, setDateOfReceipt] = useState(getCurrentDate());
+  const [transactionType, setTransactionType] = useState<'pawn' | 'sale'>('pawn');
+  const [dateOfReceipt] = useState(new Date().toISOString().split('T')[0]);
   const [redemptionDeadline, setRedemptionDeadline] = useState('');
   const [loanValue, setLoanValue] = useState<number | undefined>();
   const [interestRate, setInterestRate] = useState<number | undefined>();
 
-  const { showAlert } = useAlert();
-  const navigate = useNavigate();
-
-  const validateForm = () => {
-    if (
-      !selectedCustomerId ||
-      !productName ||
-      !productDescription ||
-      !category ||
-      !technicalCondition ||
-      !purchasePrice ||
-      !transactionType ||
-      !dateOfReceipt
-    ) {
-      showAlert(t('forms.product.validation.required', { field: t('forms.product.fields.required') }), 'error');
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!validateForm()) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('productName', productName);
-      formData.append('productDescription', productDescription);
-      formData.append('category', category);
-      formData.append('brand', brand);
-      formData.append('productModel', productModel);
-      formData.append('serialNumber', serialNumber);
-      if (yearOfProduction) formData.append('yearOfProduction', yearOfProduction.toString());
-      formData.append('technicalCondition', technicalCondition);
-      if (purchasePrice) formData.append('purchasePrice', purchasePrice.toString());
-      if (salePrice) formData.append('salePrice', salePrice.toString());
-      formData.append('additionalNotes', additionalNotes);
-      formData.append('transactionType', transactionType);
-      formData.append('dateOfReceipt', dateOfReceipt);
-      formData.append('redemptionDeadline', redemptionDeadline);
-      if (loanValue) formData.append('loanValue', loanValue.toString());
-      if (interestRate) formData.append('interestRate', interestRate.toString());
-      formData.append('clientId', selectedCustomerId);
+      const productData = {
+        name: productName,
+        description: productDescription,
+        category,
+        brand,
+        model: productModel,
+        serialNumber,
+        yearOfProduction,
+        technicalCondition,
+        purchasePrice,
+        salePrice,
+        additionalNotes,
+        transactionType,
+        dateOfReceipt,
+        redemptionDeadline: redemptionDeadline || undefined,
+        loanValue,
+        interestRate,
+        clientId: selectedCustomerId,
+      };
 
-      if (productImages) {
-        for (let i = 0; i < productImages.length; i++) {
-          formData.append('productImages', productImages[i]);
-        }
-      }
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/products`,
+        productData
+      );
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/products`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      showAlert(t('forms.product.validation.success'), 'success');
       navigate('/dashboard/products');
-    } catch {
-      showAlert(t('forms.product.validation.error'), 'error');
+    } catch (error) {
+      console.error('Error creating product:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <CustomerSelect 
-        selectedCustomerId={selectedCustomerId} 
-        onCustomerSelect={setSelectedCustomerId} 
-      />
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('forms.product.title')}</h2>
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
-          <div className="space-y-6">
-            <CreateForm 
-              label={t('forms.product.fields.name.label')} 
-              placeholder={t('forms.product.fields.name.placeholder')} 
-              type="text" 
-              value={productName} 
-              required={true} 
-              onChange={(e) => setProductName(e.target.value)} 
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Customer Selection */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.select')}</h3>
+            <CustomerSelect 
+              selectedCustomerId={selectedCustomerId}
+              onCustomerSelect={setSelectedCustomerId}
+              initialCustomer={null}
             />
-            <CreateForm 
-              label={t('forms.product.fields.description.label')} 
-              placeholder={t('forms.product.fields.description.placeholder')} 
-              type="text" 
-              value={productDescription} 
-              required={true} 
-              onChange={(e) => setProductDescription(e.target.value)} 
-            />
+          </div>
+
+          {/* Product Details */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.productDetails')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CreateForm 
+                label={t('forms.product.fields.name.label')} 
+                placeholder={t('forms.product.fields.name.placeholder')} 
+                type="text" 
+                value={productName} 
+                required={true} 
+                onChange={(e) => setProductName(e.target.value)} 
+              />
+              <CreateForm 
+                label={t('forms.product.fields.description.label')} 
+                placeholder={t('forms.product.fields.description.placeholder')} 
+                type="text" 
+                value={productDescription} 
+                required={true} 
+                onChange={(e) => setProductDescription(e.target.value)} 
+              />
               <CreateForm 
                 label={t('forms.product.fields.category.label')} 
                 placeholder={t('forms.product.fields.category.placeholder')} 
@@ -171,11 +143,18 @@ export default function AddProductForm() {
                 required={true} 
                 onChange={(e) => setTechnicalCondition(e.target.value)} 
               />
+            </div>
+          </div>
+
+          {/* Pricing Information */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.pricingData')}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CreateForm 
                 label={t('forms.product.fields.purchasePrice.label')} 
                 placeholder={t('forms.product.fields.purchasePrice.placeholder')} 
                 type="number" 
-                value={purchasePrice?.toString()} 
+                value={purchasePrice.toString()} 
                 required={true} 
                 onChange={(e) => setPurchasePrice(Number(e.target.value))} 
               />
@@ -187,24 +166,12 @@ export default function AddProductForm() {
                 onChange={(e) => setSalePrice(Number(e.target.value))} 
               />
             </div>
-            <div className="space-y-4">
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('forms.product.fields.productImages.label')}
-                </label>
-                <input
-                  type="file"
-                  onChange={(e) => setProductImages(e.target.files)}
-                  className="block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-emerald-50 file:text-emerald-700
-                    hover:file:bg-emerald-100
-                    transition-colors duration-200"
-                  multiple
-                />
-              </div>
+          </div>
+
+          {/* Additional Information */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.additionalData')}</h3>
+            <div className="grid grid-cols-1 gap-6">
               <CreateForm 
                 label={t('forms.product.fields.additionalNotes.label')} 
                 placeholder={t('forms.product.fields.additionalNotes.placeholder')} 
@@ -215,16 +182,17 @@ export default function AddProductForm() {
             </div>
           </div>
 
-          <div className="mt-12 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('forms.product.sections.transaction')}</h2>
-            <div className="space-y-6">
+          {/* Transaction Details */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.transactionData')}</h3>
+            <div className="grid grid-cols-1 gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <CreateForm 
                   label={t('forms.product.fields.transactionType.label')} 
                   placeholder={t('forms.product.fields.transactionType.placeholder')} 
                   type="text" 
                   value={transactionType} 
-                  required={true} 
+                  required={true}
                   onChange={(e) => setTransactionType(e.target.value as 'pawn' | 'sale')} 
                 />
                 <CreateForm 
@@ -233,41 +201,59 @@ export default function AddProductForm() {
                   type="date" 
                   value={dateOfReceipt} 
                   required={true} 
-                  onChange={(e) => setDateOfReceipt(e.target.value)} 
+                  disabled={true}
+                  onChange={() => {}}
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <CreateForm 
-                  label={t('forms.product.fields.redemptionDeadline.label')} 
-                  placeholder={t('forms.product.fields.redemptionDeadline.placeholder')} 
-                  type="date" 
-                  value={redemptionDeadline} 
-                  onChange={(e) => setRedemptionDeadline(e.target.value)} 
-                />
-                <CreateForm 
-                  label={t('forms.product.fields.loanValue.label')} 
-                  placeholder={t('forms.product.fields.loanValue.placeholder')} 
-                  type="number" 
-                  value={loanValue?.toString()} 
-                  onChange={(e) => setLoanValue(Number(e.target.value))} 
-                />
-                <CreateForm 
-                  label={t('forms.product.fields.interestRate.label')} 
-                  placeholder={t('forms.product.fields.interestRate.placeholder')} 
-                  type="number" 
-                  value={interestRate?.toString()} 
-                  onChange={(e) => setInterestRate(Number(e.target.value))} 
-                />
-              </div>
+              {transactionType === 'pawn' && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <CreateForm 
+                    label={t('forms.product.fields.redemptionDeadline.label')} 
+                    placeholder={t('forms.product.fields.redemptionDeadline.placeholder')} 
+                    type="date" 
+                    value={redemptionDeadline} 
+                    required={true}
+                    onChange={(e) => setRedemptionDeadline(e.target.value)} 
+                  />
+                  <CreateForm 
+                    label={t('forms.product.fields.loanValue.label')} 
+                    placeholder={t('forms.product.fields.loanValue.placeholder')} 
+                    type="number" 
+                    value={loanValue?.toString()} 
+                    required={true}
+                    onChange={(e) => setLoanValue(Number(e.target.value))} 
+                  />
+                  <CreateForm 
+                    label={t('forms.product.fields.interestRate.label')} 
+                    placeholder={t('forms.product.fields.interestRate.placeholder')} 
+                    type="number" 
+                    value={interestRate?.toString()} 
+                    required={true}
+                    onChange={(e) => setInterestRate(Number(e.target.value))} 
+                  />
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="flex justify-end mt-8">
+          <div className="mt-8 flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard/products')}
+              className="px-6 py-2 border border-red-600 text-red-600 rounded-md 
+                       hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 
+                       focus:ring-offset-2 transition-colors duration-200"
+            >
+              {t('forms.product.cancel')}
+            </button>
             <button 
               type="submit" 
-              className="bg-emerald-600 text-white px-8 py-3 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors duration-200"
+              disabled={loading}
+              className="px-6 py-2 bg-emerald-600 text-white rounded-md 
+                       hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                       focus:ring-offset-2 transition-colors duration-200"
             >
-              {t('forms.product.submit')}
+              {loading ? t('common.saving') : t('forms.product.addSubmit')}
             </button>
           </div>
         </form>
