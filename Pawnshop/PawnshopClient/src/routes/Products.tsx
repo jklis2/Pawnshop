@@ -14,24 +14,24 @@ interface Product {
   category: string;
   brand: string;
   productModel: string;
-  serialNumber?: string;
+  serialNumber: string;
   yearOfProduction?: number;
   technicalCondition: string;
   purchasePrice: number;
   salePrice?: number;
-  productImages?: string[];
+  productImage?: string;
   additionalNotes?: string;
   transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: string;
   redemptionDeadline?: string;
   loanValue?: number;
   interestRate?: number;
-  notes?: string;
-  clientId: string;
+  clientName?: string;
   client?: {
     id: string;
     firstName: string;
     lastName: string;
+    pesel: string;
   };
 }
 
@@ -48,16 +48,19 @@ export default function Products() {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const productsResponse = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/products`
       );
       const productsData: Product[] = productsResponse.data;
+      console.log('Received products data:', productsData);
 
       const activeProducts = productsData.filter(
         (product) =>
           product.transactionType === "pawn" ||
           product.transactionType === "sale"
       );
+      console.log('Filtered active products:', activeProducts);
 
       setProducts(activeProducts);
       setFilteredProducts(activeProducts);
@@ -139,15 +142,21 @@ export default function Products() {
           <>
             <div className="space-y-8">
               {currentProducts.length > 0 ? (
-                currentProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    {...product}
-                    clientName={product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined}
-                    onDelete={() => handleDelete(product.id)}
-                    role={employee?.role || ""}
-                  />
-                ))
+                currentProducts.map((product) => {
+                  console.log('Rendering product:', { 
+                    id: product.id, 
+                    productName: product.productName,
+                    clientName: product.clientName 
+                  });
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      {...product}
+                      onDelete={() => handleDelete(product.id)}
+                      role={employee?.role || ""}
+                    />
+                  );
+                })
               ) : (
                 <p className="text-center text-gray-500">{t('routes.products.noProducts')}</p>
               )}

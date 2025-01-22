@@ -60,6 +60,7 @@ export default function ProductCard({
   onDelete,
   role,
 }: ProductCardProps) {
+  console.log('ProductCard props:', { clientName, dateOfReceipt, transactionType });
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTransactionType, setCurrentTransactionType] = useState(transactionType);
   const navigate = useNavigate();
@@ -232,6 +233,10 @@ export default function ProductCard({
                   <span className="font-medium text-gray-700">{t('cards.product.dateOfReceipt')}:</span>{" "}
                   <span className="text-gray-600">{formattedDateOfReceipt}</span>
                 </p>
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">{t('cards.product.client')}:</span>{" "}
+                  <span className="text-gray-600">{clientName || "-"}</span>
+                </p>
                 {formattedRedemptionDeadline && (
                   <p className="text-sm">
                     <span className="font-medium text-gray-700">{t('cards.product.redemptionDeadline')}:</span>{" "}
@@ -248,12 +253,6 @@ export default function ProductCard({
                   <p className="text-sm">
                     <span className="font-medium text-gray-700">{t('cards.product.interestRate')}:</span>{" "}
                     <span className="text-gray-600">{interestRate}%</span>
-                  </p>
-                )}
-                {clientName && (
-                  <p className="text-sm">
-                    <span className="font-medium text-gray-700">{t('cards.product.client')}:</span>{" "}
-                    <span className="text-gray-600">{clientName}</span>
                   </p>
                 )}
                 {notes && (

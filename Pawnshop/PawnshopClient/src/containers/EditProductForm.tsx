@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -14,12 +14,12 @@ interface Customer {
 
 interface ProductFormData {
   id: string;
-  clientId: string;
-  name: string;
-  description: string;
+  clientId?: string;
+  productName: string;
+  productDescription: string;
   category: string;
   brand: string;
-  model: string;
+  productModel: string;
   serialNumber: string;
   yearOfProduction?: number;
   technicalCondition: string;
@@ -27,7 +27,7 @@ interface ProductFormData {
   salePrice?: number;
   productImage?: string;
   additionalNotes?: string;
-  transactionType: string;
+  transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: string;
   redemptionDeadline?: string;
   loanValue?: number;
@@ -44,14 +44,14 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCustomerId, setSelectedCustomerId] = useState(initialData.clientId);
-  const [initialCustomer, setInitialCustomer] = useState<Customer | null>(initialData.client || null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(initialData.client?.id || '');
+  const [initialCustomer] = useState<Customer | null>(initialData.client || null);
 
-  const [productName, setProductName] = useState(initialData.name);
-  const [productDescription, setProductDescription] = useState(initialData.description);
+  const [productName, setProductName] = useState(initialData.productName);
+  const [productDescription, setProductDescription] = useState(initialData.productDescription);
   const [category, setCategory] = useState(initialData.category);
   const [brand, setBrand] = useState(initialData.brand);
-  const [productModel, setProductModel] = useState(initialData.model);
+  const [productModel, setProductModel] = useState(initialData.productModel);
   const [serialNumber, setSerialNumber] = useState(initialData.serialNumber);
   const [yearOfProduction, setYearOfProduction] = useState<number | undefined>(initialData.yearOfProduction);
   const [technicalCondition, setTechnicalCondition] = useState(initialData.technicalCondition);
@@ -66,61 +66,32 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [productImage, setProductImage] = useState<File | null>(null);
   const [currentProductImage, setCurrentProductImage] = useState<string | undefined>(initialData.productImage);
 
-  useEffect(() => {
-    const fetchCustomer = async () => {
-      if (!initialData.clientId) return;
-      
-      try {
-        console.log('Fetching customer with ID:', initialData.clientId);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/customers/${initialData.clientId}`);
-        console.log('Received customer data:', response.data);
-        if (response.data) {
-          const customerData: Customer = {
-            id: response.data.id,
-            firstName: response.data.firstName,
-            lastName: response.data.lastName,
-            pesel: response.data.pesel
-          };
-          setInitialCustomer(customerData);
-          console.log('Set initial customer:', customerData);
-        }
-      } catch (error) {
-        console.error('Error fetching customer:', error);
-      }
-    };
-
-    fetchCustomer();
-  }, [initialData.clientId]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const formData = new FormData();
-      formData.append('name', productName);
-      formData.append('description', productDescription);
+      formData.append('productName', productName);
+      formData.append('productDescription', productDescription);
       formData.append('category', category);
       formData.append('brand', brand || '');
-      formData.append('model', productModel || '');
+      formData.append('productModel', productModel || '');
       formData.append('serialNumber', serialNumber || '');
       formData.append('yearOfProduction', yearOfProduction?.toString() || '');
       formData.append('technicalCondition', technicalCondition);
       formData.append('purchasePrice', purchasePrice.toString());
-      formData.append('salePrice', salePrice?.toString() || '');
-      formData.append('additionalNotes', additionalNotes || '');
+      if (salePrice) formData.append('salePrice', salePrice.toString());
+      if (productImage) formData.append('productImage', productImage);
+      if (additionalNotes) formData.append('additionalNotes', additionalNotes);
       formData.append('transactionType', transactionType);
       formData.append('dateOfReceipt', dateOfReceipt);
-      formData.append('redemptionDeadline', redemptionDeadline || '');
-      formData.append('loanValue', loanValue?.toString() || '');
-      formData.append('interestRate', interestRate?.toString() || '');
+      if (redemptionDeadline) formData.append('redemptionDeadline', redemptionDeadline);
+      if (loanValue) formData.append('loanValue', loanValue.toString());
+      if (interestRate) formData.append('interestRate', interestRate.toString());
       formData.append('clientId', selectedCustomerId);
 
-      if (productImage) {
-        formData.append('productImage', productImage);
-      }
-
-      console.log('Sending update request with data:', formData);
+      console.log('Sending form data:', Object.fromEntries(formData));
 
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/products/${initialData.id}`,
@@ -132,21 +103,15 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
         }
       );
 
-      console.log('Update response:', response.data);
-
-      if (response.data) {
-        navigate('/dashboard/products');
+      console.log('Response:', response.data);
+      navigate('/dashboard/products');
+      setError(null);
+    } catch (err) {
+      console.error('Error updating product:', err);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || t('forms.product.errors.updateFailed'));
       } else {
-        setError("No data received from server after update");
-      }
-    } catch (error) {
-      console.error('Error updating product:', error);
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "Failed to update product";
-        console.error('Server error:', errorMessage);
-        setError(errorMessage);
-      } else {
-        setError("An unexpected error occurred");
+        setError(t('forms.product.errors.updateFailed'));
       }
     } finally {
       setLoading(false);
@@ -171,16 +136,16 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
             <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.productDetails')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CreateForm 
-                label={t('forms.product.fields.name.label')} 
-                placeholder={t('forms.product.fields.name.placeholder')} 
+                label={t('forms.product.fields.productName.label')} 
+                placeholder={t('forms.product.fields.productName.placeholder')} 
                 type="text" 
                 value={productName} 
                 required={true} 
                 onChange={(e) => setProductName(e.target.value)} 
               />
               <CreateForm 
-                label={t('forms.product.fields.description.label')} 
-                placeholder={t('forms.product.fields.description.placeholder')} 
+                label={t('forms.product.fields.productDescription.label')} 
+                placeholder={t('forms.product.fields.productDescription.placeholder')} 
                 type="text" 
                 value={productDescription} 
                 required={true} 
@@ -202,8 +167,8 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
                 onChange={(e) => setBrand(e.target.value)} 
               />
               <CreateForm 
-                label={t('forms.product.fields.model.label')} 
-                placeholder={t('forms.product.fields.model.placeholder')} 
+                label={t('forms.product.fields.productModel.label')} 
+                placeholder={t('forms.product.fields.productModel.placeholder')} 
                 type="text" 
                 value={productModel} 
                 onChange={(e) => setProductModel(e.target.value)} 
@@ -300,13 +265,15 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
                     disabled
                     className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm 
                              placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 
-                             focus:border-emerald-500 transition-colors duration-200 text-gray-500"
+                             focus:ring-offset-2 transition-colors duration-200 text-gray-500"
                   >
                     <option value="" disabled>
                       {t('forms.product.fields.transactionType.placeholder')}
                     </option>
                     <option value="pawn">{t('forms.product.fields.transactionType.options.pawn')}</option>
                     <option value="sale">{t('forms.product.fields.transactionType.options.sale')}</option>
+                    <option value="redeemed">{t('forms.product.fields.transactionType.options.redeemed')}</option>
+                    <option value="sold">{t('forms.product.fields.transactionType.options.sold')}</option>
                   </select>
                 </div>
                 <CreateForm 

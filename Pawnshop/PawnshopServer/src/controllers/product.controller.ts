@@ -103,7 +103,36 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
     const savedProduct = await productRepository.save(newProduct);
     console.log('Saved product:', savedProduct);
 
-    res.status(201).json(savedProduct);
+    const response = {
+      id: savedProduct.id,
+      productName: savedProduct.productName,
+      productDescription: savedProduct.productDescription,
+      category: savedProduct.category,
+      brand: savedProduct.brand,
+      productModel: savedProduct.productModel,
+      serialNumber: savedProduct.serialNumber,
+      yearOfProduction: savedProduct.yearOfProduction,
+      technicalCondition: savedProduct.technicalCondition,
+      purchasePrice: savedProduct.purchasePrice,
+      salePrice: savedProduct.salePrice,
+      productImage: savedProduct.productImage ? savedProduct.productImage.toString('base64') : undefined,
+      additionalNotes: savedProduct.additionalNotes,
+      transactionType: savedProduct.transactionType,
+      dateOfReceipt: savedProduct.dateOfReceipt,
+      redemptionDeadline: savedProduct.redemptionDeadline,
+      loanValue: savedProduct.loanValue,
+      interestRate: savedProduct.interestRate,
+      client: savedProduct.client ? {
+        id: savedProduct.client.id,
+        firstName: savedProduct.client.firstName,
+        lastName: savedProduct.client.lastName,
+        pesel: savedProduct.client.pesel
+      } : undefined,
+      clientName: savedProduct.client ? `${savedProduct.client.firstName} ${savedProduct.client.lastName}` : undefined
+    };
+
+    console.log('Sending product response:', response);
+    res.status(201).json(response);
   } catch (error) {
     console.error('Error in addProduct:', error);
     res.status(500).json({ message: 'An error occurred while adding the product.', error });
@@ -115,11 +144,17 @@ export const uploadProductImage = upload.single('productImage');
 export const getProductById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-
+    console.log('Fetching product with ID:', id);
+    const query = productRepository.createQueryBuilder('product')
+      .where('product.id = :id', { id })
+      .leftJoinAndSelect('product.client', 'client')
+      .getSql();
+    console.log('Generated SQL query:', query);
     const product = await productRepository.findOne({
       where: { id },
       relations: ['client'],
     });
+    console.log('Found product:', product);
 
     if (!product) {
       res.status(404).json({ message: 'Product not found' });
@@ -145,9 +180,16 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
       redemptionDeadline: product.redemptionDeadline,
       loanValue: product.loanValue,
       interestRate: product.interestRate,
-      clientName: product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined,
+      client: product.client ? {
+        id: product.client.id,
+        firstName: product.client.firstName,
+        lastName: product.client.lastName,
+        pesel: product.client.pesel
+      } : undefined,
+      clientName: product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined
     };
 
+    console.log('Sending product response:', response);
     res.json(response);
   } catch (error) {
     console.error('Error getting product:', error);
@@ -157,9 +199,11 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
 
 export const getAllProducts = async (_req: Request, res: Response): Promise<void> => {
   try {
+    console.log('Fetching all products');
     const products = await productRepository.find({
       relations: ['client'],
     });
+    console.log('Found products:', products);
 
     const response = products.map(product => ({
       id: product.id,
@@ -180,9 +224,16 @@ export const getAllProducts = async (_req: Request, res: Response): Promise<void
       redemptionDeadline: product.redemptionDeadline,
       loanValue: product.loanValue,
       interestRate: product.interestRate,
-      clientName: product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined,
+      client: product.client ? {
+        id: product.client.id,
+        firstName: product.client.firstName,
+        lastName: product.client.lastName,
+        pesel: product.client.pesel
+      } : undefined,
+      clientName: product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined
     }));
 
+    console.log('Sending products response:', response);
     res.json(response);
   } catch (error) {
     console.error('Error getting products:', error);
@@ -209,11 +260,11 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     console.log('Found existing product:', product);
 
     const {
-      name,
-      description,
+      productName,
+      productDescription,
       category,
       brand,
-      model,
+      productModel,
       serialNumber,
       yearOfProduction,
       technicalCondition,
@@ -229,8 +280,8 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     } = req.body;
 
     // Znajdź klienta jeśli został zmieniony
-    if (clientId && clientId !== product.client.id) {
-      console.log('Client ID changed from', product.client.id, 'to', clientId);
+    if (clientId && (!product.client || clientId !== product.client.id)) {
+      console.log('Client ID changed to', clientId);
       const customer = await customerRepository.findOne({ where: { id: clientId } });
       if (!customer) {
         res.status(404).json({ message: `Customer with ID ${clientId} not found.` });
@@ -240,13 +291,13 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     }
 
     // Aktualizacja podstawowych danych
-    product.productName = name;
-    product.productDescription = description;
+    product.productName = productName;
+    product.productDescription = productDescription;
     product.category = category;
     product.brand = brand;
-    product.productModel = model;
+    product.productModel = productModel;
     product.serialNumber = serialNumber;
-    product.yearOfProduction = yearOfProduction ? parseInt(yearOfProduction) : undefined;
+    product.yearOfProduction = yearOfProduction ? parseInt(yearOfProduction.toString()) : undefined;
     product.technicalCondition = technicalCondition;
     product.purchasePrice = parseFloat(purchasePrice);
     product.salePrice = salePrice ? parseFloat(salePrice) : undefined;
@@ -294,7 +345,13 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
       redemptionDeadline: updatedProduct.redemptionDeadline,
       loanValue: updatedProduct.loanValue,
       interestRate: updatedProduct.interestRate,
-      clientName: updatedProduct.client ? `${updatedProduct.client.firstName} ${updatedProduct.client.lastName}` : undefined,
+      client: updatedProduct.client ? {
+        id: updatedProduct.client.id,
+        firstName: updatedProduct.client.firstName,
+        lastName: updatedProduct.client.lastName,
+        pesel: updatedProduct.client.pesel
+      } : undefined,
+      clientName: updatedProduct.client ? `${updatedProduct.client.firstName} ${updatedProduct.client.lastName}` : undefined
     };
 
     res.json(response);
