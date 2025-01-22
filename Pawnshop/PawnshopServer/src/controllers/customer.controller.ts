@@ -1,34 +1,16 @@
 import { Request, Response } from 'express';
-import Customer from '../models/customer.model';
+import { AppDataSource } from "../data-source";
+import { Customer } from '../models/customer.model';
+
+const customerRepository = AppDataSource.getRepository(Customer);
 
 export const addCustomer = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { firstName, lastName, pesel, dateOfBirth, street, houseNumber, postalCode, city, idSeries, idNumber, phoneNumber, email, notes } = req.body;
-
-    if (!firstName || !lastName || !pesel || !dateOfBirth || !street || !houseNumber || !postalCode || !city || !idSeries || !idNumber) {
-      res.status(400).json({ message: 'Please fill in all required fields.' });
-      return;
-    }
-
-    const newCustomer = new Customer({
-      firstName,
-      lastName,
-      pesel,
-      dateOfBirth,
-      street,
-      houseNumber,
-      postalCode,
-      city,
-      idSeries,
-      idNumber,
-      phoneNumber,
-      email,
-      notes,
-    });
-
-    const savedCustomer = await newCustomer.save();
+    const newCustomer = customerRepository.create(req.body);
+    const savedCustomer = await customerRepository.save(newCustomer);
     res.status(201).json(savedCustomer);
   } catch (error) {
+    console.error('Error adding customer:', error);
     res.status(500).json({ message: 'An error occurred while adding the customer.', error });
   }
 };
@@ -36,59 +18,152 @@ export const addCustomer = async (req: Request, res: Response): Promise<void> =>
 export const getCustomerById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const customer = await Customer.findById(id);
+    console.log('Fetching customer with ID:', id);
+
+    const customer = await customerRepository
+      .createQueryBuilder('customer')
+      .leftJoinAndSelect('customer.products', 'products')
+      .select([
+        'customer.id',
+        'customer.firstName',
+        'customer.lastName',
+        'customer.pesel',
+        'customer.dateOfBirth',
+        'customer.street',
+        'customer.houseNumber',
+        'customer.postalCode',
+        'customer.city',
+        'customer.idSeries',
+        'customer.idNumber',
+        'customer.phoneNumber',
+        'customer.email',
+        'customer.notes',
+        'products.id',
+        'products.productName',
+        'products.transactionType'
+      ])
+      .where('customer.id = :id', { id })
+      .getOne();
 
     if (!customer) {
+      console.log('Customer not found:', id);
       res.status(404).json({ message: `Customer with ID ${id} not found.` });
       return;
     }
 
     res.status(200).json(customer);
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred while fetching the customer.', error });
+    console.error('Detailed error in getCustomerById:', error);
+    res.status(500).json({ 
+      message: 'An error occurred while fetching the customer.',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 };
 
-export const getAllCustomers = async (req: Request, res: Response): Promise<void> => {
+export const getAllCustomers = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const customers = await Customer.find();
+    console.log('Fetching all customers');
+    
+    const customers = await customerRepository
+      .createQueryBuilder('customer')
+      .leftJoinAndSelect('customer.products', 'products')
+      .select([
+        'customer.id',
+        'customer.firstName',
+        'customer.lastName',
+        'customer.pesel',
+        'customer.dateOfBirth',
+        'customer.street',
+        'customer.houseNumber',
+        'customer.postalCode',
+        'customer.city',
+        'customer.idSeries',
+        'customer.idNumber',
+        'customer.phoneNumber',
+        'customer.email',
+        'customer.notes',
+        'products.id',
+        'products.productName',
+        'products.transactionType'
+      ])
+      .getMany();
+
+    console.log(`Found ${customers.length} customers`);
     res.status(200).json(customers);
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred while fetching the customers.', error });
+    console.error('Detailed error in getAllCustomers:', error);
+    res.status(500).json({ 
+      message: 'An error occurred while fetching the customers.',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 };
 
 export const updateCustomer = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    
+    // First check if customer exists
+    const existingCustomer = await customerRepository.findOne({ 
+      where: { id },
+      relations: ['products']
+    });
 
-    const updatedCustomer = await Customer.findByIdAndUpdate(id, updatedData, { new: true });
-
-    if (!updatedCustomer) {
+    if (!existingCustomer) {
       res.status(404).json({ message: `Customer with ID ${id} not found.` });
       return;
     }
 
+    // Update only allowed fields
+    const updateData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      pesel: req.body.pesel,
+      dateOfBirth: req.body.dateOfBirth,
+      street: req.body.street,
+      houseNumber: req.body.houseNumber,
+      postalCode: req.body.postalCode,
+      city: req.body.city,
+      idSeries: req.body.idSeries,
+      idNumber: req.body.idNumber,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      notes: req.body.notes
+    };
+
+    // Update the customer
+    await customerRepository.update(id, updateData);
+
+    // Fetch the updated customer
+    const updatedCustomer = await customerRepository.findOne({
+      where: { id },
+      relations: ['products']
+    });
+
     res.status(200).json(updatedCustomer);
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred while updating the customer.', error });
+    console.error('Error updating customer:', error);
+    res.status(500).json({ 
+      message: 'An error occurred while updating the customer.', 
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 };
 
 export const deleteCustomer = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    const deletedCustomer = await customerRepository.delete(id);
 
-    const deletedCustomer = await Customer.findByIdAndDelete(id);
-
-    if (!deletedCustomer) {
+    if (!deletedCustomer.affected) {
       res.status(404).json({ message: `Customer with ID ${id} not found.` });
       return;
     }
 
     res.status(200).json({ message: `Customer with ID ${id} has been deleted.` });
   } catch (error) {
+    console.error('Error deleting customer:', error);
     res.status(500).json({ message: 'An error occurred while deleting the customer.', error });
   }
 };

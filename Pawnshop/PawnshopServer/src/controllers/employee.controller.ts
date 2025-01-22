@@ -1,82 +1,19 @@
 import { Request, Response } from "express";
-import mongoose from "mongoose";
-import Employee from "../models/employee.model";
+import { AppDataSource } from "../data-source";
+import { Employee } from "../models/employee.model";
+
+const employeeRepository = AppDataSource.getRepository(Employee);
 
 export const addEmployee = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const {
-      firstName,
-      lastName,
-      pesel,
-      dateOfBirth,
-      street,
-      houseNumber,
-      postalCode,
-      city,
-      idSeries,
-      idNumber,
-      phoneNumber,
-      email,
-      login,
-      password,
-      role,
-    } = req.body;
-
-    if (
-      !firstName ||
-      !lastName ||
-      !pesel ||
-      !dateOfBirth ||
-      !street ||
-      !houseNumber ||
-      !postalCode ||
-      !city ||
-      !idSeries ||
-      !idNumber ||
-      !phoneNumber ||
-      !email ||
-      !login ||
-      !password ||
-      !role
-    ) {
-      res.status(400).json({ message: "Please fill in all required fields." });
-      return;
-    }
-
-    if (!["admin", "employee"].includes(role)) {
-      res
-        .status(400)
-        .json({ message: 'Invalid role. Use either "admin" or "employee".' });
-      return;
-    }
-
-    const newEmployee = new Employee({
-      firstName,
-      lastName,
-      pesel,
-      dateOfBirth,
-      street,
-      houseNumber,
-      postalCode,
-      city,
-      idSeries,
-      idNumber,
-      phoneNumber,
-      email,
-      login,
-      password,
-      role,
-    });
-
-    const savedEmployee = await newEmployee.save();
+    const newEmployee = employeeRepository.create(req.body);
+    const savedEmployee = await employeeRepository.save(newEmployee);
     res.status(201).json(savedEmployee);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred while adding the employee.", error });
+    res.status(500).json({ message: "Error adding employee", error });
   }
 };
 
@@ -86,13 +23,8 @@ export const getEmployeeById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    const employee = await employeeRepository.findOneBy({ id });
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ message: "Invalid employee ID format." });
-      return;
-    }
-
-    const employee = await Employee.findById(id);
     if (!employee) {
       res.status(404).json({ message: `Employee with ID ${id} not found.` });
       return;
@@ -100,29 +32,19 @@ export const getEmployeeById = async (
 
     res.status(200).json(employee);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while fetching the employee.",
-        error,
-      });
+    res.status(500).json({ message: "Error fetching employee", error });
   }
 };
 
 export const getAllEmployees = async (
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const employees = await Employee.find();
+    const employees = await employeeRepository.find();
     res.status(200).json(employees);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while fetching all employees.",
-        error,
-      });
+    res.status(500).json({ message: "Error fetching employees", error });
   }
 };
 
@@ -132,30 +54,17 @@ export const updateEmployee = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    const updatedEmployee = await employeeRepository.update(id, req.body);
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ message: "Invalid employee ID format." });
-      return;
-    }
-
-    const updatedEmployee = await Employee.findByIdAndUpdate(id, updatedData, {
-      new: true,
-    });
-
-    if (!updatedEmployee) {
+    if (!updatedEmployee.affected) {
       res.status(404).json({ message: `Employee with ID ${id} not found.` });
       return;
     }
 
-    res.status(200).json(updatedEmployee);
+    const employee = await employeeRepository.findOneBy({ id });
+    res.status(200).json(employee);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while updating the employee.",
-        error,
-      });
+    res.status(500).json({ message: "Error updating employee", error });
   }
 };
 
@@ -165,15 +74,9 @@ export const deleteEmployee = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    const deletedEmployee = await employeeRepository.delete(id);
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ message: "Invalid employee ID format." });
-      return;
-    }
-
-    const deletedEmployee = await Employee.findByIdAndDelete(id);
-
-    if (!deletedEmployee) {
+    if (!deletedEmployee.affected) {
       res.status(404).json({ message: `Employee with ID ${id} not found.` });
       return;
     }
@@ -182,37 +85,30 @@ export const deleteEmployee = async (
       .status(200)
       .json({ message: `Employee with ID ${id} has been deleted.` });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while deleting the employee.",
-        error,
-      });
+    res.status(500).json({ message: "Error deleting employee", error });
   }
 };
 
-export const loginEmployee = async (req: Request, res: Response): Promise<void> => {
-  const { login, password } = req.body;
-
+export const loginEmployee = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const employee = await Employee.findOne({ login });
-    if (!employee) {
+    const { login, password } = req.body;
+    const employee = await employeeRepository.findOneBy({ login });
+
+    if (!employee || employee.password !== password) {
       res.status(401).json({ message: "Invalid login or password" });
       return;
     }
 
-    if (employee.password !== password) {
-      res.status(401).json({ message: "Invalid login or password" });
-      return;
-    }
-
-    res.json({
+    res.status(200).json({
       firstName: employee.firstName,
       lastName: employee.lastName,
       login: employee.login,
       role: employee.role,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Error during login", error });
   }
 };

@@ -10,15 +10,16 @@
     "strict": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "sourceMap": true,
     "inlineSourceMap": false,
     "removeComments": true,
-
     "typeRoots": ["./node_modules/@types"],
-
     "baseUrl": "./",
     "paths": {
       "@models/*": ["src/models/*"],

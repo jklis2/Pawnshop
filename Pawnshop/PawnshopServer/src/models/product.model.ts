@@ -1,61 +1,75 @@
-import mongoose, { Schema, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Customer } from './customer.model';
 
-export interface IProduct extends Document {
-  productName: string;
-  productDescription: string;
-  category: string;
-  brand?: string;
-  productModel?: string;
-  serialNumber?: string;
-  yearOfProduction?: number;
-  technicalCondition: string;
-  purchasePrice: number;
-  salePrice?: number;
-  productImages?: string[];
-  additionalNotes?: string;
-  transactionType: "pawn" | "sale" | "redeemed" | "sold";
-  dateOfReceipt: Date;
-  redemptionDeadline?: Date;
-  loanValue?: number;
-  interestRate?: number;
-  clientId: mongoose.Types.ObjectId;
-  updateStatusAfterDeadline: () => void;
+// Definicja typu enum dla TransactionType
+export enum TransactionType {
+  PAWN = 'pawn',
+  SALE = 'sale',
+  REDEEMED = 'redeemed',
+  SOLD = 'sold',
 }
 
-const ProductSchema: Schema<IProduct> = new Schema({
-  productName: { type: String, required: true },
-  productDescription: { type: String, required: true },
-  category: { type: String, required: true },
-  brand: { type: String },
-  productModel: { type: String },
-  serialNumber: { type: String },
-  yearOfProduction: { type: Number },
-  technicalCondition: { type: String, required: true },
-  purchasePrice: { type: Number, required: true },
-  salePrice: { type: Number },
-  productImages: { type: [String] },
-  additionalNotes: { type: String },
-  transactionType: {
-    type: String,
-    enum: ["pawn", "sale", "redeemed", "sold"],
-    required: true,
-  },
-  dateOfReceipt: { type: Date, required: true },
-  redemptionDeadline: { type: Date },
-  loanValue: { type: Number },
-  interestRate: { type: Number },
-  clientId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer",
-    required: true,
-  },
-});
+@Entity('products')
+export class Product {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-ProductSchema.methods.updateStatusAfterDeadline = function () {
-  const now = new Date();
-  if (this.transactionType === "pawn" && this.redemptionDeadline && this.redemptionDeadline < now) {
-    this.transactionType = "sale";
-  }
-};
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  productName!: string;
 
-export default mongoose.model<IProduct>("Product", ProductSchema);
+  @Column({ type: 'text', nullable: false })
+  productDescription!: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  category!: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  brand?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  productModel?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  serialNumber?: string;
+
+  @Column({ type: 'int', nullable: true })
+  yearOfProduction?: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  technicalCondition!: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+  purchasePrice!: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  salePrice?: number;
+
+  @Column({ type: 'simple-array', nullable: true })
+  productImages?: string[];
+
+  @Column({ type: 'text', nullable: true })
+  additionalNotes?: string;
+
+  // Typ enum mapowany na varchar
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  transactionType!: TransactionType;
+
+  @Column({ type: 'date', nullable: false })
+  dateOfReceipt!: Date;
+
+  @Column({ type: 'date', nullable: true })
+  redemptionDeadline?: Date;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  loanValue?: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  interestRate?: number;
+
+  @ManyToOne(() => Customer, (customer) => customer.products, { nullable: false })
+  client!: Customer;
+}

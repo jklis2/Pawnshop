@@ -1,12 +1,13 @@
+import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cron from "node-cron";
 import customerRoutes from "./routes/customer.routes";
 import productRoutes from "./routes/product.routes";
 import employeeRoutes from './routes/employee.routes';
-import Product from './models/product.model';
+import { AppDataSource } from "./data-source";
+import { Product, TransactionType } from './models/product.model';
 
 dotenv.config();
 
@@ -15,44 +16,47 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  console.error("MongoDB connection string is missing in .env file!");
-  process.exit(1);
-}
-
-const connectDB = async () => {
+// Inicjalizacja połączenia z bazą danych
+const initializeDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log("Successfully connected to MongoDB!");
+    await AppDataSource.initialize();
+    console.log("Successfully connected to the database!");
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
+    console.error("Error connecting to the database:", error);
     process.exit(1);
   }
 };
 
-connectDB();
+initializeDB();
 
+// Endpoint testowy
 app.get("/", (req: Request, res: Response) => {
-  res.send("Backend is running and connected to MongoDB!");
+  res.send("Backend is running and connected to the database!");
 });
 
+// Trasy dla klientów, produktów i pracowników
 app.use("/api", customerRoutes);
 app.use("/api", productRoutes);
 app.use('/api', employeeRoutes);
 
+// Automatyczna aktualizacja stanu przedmiotów
 cron.schedule("0 0 * * *", async () => {
   try {
     console.log("Starting automatic item status update...");
 
-    const products = await Product.find({ transactionType: "pawn" });
-
-    products.forEach(async (product) => {
-      product.updateStatusAfterDeadline(); 
-      await product.save();
+    // Pobieranie przedmiotów w stanie "pawn"
+    const products = await AppDataSource.getRepository(Product).find({
+      where: { transactionType: TransactionType.PAWN },
     });
+
+    for (const product of products) {
+      if (product.redemptionDeadline && product.redemptionDeadline < new Date()) {
+        product.transactionType = TransactionType.SALE; // Zmiana stanu na "sale"
+        await AppDataSource.getRepository(Product).save(product);
+      }
+    }
 
     console.log("Automatic item status update completed.");
   } catch (error) {
@@ -60,6 +64,7 @@ cron.schedule("0 0 * * *", async () => {
   }
 });
 
+// Uruchomienie serwera
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
