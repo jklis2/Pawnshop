@@ -251,7 +251,11 @@
         },
         "transactionType": {
           "label": "Transaction Type",
-          "placeholder": "Enter transaction type (pawn / sale)"
+          "placeholder": "Enter transaction type (pawn / sale)",
+          "options": {
+            "pawn": "Pawn",
+            "sale": "Sale"
+          }
         },
         "dateOfReceipt": {
           "label": "Date of Receipt",

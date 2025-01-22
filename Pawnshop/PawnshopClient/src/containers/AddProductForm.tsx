@@ -145,28 +145,6 @@ export default function AddProductForm() {
             </div>
           </div>
 
-          {/* Pricing Information */}
-          <div>
-            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.pricingData')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CreateForm 
-                label={t('forms.product.fields.purchasePrice.label')} 
-                placeholder={t('forms.product.fields.purchasePrice.placeholder')} 
-                type="number" 
-                value={purchasePrice.toString()} 
-                required={true} 
-                onChange={(e) => setPurchasePrice(Number(e.target.value))} 
-              />
-              <CreateForm 
-                label={t('forms.product.fields.salePrice.label')} 
-                placeholder={t('forms.product.fields.salePrice.placeholder')} 
-                type="number" 
-                value={salePrice?.toString()} 
-                onChange={(e) => setSalePrice(Number(e.target.value))} 
-              />
-            </div>
-          </div>
-
           {/* Additional Information */}
           <div>
             <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.additionalData')}</h3>
@@ -186,24 +164,44 @@ export default function AddProductForm() {
             <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.transactionData')}</h3>
             <div className="grid grid-cols-1 gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <CreateForm 
-                  label={t('forms.product.fields.transactionType.label')} 
-                  placeholder={t('forms.product.fields.transactionType.placeholder')} 
-                  type="text" 
-                  value={transactionType} 
-                  required={true}
-                  onChange={(e) => setTransactionType(e.target.value as 'pawn' | 'sale')} 
-                />
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('forms.product.fields.transactionType.label')} <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={transactionType}
+                    required
+                    onChange={(e) => {
+                      const newType = e.target.value as 'pawn' | 'sale';
+                      setTransactionType(newType);
+                      // Reset fields when changing transaction type
+                      if (newType === 'pawn') {
+                        setSalePrice(undefined);
+                      } else {
+                        setRedemptionDeadline('');
+                        setLoanValue(undefined);
+                        setInterestRate(undefined);
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm 
+                             placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                             focus:border-emerald-500 transition-colors duration-200"
+                  >
+                    <option value="" disabled>
+                      {t('forms.product.fields.transactionType.placeholder')}
+                    </option>
+                    <option value="pawn">{t('forms.product.fields.transactionType.options.pawn')}</option>
+                    <option value="sale">{t('forms.product.fields.transactionType.options.sale')}</option>
+                  </select>
+                </div>
                 <CreateForm 
                   label={t('forms.product.fields.dateOfReceipt.label')} 
                   placeholder={t('forms.product.fields.dateOfReceipt.placeholder')} 
                   type="date" 
                   value={dateOfReceipt} 
-                  required={true} 
-                  disabled={true}
-                  onChange={() => {}}
                 />
               </div>
+
               {transactionType === 'pawn' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <CreateForm 
@@ -230,6 +228,30 @@ export default function AddProductForm() {
                     required={true}
                     onChange={(e) => setInterestRate(Number(e.target.value))} 
                   />
+                </div>
+              )}
+
+              {transactionType === 'sale' && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-700 mb-4">{t('forms.product.sections.pricingData')}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CreateForm 
+                      label={t('forms.product.fields.purchasePrice.label')} 
+                      placeholder={t('forms.product.fields.purchasePrice.placeholder')} 
+                      type="number" 
+                      value={purchasePrice.toString()} 
+                      required={true} 
+                      onChange={(e) => setPurchasePrice(Number(e.target.value))} 
+                    />
+                    <CreateForm 
+                      label={t('forms.product.fields.salePrice.label')} 
+                      placeholder={t('forms.product.fields.salePrice.placeholder')} 
+                      type="number" 
+                      value={salePrice?.toString()} 
+                      required={true} 
+                      onChange={(e) => setSalePrice(Number(e.target.value))} 
+                    />
+                  </div>
                 </div>
               )}
             </div>

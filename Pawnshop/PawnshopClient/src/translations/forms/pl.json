@@ -251,7 +251,11 @@
         },
         "transactionType": {
           "label": "Typ transakcji",
-          "placeholder": "Wprowadź typ transakcji (zastaw / sprzedaż)"
+          "placeholder": "Wprowadź typ transakcji (zastaw / sprzedaż)",
+          "options": {
+            "pawn": "Zastaw",
+            "sale": "Sprzedaż"
+          }
         },
         "dateOfReceipt": {
           "label": "Data przyjęcia",
