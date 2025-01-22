@@ -11,12 +11,11 @@ interface Customer {
 }
 
 interface CustomerSelectProps {
-  selectedCustomerId: string;
   onCustomerSelect: (customerId: string) => void;
   initialCustomer: Customer | null;
 }
 
-export default function CustomerSelect({ selectedCustomerId, onCustomerSelect, initialCustomer }: CustomerSelectProps) {
+export default function CustomerSelect({ onCustomerSelect, initialCustomer }: CustomerSelectProps) {
   const { t } = useTranslation();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,14 +25,23 @@ export default function CustomerSelect({ selectedCustomerId, onCustomerSelect, i
 
   const loadCustomers = useCallback(async () => {
     try {
+      console.log('Loading customers...');
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/customers`);
+      console.log('Received customers:', response.data);
       if (Array.isArray(response.data)) {
         setCustomers(response.data);
+        setError(null);
       } else {
-        setError("Expected an array of customers, but received something else.");
+        console.error('Unexpected response format:', response.data);
+        setError("Received invalid data format from server");
       }
     } catch (err) {
-      setError("Failed to load customers. Please try again later.");
+      console.error('Error loading customers:', err);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Failed to load customers. Please try again.");
+      } else {
+        setError("An unexpected error occurred while loading customers.");
+      }
     }
   }, []);
 
@@ -41,24 +49,38 @@ export default function CustomerSelect({ selectedCustomerId, onCustomerSelect, i
     loadCustomers();
   }, [loadCustomers]);
 
+  // Obsługa initialCustomer
   useEffect(() => {
+    console.log('Initial customer changed:', initialCustomer);
     if (initialCustomer) {
-      setSearchTerm(`${initialCustomer.firstName} ${initialCustomer.lastName}; PESEL: ${initialCustomer.pesel}`);
+      const displayText = `${initialCustomer.firstName} ${initialCustomer.lastName}; PESEL: ${initialCustomer.pesel}`;
+      console.log('Setting search term to:', displayText);
+      setSearchTerm(displayText);
+      setFilteredCustomers([initialCustomer]);
+      setIsDropdownOpen(false);
+      setError(null);
     }
   }, [initialCustomer]);
 
+  // Obsługa wyszukiwania
   useEffect(() => {
-    if (searchTerm) {
-      const filtered = customers.filter(customer => {
-        const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
-        const search = searchTerm.toLowerCase();
-        return fullName.includes(search) || customer.pesel.includes(search);
-      });
-      setFilteredCustomers(filtered);
-    } else {
+    if (!searchTerm) {
       setFilteredCustomers([]);
+      return;
     }
-  }, [searchTerm, customers]);
+
+    if (initialCustomer) {
+      setFilteredCustomers([initialCustomer]);
+      return;
+    }
+
+    const filtered = customers.filter(customer => {
+      const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+      const search = searchTerm.toLowerCase();
+      return fullName.includes(search) || customer.pesel.includes(search);
+    });
+    setFilteredCustomers(filtered);
+  }, [searchTerm, customers, initialCustomer]);
 
   const handleCustomerSelect = useCallback((customer: Customer) => {
     setSearchTerm(`${customer.firstName} ${customer.lastName}; PESEL: ${customer.pesel}`);
@@ -81,7 +103,7 @@ export default function CustomerSelect({ selectedCustomerId, onCustomerSelect, i
     <div className="relative mb-6">
       <div className="relative">
         <CreateForm 
-          label={t('forms.customer.select')}
+          label={t('forms.customer.found')}
           placeholder={t('forms.customer.searchPlaceholder')}
           type="text"
           value={searchTerm}

@@ -67,25 +67,11 @@ export const getAllCustomers = async (_req: Request, res: Response): Promise<voi
     
     const customers = await customerRepository
       .createQueryBuilder('customer')
-      .leftJoinAndSelect('customer.products', 'products')
       .select([
         'customer.id',
         'customer.firstName',
         'customer.lastName',
-        'customer.pesel',
-        'customer.dateOfBirth',
-        'customer.street',
-        'customer.houseNumber',
-        'customer.postalCode',
-        'customer.city',
-        'customer.idSeries',
-        'customer.idNumber',
-        'customer.phoneNumber',
-        'customer.email',
-        'customer.notes',
-        'products.id',
-        'products.productName',
-        'products.transactionType'
+        'customer.pesel'
       ])
       .getMany();
 

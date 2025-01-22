@@ -76,12 +76,34 @@ export default function Products() {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
-      showAlert(t('routes.products.success.delete'), "success");
-      fetchProducts();
-    } catch {
-      console.error("Error deleting product");
-      showAlert(t('routes.products.error.delete'), "error");
+      console.log('Attempting to delete product:', id);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
+      console.log('Delete response:', response.data);
+
+      if (response.status === 200) {
+        showAlert(t('routes.products.success.delete'), "success");
+        await fetchProducts(); // Odśwież listę po udanym usunięciu
+      } else {
+        console.error('Unexpected response status:', response.status);
+        showAlert(t('routes.products.error.delete'), "error");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || t('routes.products.error.delete');
+        console.error('Server error:', error.response?.data);
+        
+        if (error.response?.status === 404) {
+          // Jeśli produkt nie istnieje, odśwież listę
+          console.log('Product already deleted, refreshing list...');
+          await fetchProducts();
+          showAlert(t('routes.products.alreadyDeleted'), "info");
+        } else {
+          showAlert(errorMessage, "error");
+        }
+      } else {
+        showAlert(t('routes.products.error.delete'), "error");
+      }
     }
   };
 
@@ -101,56 +123,46 @@ export default function Products() {
             <SearchBar<Product>
               placeholder={t('search.products')}
               data={products}
-              onSearch={(results) => setFilteredProducts(results)}
+              onSearch={(results) => {
+                setFilteredProducts(results);
+                setCurrentPage(1); // Reset strony przy wyszukiwaniu
+              }}
               searchKeys={['productName', 'productDescription', 'brand', 'productModel', 'serialNumber']}
             />
           </div>
         </div>
+        
         {loading && <p className="text-center">{t('routes.products.loading')}</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
         {!loading && !error && (
           <>
             <div className="space-y-8">
-              {currentProducts.length > 0 && (
+              {currentProducts.length > 0 ? (
                 currentProducts.map((product) => (
                   <ProductCard
                     key={product.id}
-                    id={product.id}
-                    productName={product.productName}
-                    productDescription={product.productDescription}
-                    category={product.category}
-                    brand={product.brand}
-                    productModel={product.productModel}
-                    serialNumber={product.serialNumber}
-                    yearOfProduction={product.yearOfProduction}
-                    technicalCondition={product.technicalCondition}
-                    purchasePrice={product.purchasePrice}
-                    salePrice={product.salePrice}
-                    productImages={product.productImages}
-                    additionalNotes={product.additionalNotes}
-                    transactionType={product.transactionType}
-                    dateOfReceipt={product.dateOfReceipt}
-                    redemptionDeadline={product.redemptionDeadline}
-                    loanValue={product.loanValue}
-                    interestRate={product.interestRate}
-                    notes={product.notes}
+                    {...product}
                     clientName={product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined}
                     onDelete={() => handleDelete(product.id)}
                     role={employee?.role || ""}
                   />
                 ))
-              )}
-              {currentProducts.length === 0 && (
-                <p>{t('routes.products.noProducts')}</p>
+              ) : (
+                <p className="text-center text-gray-500">{t('routes.products.noProducts')}</p>
               )}
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalCustomers={filteredProducts.length}
-              customersPerPage={productsPerPage}
-              onPageChange={(page) => setCurrentPage(page)}
-            />
+
+            {filteredProducts.length > productsPerPage && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalCustomers={filteredProducts.length}
+                  customersPerPage={productsPerPage}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </>
         )}
       </div>

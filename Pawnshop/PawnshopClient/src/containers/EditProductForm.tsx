@@ -32,6 +32,7 @@ interface ProductFormData {
   redemptionDeadline?: string;
   loanValue?: number;
   interestRate?: number;
+  client?: Customer | null;
 }
 
 interface EditProductFormProps {
@@ -42,8 +43,9 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState(initialData.clientId);
-  const [initialCustomer, setInitialCustomer] = useState<Customer | null>(null);
+  const [initialCustomer, setInitialCustomer] = useState<Customer | null>(initialData.client || null);
 
   const [productName, setProductName] = useState(initialData.name);
   const [productDescription, setProductDescription] = useState(initialData.description);
@@ -64,17 +66,28 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
 
   useEffect(() => {
     const fetchCustomer = async () => {
+      if (!initialData.clientId) return;
+      
       try {
+        console.log('Fetching customer with ID:', initialData.clientId);
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/customers/${initialData.clientId}`);
-        setInitialCustomer(response.data);
+        console.log('Received customer data:', response.data);
+        if (response.data) {
+          const customerData: Customer = {
+            id: response.data.id,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            pesel: response.data.pesel
+          };
+          setInitialCustomer(customerData);
+          console.log('Set initial customer:', customerData);
+        }
       } catch (error) {
         console.error('Error fetching customer:', error);
       }
     };
 
-    if (initialData.clientId) {
-      fetchCustomer();
-    }
+    fetchCustomer();
   }, [initialData.clientId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,35 +95,56 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
     setLoading(true);
 
     try {
+      // Konwersja wartości na odpowiednie typy
+      const parsedYearOfProduction = yearOfProduction ? parseInt(yearOfProduction.toString()) : null;
+      const parsedPurchasePrice = parseFloat(purchasePrice.toString());
+      const parsedSalePrice = salePrice ? parseFloat(salePrice.toString()) : null;
+      const parsedLoanValue = loanValue ? parseFloat(loanValue.toString()) : null;
+      const parsedInterestRate = interestRate ? parseFloat(interestRate.toString()) : null;
+
       const productData = {
-        id: initialData.id,
         name: productName,
         description: productDescription,
         category,
-        brand,
-        model: productModel,
-        serialNumber,
-        yearOfProduction,
+        brand: brand || '',
+        model: productModel || '',
+        serialNumber: serialNumber || '',
+        yearOfProduction: parsedYearOfProduction,
         technicalCondition,
-        purchasePrice,
-        salePrice,
-        additionalNotes,
+        purchasePrice: parsedPurchasePrice,
+        salePrice: parsedSalePrice,
+        additionalNotes: additionalNotes || '',
         transactionType,
         dateOfReceipt,
-        redemptionDeadline: redemptionDeadline || undefined,
-        loanValue,
-        interestRate,
+        redemptionDeadline: redemptionDeadline || null,
+        loanValue: parsedLoanValue,
+        interestRate: parsedInterestRate,
         clientId: selectedCustomerId,
       };
 
-      await axios.put(
+      console.log('Sending update request with data:', productData);
+
+      const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/products/${initialData.id}`,
         productData
       );
 
-      navigate('/dashboard/products');
+      console.log('Update response:', response.data);
+
+      if (response.data) {
+        navigate('/dashboard/products');
+      } else {
+        setError("No data received from server after update");
+      }
     } catch (error) {
       console.error('Error updating product:', error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || "Failed to update product";
+        console.error('Server error:', errorMessage);
+        setError(errorMessage);
+      } else {
+        setError("An unexpected error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -124,7 +158,6 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
           <div>
             <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.select')}</h3>
             <CustomerSelect 
-              selectedCustomerId={selectedCustomerId}
               onCustomerSelect={setSelectedCustomerId}
               initialCustomer={initialCustomer}
             />
@@ -287,6 +320,10 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
               )}
             </div>
           </div>
+
+          {error && (
+            <div className="text-red-600 mb-4">{error}</div>
+          )}
 
           <div className="mt-8 flex justify-end space-x-4">
             <button

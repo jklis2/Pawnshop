@@ -29,6 +29,7 @@ interface Product {
     id: string;
     firstName: string;
     lastName: string;
+    pesel: string;
   };
 }
 
@@ -83,25 +84,26 @@ export default function EditProduct() {
     name: product.productName,
     description: product.productDescription,
     category: product.category,
-    brand: product.brand,
-    model: product.productModel,
+    brand: product.brand || '',
+    model: product.productModel || '',
     serialNumber: product.serialNumber || '',
     yearOfProduction: product.yearOfProduction,
     technicalCondition: product.technicalCondition,
     purchasePrice: product.purchasePrice,
     salePrice: product.salePrice,
     images: product.productImages,
-    additionalNotes: product.additionalNotes,
+    additionalNotes: product.additionalNotes || '',
     transactionType: product.transactionType,
     dateOfReceipt: product.dateOfReceipt,
-    redemptionDeadline: product.redemptionDeadline,
+    redemptionDeadline: product.redemptionDeadline || '',
     loanValue: product.loanValue,
-    interestRate: product.interestRate
+    interestRate: product.interestRate,
+    client: product.client
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center">Edytuj Produkt</h1>
+    <div>
+      <h1 className="text-2xl font-bold mb-6">{t('routes.editProduct.title')}</h1>
       <EditProductForm initialData={formattedData} />
     </div>
   );

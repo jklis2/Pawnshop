@@ -91,6 +91,9 @@
     "customer": {
       "title": "Dodaj klienta",
       "editTitle": "Edytuj klienta",
+      "select": "Wybierz klienta",
+      "found": "Wyszukaj klienta",
+      "searchPlaceholder": "Wprowadź nazwisko, imię lub pesel",
       "sections": {
         "personal": "Dane osobowe",
         "address": "Dane adresowe",
@@ -167,6 +170,7 @@
     "product": {
       "title": "Dodaj Produkt",
       "editTitle": "Edytuj Produkt",
+      "addSubmit": "Dodaj produkt",
       "sections": {
         "basicData": "Podstawowe Informacje",
         "productDetails": "Szczegóły Produktu",

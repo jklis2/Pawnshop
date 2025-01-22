@@ -33,11 +33,11 @@ export default function AddProductForm() {
 
     try {
       const productData = {
-        name: productName,
-        description: productDescription,
+        productName,
+        productDescription,
         category,
         brand,
-        model: productModel,
+        productModel,
         serialNumber,
         yearOfProduction,
         technicalCondition,
@@ -73,7 +73,6 @@ export default function AddProductForm() {
           <div>
             <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.customer.select')}</h3>
             <CustomerSelect 
-              selectedCustomerId={selectedCustomerId}
               onCustomerSelect={setSelectedCustomerId}
               initialCustomer={null}
             />

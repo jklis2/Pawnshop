@@ -91,6 +91,9 @@
     "customer": {
       "title": "Add Customer",
       "editTitle": "Edit Customer",
+      "select": "Select a customer",
+      "found": "Search for a customer",
+      "searchPlaceholder": "Enter customer's last name, first name or PESEL number",
       "sections": {
         "personal": "Personal Information",
         "address": "Address Information",
@@ -167,6 +170,7 @@
     "product": {
       "title": "Add Product",
       "editTitle": "Edit Product",
+      "addSubmit": "Add Product",
       "sections": {
         "basicData": "Basic Information",
         "productDetails": "Product Details",

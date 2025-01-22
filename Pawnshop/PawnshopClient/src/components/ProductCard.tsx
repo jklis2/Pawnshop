@@ -68,25 +68,6 @@ export default function ProductCard({
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
-      onDelete();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      showAlert("There was an error deleting the product.", "error");
-    }
-  };
-
-  const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    showAlert(
-      `${t('cards.product.confirmDelete')} ${productName}?`,
-      "error",
-      handleDelete
-    );
-  };
-
   const handleStatusChange = async () => {
     try {
       const newStatus = currentTransactionType === "pawn" ? "redeemed" : "sold";
@@ -99,6 +80,15 @@ export default function ProductCard({
     } catch (error) {
       console.error("Error updating product status:", error);
     }
+  };
+
+  const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    showAlert(
+      `${t('cards.product.confirmDelete')} ${productName}?`,
+      "error",
+      () => onDelete()
+    );
   };
 
   const formattedDateOfReceipt = new Date(dateOfReceipt).toLocaleDateString(
