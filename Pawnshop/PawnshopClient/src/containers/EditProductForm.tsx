@@ -25,7 +25,7 @@ interface ProductFormData {
   technicalCondition: string;
   purchasePrice: number;
   salePrice?: number;
-  images?: string[];
+  productImage?: string;
   additionalNotes?: string;
   transactionType: string;
   dateOfReceipt: string;
@@ -63,6 +63,8 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [redemptionDeadline, setRedemptionDeadline] = useState(initialData.redemptionDeadline || '');
   const [loanValue, setLoanValue] = useState<number | undefined>(initialData.loanValue);
   const [interestRate, setInterestRate] = useState<number | undefined>(initialData.interestRate);
+  const [productImage, setProductImage] = useState<File | null>(null);
+  const [currentProductImage, setCurrentProductImage] = useState<string | undefined>(initialData.productImage);
 
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -95,38 +97,39 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
     setLoading(true);
 
     try {
-      // Konwersja wartości na odpowiednie typy
-      const parsedYearOfProduction = yearOfProduction ? parseInt(yearOfProduction.toString()) : null;
-      const parsedPurchasePrice = parseFloat(purchasePrice.toString());
-      const parsedSalePrice = salePrice ? parseFloat(salePrice.toString()) : null;
-      const parsedLoanValue = loanValue ? parseFloat(loanValue.toString()) : null;
-      const parsedInterestRate = interestRate ? parseFloat(interestRate.toString()) : null;
+      const formData = new FormData();
+      formData.append('name', productName);
+      formData.append('description', productDescription);
+      formData.append('category', category);
+      formData.append('brand', brand || '');
+      formData.append('model', productModel || '');
+      formData.append('serialNumber', serialNumber || '');
+      formData.append('yearOfProduction', yearOfProduction?.toString() || '');
+      formData.append('technicalCondition', technicalCondition);
+      formData.append('purchasePrice', purchasePrice.toString());
+      formData.append('salePrice', salePrice?.toString() || '');
+      formData.append('additionalNotes', additionalNotes || '');
+      formData.append('transactionType', transactionType);
+      formData.append('dateOfReceipt', dateOfReceipt);
+      formData.append('redemptionDeadline', redemptionDeadline || '');
+      formData.append('loanValue', loanValue?.toString() || '');
+      formData.append('interestRate', interestRate?.toString() || '');
+      formData.append('clientId', selectedCustomerId);
 
-      const productData = {
-        name: productName,
-        description: productDescription,
-        category,
-        brand: brand || '',
-        model: productModel || '',
-        serialNumber: serialNumber || '',
-        yearOfProduction: parsedYearOfProduction,
-        technicalCondition,
-        purchasePrice: parsedPurchasePrice,
-        salePrice: parsedSalePrice,
-        additionalNotes: additionalNotes || '',
-        transactionType,
-        dateOfReceipt,
-        redemptionDeadline: redemptionDeadline || null,
-        loanValue: parsedLoanValue,
-        interestRate: parsedInterestRate,
-        clientId: selectedCustomerId,
-      };
+      if (productImage) {
+        formData.append('productImage', productImage);
+      }
 
-      console.log('Sending update request with data:', productData);
+      console.log('Sending update request with data:', formData);
 
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/products/${initialData.id}`,
-        productData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
 
       console.log('Update response:', response.data);
@@ -227,6 +230,44 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
                 required={true} 
                 onChange={(e) => setTechnicalCondition(e.target.value)} 
               />
+            </div>
+          </div>
+
+          {/* Product Image */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.productImage')}</h3>
+            <div className="grid grid-cols-1 gap-6">
+              {currentProductImage && (
+                <div className="mb-4">
+                  <img
+                    src={`data:image/jpeg;base64,${currentProductImage}`}
+                    alt="Current product"
+                    className="h-48 w-48 object-cover rounded-lg shadow-sm"
+                  />
+                </div>
+              )}
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  {t('forms.product.fields.productImage.label')}
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files ? e.target.files[0] : null;
+                    setProductImage(file);
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        const base64String = reader.result as string;
+                        setCurrentProductImage(base64String.split(',')[1]);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
             </div>
           </div>
 

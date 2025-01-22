@@ -7,7 +7,19 @@ import multer from 'multer';
 const productRepository = AppDataSource.getRepository(Product);
 const customerRepository = AppDataSource.getRepository(Customer);
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // limit to 5MB
+  },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'));
+    }
+  },
+});
 
 export const addProduct = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -32,29 +44,10 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
       clientId,
     } = req.body;
 
-    const productImages = req.files ? (req.files as Express.Multer.File[]).map(file => file.filename) : [];
-
-    // Logowanie danych wejściowych
-    console.log('Received data:', {
-      productName,
-      productDescription,
-      category,
-      brand,
-      productModel,
-      serialNumber,
-      yearOfProduction,
-      technicalCondition,
-      purchasePrice,
-      salePrice,
-      productImages,
-      additionalNotes,
-      transactionType,
-      dateOfReceipt,
-      redemptionDeadline,
-      loanValue,
-      interestRate,
-      clientId,
-    });
+    let productImage: Buffer | undefined;
+    if (req.file) {
+      productImage = req.file.buffer;
+    }
 
     if (!clientId) {
       res.status(400).json({ message: 'Client ID is required' });
@@ -98,11 +91,11 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
     if (serialNumber) newProduct.serialNumber = serialNumber;
     if (yearOfProduction) newProduct.yearOfProduction = Number(yearOfProduction);
     if (salePrice) newProduct.salePrice = Number(salePrice);
-    if (productImages.length > 0) newProduct.productImages = productImages;
     if (additionalNotes) newProduct.additionalNotes = additionalNotes;
     if (redemptionDeadline) newProduct.redemptionDeadline = new Date(redemptionDeadline);
     if (loanValue) newProduct.loanValue = Number(loanValue);
     if (interestRate) newProduct.interestRate = Number(interestRate);
+    if (productImage) newProduct.productImage = productImage;
 
     console.log('Created product:', newProduct);
 
@@ -117,22 +110,23 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
+export const uploadProductImage = upload.single('productImage');
+
 export const getProductById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
-    const product = await productRepository.findOne({ 
+    const product = await productRepository.findOne({
       where: { id },
-      relations: ['client']
+      relations: ['client'],
     });
 
     if (!product) {
-      res.status(404).json({ message: `Product with ID ${id} not found.` });
+      res.status(404).json({ message: 'Product not found' });
       return;
     }
 
-    // Przekształć dane produktu do formatu oczekiwanego przez frontend
-    const formattedProduct = {
+    const response = {
       id: product.id,
       productName: product.productName,
       productDescription: product.productDescription,
@@ -144,62 +138,63 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
       technicalCondition: product.technicalCondition,
       purchasePrice: product.purchasePrice,
       salePrice: product.salePrice,
-      productImages: product.productImages,
+      productImage: product.productImage ? product.productImage.toString('base64') : undefined,
       additionalNotes: product.additionalNotes,
       transactionType: product.transactionType,
       dateOfReceipt: product.dateOfReceipt,
       redemptionDeadline: product.redemptionDeadline,
       loanValue: product.loanValue,
       interestRate: product.interestRate,
-      clientId: product.client.id,
-      client: product.client
+      clientName: product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined,
     };
 
-    res.status(200).json(formattedProduct);
+    res.json(response);
   } catch (error) {
-    console.error('Error in getProductById:', error);
-    res.status(500).json({ message: 'An error occurred while fetching the product.', error });
+    console.error('Error getting product:', error);
+    res.status(500).json({ message: 'Error getting product', error });
   }
 };
 
 export const getAllProducts = async (_req: Request, res: Response): Promise<void> => {
   try {
     const products = await productRepository.find({
-      relations: {
-        client: true
-      }
+      relations: ['client'],
     });
-    res.status(200).json(products);
+
+    const response = products.map(product => ({
+      id: product.id,
+      productName: product.productName,
+      productDescription: product.productDescription,
+      category: product.category,
+      brand: product.brand,
+      productModel: product.productModel,
+      serialNumber: product.serialNumber,
+      yearOfProduction: product.yearOfProduction,
+      technicalCondition: product.technicalCondition,
+      purchasePrice: product.purchasePrice,
+      salePrice: product.salePrice,
+      productImage: product.productImage ? product.productImage.toString('base64') : undefined,
+      additionalNotes: product.additionalNotes,
+      transactionType: product.transactionType,
+      dateOfReceipt: product.dateOfReceipt,
+      redemptionDeadline: product.redemptionDeadline,
+      loanValue: product.loanValue,
+      interestRate: product.interestRate,
+      clientName: product.client ? `${product.client.firstName} ${product.client.lastName}` : undefined,
+    }));
+
+    res.json(response);
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred while fetching all products.', error });
+    console.error('Error getting products:', error);
+    res.status(500).json({ message: 'Error getting products', error });
   }
 };
 
 export const updateProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const {
-      productName,
-      productDescription,
-      category,
-      brand,
-      productModel,
-      serialNumber,
-      yearOfProduction,
-      technicalCondition,
-      purchasePrice,
-      salePrice,
-      additionalNotes,
-      transactionType,
-      dateOfReceipt,
-      redemptionDeadline,
-      loanValue,
-      interestRate,
-      clientId
-    } = req.body;
-
     console.log('Updating product with ID:', id);
-    console.log('Received data:', req.body);
+    console.log('Request body:', req.body);
 
     let product = await productRepository.findOne({ 
       where: { id },
@@ -213,6 +208,26 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
 
     console.log('Found existing product:', product);
 
+    const {
+      name,
+      description,
+      category,
+      brand,
+      model,
+      serialNumber,
+      yearOfProduction,
+      technicalCondition,
+      purchasePrice,
+      salePrice,
+      additionalNotes,
+      transactionType,
+      dateOfReceipt,
+      redemptionDeadline,
+      loanValue,
+      interestRate,
+      clientId,
+    } = req.body;
+
     // Znajdź klienta jeśli został zmieniony
     if (clientId && clientId !== product.client.id) {
       console.log('Client ID changed from', product.client.id, 'to', clientId);
@@ -224,41 +239,30 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
       product.client = customer;
     }
 
-    // Przygotuj obiekt z aktualizacjami
-    const updates = {
-      productName,
-      productDescription,
-      category,
-      brand,
-      productModel,
-      serialNumber,
-      yearOfProduction: yearOfProduction ? Number(yearOfProduction) : null,
-      technicalCondition,
-      purchasePrice: Number(purchasePrice),
-      salePrice: salePrice ? Number(salePrice) : null,
-      additionalNotes,
-      transactionType,
-      dateOfReceipt: dateOfReceipt ? new Date(dateOfReceipt) : product.dateOfReceipt,
-      redemptionDeadline: redemptionDeadline ? new Date(redemptionDeadline) : null,
-      loanValue: loanValue ? Number(loanValue) : null,
-      interestRate: interestRate ? Number(interestRate) : null
-    };
+    // Aktualizacja podstawowych danych
+    product.productName = name;
+    product.productDescription = description;
+    product.category = category;
+    product.brand = brand;
+    product.productModel = model;
+    product.serialNumber = serialNumber;
+    product.yearOfProduction = yearOfProduction ? parseInt(yearOfProduction) : undefined;
+    product.technicalCondition = technicalCondition;
+    product.purchasePrice = parseFloat(purchasePrice);
+    product.salePrice = salePrice ? parseFloat(salePrice) : undefined;
+    product.additionalNotes = additionalNotes;
+    product.transactionType = transactionType;
+    product.dateOfReceipt = new Date(dateOfReceipt);
+    product.redemptionDeadline = redemptionDeadline ? new Date(redemptionDeadline) : undefined;
+    product.loanValue = loanValue ? parseFloat(loanValue) : undefined;
+    product.interestRate = interestRate ? parseFloat(interestRate) : undefined;
 
-    console.log('Applying updates:', updates);
-
-    // Aktualizuj pola produktu
-    for (const [key, value] of Object.entries(updates)) {
-      if (value !== undefined) {
-        (product as any)[key] = value;
-      }
+    // Aktualizacja zdjęcia jeśli zostało przesłane
+    if (req.file) {
+      product.productImage = req.file.buffer;
     }
 
-    console.log('Product after updates:', product);
-
-    // Zapisz zmiany
-    product = await productRepository.save(product);
-    
-    console.log('Product saved successfully:', product);
+    await productRepository.save(product);
 
     // Pobierz świeżo zaktualizowany produkt z relacjami
     const updatedProduct = await productRepository.findOne({
@@ -266,19 +270,37 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
       relations: ['client']
     });
 
-    console.log('Fresh product data:', updatedProduct);
-
-    res.status(200).json(updatedProduct);
-  } catch (error) {
-    console.error('Error in updateProduct:', error);
-    if (error instanceof Error) {
-      console.error('Error details:', error.message);
-      console.error('Error stack:', error.stack);
+    if (!updatedProduct) {
+      res.status(404).json({ message: 'Updated product not found' });
+      return;
     }
-    res.status(500).json({ 
-      message: 'An error occurred while updating the product.',
-      error: error instanceof Error ? error.message : String(error)
-    });
+
+    const response = {
+      id: updatedProduct.id,
+      productName: updatedProduct.productName,
+      productDescription: updatedProduct.productDescription,
+      category: updatedProduct.category,
+      brand: updatedProduct.brand,
+      productModel: updatedProduct.productModel,
+      serialNumber: updatedProduct.serialNumber,
+      yearOfProduction: updatedProduct.yearOfProduction,
+      technicalCondition: updatedProduct.technicalCondition,
+      purchasePrice: updatedProduct.purchasePrice,
+      salePrice: updatedProduct.salePrice,
+      productImage: updatedProduct.productImage ? updatedProduct.productImage.toString('base64') : undefined,
+      additionalNotes: updatedProduct.additionalNotes,
+      transactionType: updatedProduct.transactionType,
+      dateOfReceipt: updatedProduct.dateOfReceipt,
+      redemptionDeadline: updatedProduct.redemptionDeadline,
+      loanValue: updatedProduct.loanValue,
+      interestRate: updatedProduct.interestRate,
+      clientName: updatedProduct.client ? `${updatedProduct.client.firstName} ${updatedProduct.client.lastName}` : undefined,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ message: 'Error updating product', error });
   }
 };
 

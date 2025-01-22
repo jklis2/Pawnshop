@@ -21,7 +21,7 @@ interface ProductCardProps {
   technicalCondition: string;
   purchasePrice: number;
   salePrice?: number;
-  productImages?: string[];
+  productImage?: string;
   additionalNotes?: string;
   transactionType: "pawn" | "sale" | "redeemed" | "sold";
   dateOfReceipt: string;
@@ -47,7 +47,7 @@ export default function ProductCard({
   technicalCondition,
   purchasePrice,
   salePrice,
-  productImages,
+  productImage,
   additionalNotes,
   transactionType,
   dateOfReceipt,
@@ -119,8 +119,8 @@ export default function ProductCard({
             <img
               className="h-24 w-24 object-cover rounded-lg shadow-sm"
               src={
-                productImages && productImages.length > 0
-                  ? `data:image/jpeg;base64,${productImages[0]}`
+                productImage
+                  ? `data:image/jpeg;base64,${productImage}`
                   : placeholder
               }
               alt={productName}

@@ -26,35 +26,44 @@ export default function AddProductForm() {
   const [redemptionDeadline, setRedemptionDeadline] = useState('');
   const [loanValue, setLoanValue] = useState<number | undefined>();
   const [interestRate, setInterestRate] = useState<number | undefined>();
+  const [productImage, setProductImage] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const productData = {
-        productName,
-        productDescription,
-        category,
-        brand,
-        productModel,
-        serialNumber,
-        yearOfProduction,
-        technicalCondition,
-        purchasePrice,
-        salePrice,
-        additionalNotes,
-        transactionType,
-        dateOfReceipt,
-        redemptionDeadline: redemptionDeadline || undefined,
-        loanValue,
-        interestRate,
-        clientId: selectedCustomerId,
-      };
+      const formData = new FormData();
+      formData.append('productName', productName);
+      formData.append('productDescription', productDescription);
+      formData.append('category', category);
+      formData.append('brand', brand || '');
+      formData.append('productModel', productModel || '');
+      formData.append('serialNumber', serialNumber || '');
+      formData.append('yearOfProduction', yearOfProduction?.toString() || '');
+      formData.append('technicalCondition', technicalCondition);
+      formData.append('purchasePrice', purchasePrice.toString());
+      formData.append('salePrice', salePrice?.toString() || '');
+      formData.append('additionalNotes', additionalNotes || '');
+      formData.append('transactionType', transactionType);
+      formData.append('dateOfReceipt', dateOfReceipt);
+      formData.append('redemptionDeadline', redemptionDeadline || '');
+      formData.append('loanValue', loanValue?.toString() || '');
+      formData.append('interestRate', interestRate?.toString() || '');
+      formData.append('clientId', selectedCustomerId);
+      
+      if (productImage) {
+        formData.append('productImage', productImage);
+      }
 
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/products`,
-        productData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
 
       navigate('/dashboard/products');
@@ -159,6 +168,24 @@ export default function AddProductForm() {
             </div>
           </div>
 
+          {/* Product Image */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.productImage')}</h3>
+            <div className="grid grid-cols-1 gap-6">
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  {t('forms.product.fields.productImage.label')}
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setProductImage(e.target.files ? e.target.files[0] : null)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Transaction Details */}
           <div>
             <h3 className="text-lg font-medium text-gray-700 mb-4">{t('forms.product.sections.transactionData')}</h3>
@@ -185,7 +212,7 @@ export default function AddProductForm() {
                     }}
                     className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm 
                              placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 
-                             focus:border-emerald-500 transition-colors duration-200"
+                             focus:ring-offset-2 transition-colors duration-200"
                   >
                     <option value="" disabled>
                       {t('forms.product.fields.transactionType.placeholder')}

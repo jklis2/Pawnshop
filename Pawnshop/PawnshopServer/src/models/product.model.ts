@@ -44,8 +44,8 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   salePrice?: number;
 
-  @Column({ type: 'simple-array', nullable: true })
-  productImages?: string[];
+  @Column({ type: 'varbinary', length: 'max', nullable: true })
+  productImage?: Buffer;
 
   @Column({ type: 'text', nullable: true })
   additionalNotes?: string;
