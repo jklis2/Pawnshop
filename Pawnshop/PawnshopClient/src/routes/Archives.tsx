@@ -114,25 +114,25 @@ export default function Archives() {
                 currentProducts.map((product) => (
                   <ProductCard
                     key={product._id}
-                    _id={product._id}
+                    id={product._id}
                     productName={product.productName}
                     productDescription={product.productDescription}
                     category={product.category}
                     brand={product.brand}
-                    model={product.productModel}
+                    productModel={product.productModel}
                     serialNumber={product.serialNumber}
                     yearOfProduction={product.yearOfProduction}
                     technicalCondition={product.technicalCondition}
                     purchasePrice={product.purchasePrice}
                     salePrice={product.salePrice}
-                    productImages={product.productImages}
+                    productImage={product.productImages?.[0]}
                     additionalNotes={product.additionalNotes}
                     transactionType={product.transactionType}
                     dateOfReceipt={product.dateOfReceipt}
                     redemptionDeadline={product.redemptionDeadline}
                     loanValue={product.loanValue}
                     interestRate={product.interestRate}
-                    transactionNotes={product.notes}
+                    notes={product.notes}
                     clientName={product.clientName}
                     canEdit={false}
                     onDelete={() => {}}

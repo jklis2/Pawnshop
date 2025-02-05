@@ -75,6 +75,8 @@ export default function ProductCard({
 
       await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${id}`, {
         transactionType: newStatus,
+        dateOfReceipt: dateOfReceipt,
+        purchasePrice: purchasePrice
       });
 
       setCurrentTransactionType(newStatus);
