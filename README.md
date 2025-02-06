@@ -1,146 +1,167 @@
-# Pawnshop Management System
+# 🏪 Pawnshop Management System
 
-## 📝 Project Description
+## 📝 Project Overview
 
-The **Pawnshop Management System** is an application designed to streamline operations in a pawnshop by enabling administrators to add employees, and all employees to manage customers and products for sale or pawn. Each product is associated with a specific customer. The application aims to simplify daily pawnshop operations like accepting items for pawn or sale. In the future, the app will be extended to include functionality for generating contracts in PDF format and integrating with an e-commerce platform, allowing automatic listing of items marked for sale in the online store.
+The **Pawnshop Management System** is a comprehensive business management solution designed to modernize and streamline pawnshop operations. This application empowers administrators to manage employees while enabling staff to efficiently handle customer relationships and inventory management. The system provides robust functionality for processing both pawned items and products for sale, with each item carefully tracked and associated with specific customer records.
 
-## 🔧 Technologies Used
+## 🎯 Core Features
 
-- **Frontend**: React TypeScript + Vite
-- **Styling**: TailwindCSS
-- **Backend**: Node.js + Express.js + TypeScript
-- **Database**: MongoDB
-- **HTTP Communication**: `axios`
+- **Employee Management** (Admin Access)
+  - User role management
+  - Staff performance tracking
+  - Access control administration
 
-## 📂 Project Structure
+- **Customer Management**
+  - Detailed customer profiles
+  - Transaction history
+  - Contact information management
 
-### Frontend (`PawnshopClient`)
+- **Product Management**
+  - Inventory tracking
+  - Item status monitoring
+  - Customer-product association
+  - Automated pricing suggestions
 
-```css
+- **Future Enhancements**
+  - PDF contract generation
+  - E-commerce platform integration
+  - Advanced reporting capabilities
+  - Inventory analytics
+
+## 🔧 Technology Stack
+
+- **Frontend**
+  - React with TypeScript
+  - Vite (Build tool)
+  - TailwindCSS (Styling)
+
+- **Backend**
+  - Node.js + Express.js
+  - TypeScript
+  - RESTful API architecture
+
+- **Database**
+  - Microsoft SQL Server
+
+- **Tools & Libraries**
+  - Axios (HTTP client)
+  - JWT (Authentication)
+  - TypeORM (Database ORM)
+
+## 📂 Project Architecture
+
+### Frontend Structure (`PawnshopClient`)
+```
 src/
-├── main.tsx
-├── index.html
-├── components/
-├── pages/
-├── styles/
-└── assets/
+├── main.tsx                 # Application entry point
+├── index.html              # HTML template
+├── components/             # Reusable UI components
+├── pages/                  # Route components
+├── styles/                 # Global styles and themes
+└── assets/                 # Static resources
 ```
 
-### Backend (`PawnshopServer`)
-
-```css
+### Backend Structure (`PawnshopServer`)
+```
 src/
-├── controllers/
+├── controllers/            # Request handlers
 │   ├── customer.controller.ts
 │   ├── employee.controller.ts
 │   └── product.controller.ts
-├── models/
+├── models/                 # Data models
 │   ├── customer.model.ts
 │   ├── employee.model.ts
 │   └── product.model.ts
-├── routes/
+├── routes/                 # API routes
 │   ├── customer.routes.ts
 │   ├── employee.routes.ts
 │   └── product.routes.ts
-└── index.ts
+└── index.ts               # Server entry point
 ```
 
-## 🌐 API Endpoints
+## 🌐 API Documentation
 
-### Employee Endpoints
+### Employee Management
+| Method | Endpoint             | Description                           | Auth Required |
+|--------|---------------------|---------------------------------------|---------------|
+| POST   | `/api/employees`    | Create new employee record            | Admin         |
+| GET    | `/api/employees`    | Retrieve all employees                | Admin         |
+| GET    | `/api/employees/:id`| Get specific employee details         | Admin         |
+| PUT    | `/api/employees/:id`| Update employee information           | Admin         |
+| DELETE | `/api/employees/:id`| Remove employee record                | Admin         |
 
-| HTTP Method | Endpoint             | Description              |
-|-------------|----------------------|--------------------------|
-| POST        | `/api/employees`     | Add a new employee       |
-| GET         | `/api/employees/:id` | Get an employee by ID    |
-| GET         | `/api/employees`     | Get all employees        |
-| PUT         | `/api/employees/:id` | Update an employee       |
-| DELETE      | `/api/employees/:id` | Delete an employee       |
+### Customer Management
+| Method | Endpoint             | Description                           | Auth Required |
+|--------|---------------------|---------------------------------------|---------------|
+| POST   | `/api/customers`    | Register new customer                 | Yes           |
+| GET    | `/api/customers`    | List all customers                    | Yes           |
+| GET    | `/api/customers/:id`| Retrieve customer details             | Yes           |
+| PUT    | `/api/customers/:id`| Update customer information           | Yes           |
+| DELETE | `/api/customers/:id`| Remove customer record                | Yes           |
 
-### Customer Endpoints
+### Product Management
+| Method | Endpoint            | Description                           | Auth Required |
+|--------|---------------------|---------------------------------------|---------------|
+| POST   | `/api/products`     | Add new product                       | Yes           |
+| GET    | `/api/products`     | List all products                     | Yes           |
+| GET    | `/api/products/:id` | Get product details                   | Yes           |
+| PUT    | `/api/products/:id` | Update product information            | Yes           |
+| DELETE | `/api/products/:id` | Remove product                        | Yes           |
 
-| HTTP Method | Endpoint             | Description              |
-|-------------|----------------------|--------------------------|
-| POST        | `/api/customers`     | Add a new customer       |
-| GET         | `/api/customers/:id` | Get a customer by ID     |
-| GET         | `/api/customers`     | Get all customers        |
-| PUT         | `/api/customers/:id` | Update a customer        |
-| DELETE      | `/api/customers/:id` | Delete a customer        |D
+## 🚀 Getting Started
 
-### Product Endpoints
+### Prerequisites
+- Node.js (v14 or higher)
+- Microsoft SQL Server
+- npm or yarn package manager
 
-| HTTP Method | Endpoint             | Description              |
-|-------------|----------------------|--------------------------|
-| POST        | `/api/products`      | Add a new product        |
-| GET         | `/api/products/:id`  | Get a product by ID      |
-| GET         | `/api/products`      | Get all products         |
-| PUT         | `/api/products/:id`  | Update a product         |
-| DELETE      | `/api/products/:id`  | Delete a product         |
+### Installation Steps
 
-## ✨ Features
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/jklis2/Pawnshop.git
+   cd Pawnshop
+   ```
 
-- Employee management (admin role).
-- Customer management.
-- Product management linked to specific customers.
-- Basic CRUD operations for employees, customers, and products.
-- Automatic linking of products to customers.
-- Future plans: PDF contract generation.
-- Future plans: Integration with an e-commerce platform.
+2. **Backend Setup**
+   ```bash
+   cd PawnshopServer
+   npm install
+   ```
 
-## 🚀 Future Development Plans
+3. **Configure Environment**
+   Create `.env` file in `PawnshopServer`:
+   ```env
+   DB_HOST=localhost
+   DB_PORT=1433
+   DB_NAME=pawnshop
+   DB_USER=your_username
+   DB_PASSWORD=your_password
+   JWT_SECRET=your_secret_key
+   ```
 
-- Integration with an e-commerce application to automatically list products for sale in an online store.
-- Generation of pawn and sale contracts in PDF format.
-- Extension of the application with additional reporting and inventory management features.
+4. **Start Backend Server**
+   ```bash
+   npm run dev
+   ```
 
-## 🛠️ Getting Started
+5. **Frontend Setup**
+   ```bash
+   cd ../PawnshopClient
+   npm install
+   npm run dev
+   ```
 
-### 1. Clone the Repository
+The application will be available at `http://localhost:5173`
 
-```bash
-git clone https://github.com/jklis2/Pawnshop.git
-```
-### 2.  Install Backend Dependencies
-Navigate to the backend directory:
-```bash
-cd PawnshopServer
-```
-Install the dependencies:
-```bash
-npm install
-```
+## 💡 Contributing
 
-### 3. Set Up Environment Variables
+We welcome contributions! Please feel free to submit a Pull Request.
 
-Create a `.env` file in the `PawnshopServer` directory and add the following environment variables:
+## 📄 License
 
-```bash
-DATABASE_URL=<YourDatabaseURL>
-```
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-### 4. Start the Backend Serve
+## 📞 Support
 
-```bash
-npm run dev
-```
-
-### 5. Install Frontend Dependencies
-
-Open a new terminal window, navigate to the frontend directory:
-
-```bash
-cd ../PawnshopClient
-```
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### 6. Start the Frontend Application
-
-```bash
-npm run dev
-```
-
-The frontend will automatically open in your default browser on `http://localhost:5173`. If it doesn't, navigate to this URL manually.
+For support, please open an issue in the GitHub repository or contact the development team.
