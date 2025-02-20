@@ -59,7 +59,7 @@ export default function CustomerCard({
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/dashboard/customers/edit/${id}`);
+    navigate(`/pawnshop/dashboard/customers/edit/${id}`);
   };
 
   const handleDelete = (e: React.MouseEvent) => {

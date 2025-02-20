@@ -107,7 +107,7 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
   
       if (response.status === 200) {
         showAlert(t('forms.employee.validation.editSuccess'), 'success');
-        navigate('/dashboard/employees');
+        navigate('/pawnshop/dashboard/employees');
       }
     } catch (error) {
       console.error('Error updating employee:', error);
@@ -117,7 +117,7 @@ export default function EditEmployeeForm({ employee }: EditEmployeeFormProps) {
   
 
   const handleGoBack = () => {
-    navigate('/dashboard/employees');
+    navigate('/pawnshop/dashboard/employees');
   };
 
   return (

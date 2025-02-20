@@ -73,7 +73,7 @@ export default function AddCustomerForm() {
 
       if (response.status === 201) {
         showAlert(t('forms.customer.validation.success'), 'success');
-        navigate('/dashboard/customers');
+        navigate('/pawnshop/dashboard/customers');
       }
     } catch (error) {
       console.error('Error adding customer:', error);

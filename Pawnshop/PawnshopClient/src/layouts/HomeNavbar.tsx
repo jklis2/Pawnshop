@@ -14,7 +14,7 @@ export default function HomeNavbar() {
           </div>
           <nav>
             <Link 
-              to="/login" 
+              to="/pawnshop/login" 
               className="inline-flex items-center px-6 py-2.5 border-2 border-white text-white font-medium rounded-lg
                          hover:bg-white hover:text-emerald-600 transition-all duration-200 ease-in-out
                          shadow-sm hover:shadow-md text-sm tracking-wide"

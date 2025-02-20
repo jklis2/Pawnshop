@@ -55,7 +55,7 @@ export default function Employees() {
   const handleEdit = (id: string) => {
     console.log("Employee ID:", id);
     console.log("Employee object:", employees.find(emp => emp.id === id));
-    navigate(`/dashboard/employees/edit/${id}`);
+    navigate(`/pawnshop/dashboard/employees/edit/${id}`);
   };
 
   return (

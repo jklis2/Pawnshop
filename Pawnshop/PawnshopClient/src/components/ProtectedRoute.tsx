@@ -12,11 +12,11 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   const location = useLocation(); 
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} />;
+    return <Navigate to="/pawnshop/login" state={{ from: location }} />;
   }
 
   if (allowedRoles && !allowedRoles.includes(employee?.role ?? "")) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/pawnshop/dashboard" replace />;
   }
 
   return <>{children}</>;

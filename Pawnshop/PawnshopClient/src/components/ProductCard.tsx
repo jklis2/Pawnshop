@@ -157,7 +157,7 @@ export default function ProductCard({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate(`/dashboard/products/edit/${id}`);
+                    navigate(`/pawnshop/dashboard/products/edit/${id}`);
                   }}
                   className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors duration-200"
                 >

@@ -16,7 +16,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await authLogin(login, password);
-      navigate("/dashboard");
+      navigate("/pawnshop/dashboard");
     } catch {
       setError(t('error.invalid'));
     }

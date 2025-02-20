@@ -91,7 +91,7 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
         id: initialValues.id // Make sure we keep the original ID
       });
       showAlert(t('forms.customer.validation.editSuccess'), 'success');
-      navigate('/dashboard/customers');
+      navigate('/pawnshop/dashboard/customers');
     } catch (error) {
       console.error('Error updating customer:', error);
       showAlert(t('forms.customer.validation.editError'), 'error');
@@ -99,7 +99,7 @@ export default function EditCustomerForm({ initialValues, onSubmit }: EditCustom
   };
 
   const handleGoBack = () => {
-    navigate('/dashboard/customers');
+    navigate('/pawnshop/dashboard/customers');
   };
 
   if (!initialValues || !customerData) {

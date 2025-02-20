@@ -96,7 +96,7 @@ export default function AddEmployeeForm() {
 
       if (response.status === 201) {
         showAlert(t('forms.employee.validation.success'), 'success');
-        navigate('/dashboard/employees');
+        navigate('/pawnshop/dashboard/employees');
       }
     } catch (error) {
       console.error('Error adding employee:', error);

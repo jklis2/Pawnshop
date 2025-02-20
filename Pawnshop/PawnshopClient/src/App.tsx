@@ -11,11 +11,11 @@ export default function App() {
     <AlertProvider>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/pawnshop/" element={<Home />} />
+          <Route path="/pawnshop/home" element={<Home />} />
+          <Route path="/pawnshop/login" element={<Login />} />
           <Route
-            path="/dashboard/*"
+            path="/pawnshop/dashboard/*"
             element={
               <ProtectedRoute>
                 <Dashboard />
